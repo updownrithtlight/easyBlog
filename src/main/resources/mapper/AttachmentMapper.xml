@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.technerd.easyblog.mapper.AttachmentMapper">
+
+    <select id="getTodayCount" resultType="java.lang.Integer">
+        SELECT
+            count( * )
+        FROM
+            sens_post
+        WHERE
+            to_days( create_time ) = to_days( now( ) );
+         AND del_flag = 0
+    </select>
+</mapper>
