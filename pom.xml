@@ -31,8 +31,6 @@
         <rome.version>1.0</rome.version>
         <commons-lang3.version>3.8</commons-lang3.version>
         <hutool-all.version>4.1.13</hutool-all.version>
-        <upyun-java-sdk.version>4.0.1</upyun-java-sdk.version>
-        <qiniu-java-sdk.version>7.2.14</qiniu-java-sdk.version>
         <thumbnailator.version>0.4.8</thumbnailator.version>
         <jaxb-api.version>2.3.0</jaxb-api.version>
         <!--<elasticsearch.version>5.5.2</elasticsearch.version>-->
@@ -149,19 +147,6 @@
             <version>${hutool-all.version}</version>
         </dependency>
 
-        <!-- 又拍云SDK -->
-        <dependency>
-            <groupId>com.upyun</groupId>
-            <artifactId>java-sdk</artifactId>
-            <version>${upyun-java-sdk.version}</version>
-        </dependency>
-
-        <!-- 七牛云SDK -->
-        <dependency>
-            <groupId>com.qiniu</groupId>
-            <artifactId>qiniu-java-sdk</artifactId>
-            <version>${qiniu-java-sdk.version}</version>
-        </dependency>
 
         <!-- 图片操作 -->
         <dependency>
