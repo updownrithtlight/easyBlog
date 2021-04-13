@@ -3,13 +3,13 @@ package com.technerd.easyblog.entity;
 import java.util.Date;
 
 public class Category {
-    private Integer id;
+    private Long id;
 
     private Boolean delFlag;
 
-    private Integer createBy;
+    private Long createBy;
 
-    private Integer updateBy;
+    private Long updateBy;
 
     private Date createTime;
 
@@ -17,23 +17,23 @@ public class Category {
 
     private String name;
 
-    private Integer parentId;
+    private Long parentId;
 
     private Integer sort;
 
-    private Byte level;
+    private Integer level;
 
     private String pathTrace;
 
     private String desc;
 
-    private Integer userId;
+    private Long userId;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -45,19 +45,19 @@ public class Category {
         this.delFlag = delFlag;
     }
 
-    public Integer getCreateBy() {
+    public Long getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(Integer createBy) {
+    public void setCreateBy(Long createBy) {
         this.createBy = createBy;
     }
 
-    public Integer getUpdateBy() {
+    public Long getUpdateBy() {
         return updateBy;
     }
 
-    public void setUpdateBy(Integer updateBy) {
+    public void setUpdateBy(Long updateBy) {
         this.updateBy = updateBy;
     }
 
@@ -85,11 +85,11 @@ public class Category {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 
@@ -101,11 +101,11 @@ public class Category {
         this.sort = sort;
     }
 
-    public Byte getLevel() {
+    public Integer getLevel() {
         return level;
     }
 
-    public void setLevel(Byte level) {
+    public void setLevel(Integer level) {
         this.level = level;
     }
 
@@ -125,11 +125,11 @@ public class Category {
         this.desc = desc == null ? null : desc.trim();
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 }

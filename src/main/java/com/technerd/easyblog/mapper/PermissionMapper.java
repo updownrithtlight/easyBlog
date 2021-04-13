@@ -1,15 +1,18 @@
 package com.technerd.easyblog.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.entity.Permission;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface PermissionMapper {
-    int deleteByPrimaryKey(Integer id);
+@Mapper
+public interface PermissionMapper extends BaseMapper<Permission> {
+    int deleteByPrimaryKey(Long id);
 
     int insert(Permission record);
 
     int insertSelective(Permission record);
 
-    Permission selectByPrimaryKey(Integer id);
+    Permission selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Permission record);
 

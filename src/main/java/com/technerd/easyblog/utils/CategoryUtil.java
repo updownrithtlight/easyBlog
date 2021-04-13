@@ -26,7 +26,7 @@ public class CategoryUtil {
         List<Category> categoriesResult = new ArrayList<>();
 
         for (Category category : categoriesRoot) {
-            if (category.getCatePid() == 0) {
+            if (category.getParentId() == 0) {
                 categoriesResult.add(category);
                 categoriesResult.addAll(getChildList(category.getId(), categoriesRoot));
             }
@@ -44,11 +44,11 @@ public class CategoryUtil {
     private static List<Category> getChildList(Long id, List<Category> categoriesRoot) {
         List<Category> categoriesChild = new ArrayList<>();
         for (Category category : categoriesRoot) {
-            if (category.getCatePid() != 0) {
-                if (category.getCatePid().equals(id)) {
+            if (category.getParentId() != 0) {
+                if (category.getParentId().equals(id)) {
                     categoriesChild.add(category);
                     List<Category> tempList = getChildList(category.getId(), categoriesRoot);
-                    tempList.sort((a, b) -> b.getCateSort() - a.getCateSort());
+                    tempList.sort((a, b) -> b.getSort() - a.getSort());
                     categoriesChild.addAll(tempList);
                 }
             }

@@ -1,15 +1,18 @@
 package com.technerd.easyblog.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.entity.Menu;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface MenuMapper {
-    int deleteByPrimaryKey(Integer id);
+@Mapper
+public interface MenuMapper extends BaseMapper<Menu> {
+    int deleteByPrimaryKey(Long id);
 
     int insert(Menu record);
 
     int insertSelective(Menu record);
 
-    Menu selectByPrimaryKey(Integer id);
+    Menu selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Menu record);
 

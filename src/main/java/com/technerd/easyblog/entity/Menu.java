@@ -3,13 +3,13 @@ package com.technerd.easyblog.entity;
 import java.util.Date;
 
 public class Menu {
-    private Integer id;
+    private Long id;
 
     private Boolean delFlag;
 
-    private Integer createBy;
+    private Long createBy;
 
-    private Integer updateBy;
+    private Long updateBy;
 
     private Date createTime;
 
@@ -23,15 +23,15 @@ public class Menu {
 
     private Integer cateSort;
 
-    private Integer parentId;
+    private Long parentId;
 
     private Boolean menuType;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -43,19 +43,19 @@ public class Menu {
         this.delFlag = delFlag;
     }
 
-    public Integer getCreateBy() {
+    public Long getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(Integer createBy) {
+    public void setCreateBy(Long createBy) {
         this.createBy = createBy;
     }
 
-    public Integer getUpdateBy() {
+    public Long getUpdateBy() {
         return updateBy;
     }
 
-    public void setUpdateBy(Integer updateBy) {
+    public void setUpdateBy(Long updateBy) {
         this.updateBy = updateBy;
     }
 
@@ -107,11 +107,11 @@ public class Menu {
         this.cateSort = cateSort;
     }
 
-    public Integer getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 

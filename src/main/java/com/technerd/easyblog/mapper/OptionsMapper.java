@@ -1,15 +1,18 @@
 package com.technerd.easyblog.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.entity.Options;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface OptionsMapper {
-    int deleteByPrimaryKey(Integer id);
+@Mapper
+public interface OptionsMapper extends BaseMapper<Options> {
+    int deleteByPrimaryKey(Long id);
 
     int insert(Options record);
 
     int insertSelective(Options record);
 
-    Options selectByPrimaryKey(Integer id);
+    Options selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Options record);
 

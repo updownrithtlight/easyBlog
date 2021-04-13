@@ -1,15 +1,18 @@
 package com.technerd.easyblog.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.entity.Comment;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface CommentMapper {
-    int deleteByPrimaryKey(Integer id);
+@Mapper
+public interface CommentMapper extends BaseMapper<Comment> {
+    int deleteByPrimaryKey(Long id);
 
     int insert(Comment record);
 
     int insertSelective(Comment record);
 
-    Comment selectByPrimaryKey(Integer id);
+    Comment selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Comment record);
 

@@ -1,15 +1,18 @@
 package com.technerd.easyblog.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.entity.Category;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface CategoryMapper {
-    int deleteByPrimaryKey(Integer id);
+@Mapper
+public interface CategoryMapper extends BaseMapper<Category> {
+    int deleteByPrimaryKey(Long id);
 
     int insert(Category record);
 
     int insertSelective(Category record);
 
-    Category selectByPrimaryKey(Integer id);
+    Category selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Category record);
 

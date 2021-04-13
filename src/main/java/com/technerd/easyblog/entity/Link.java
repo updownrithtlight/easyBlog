@@ -3,13 +3,13 @@ package com.technerd.easyblog.entity;
 import java.util.Date;
 
 public class Link {
-    private Integer id;
+    private Long id;
 
     private Boolean delFlag;
 
-    private Integer createBy;
+    private Long createBy;
 
-    private Integer updateBy;
+    private Long updateBy;
 
     private Date createTime;
 
@@ -23,11 +23,11 @@ public class Link {
 
     private String linkDesc;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -39,19 +39,19 @@ public class Link {
         this.delFlag = delFlag;
     }
 
-    public Integer getCreateBy() {
+    public Long getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(Integer createBy) {
+    public void setCreateBy(Long createBy) {
         this.createBy = createBy;
     }
 
-    public Integer getUpdateBy() {
+    public Long getUpdateBy() {
         return updateBy;
     }
 
-    public void setUpdateBy(Integer updateBy) {
+    public void setUpdateBy(Long updateBy) {
         this.updateBy = updateBy;
     }
 

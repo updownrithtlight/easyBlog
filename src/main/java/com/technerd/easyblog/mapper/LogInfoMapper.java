@@ -1,15 +1,18 @@
 package com.technerd.easyblog.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.entity.LogInfo;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface LogInfoMapper {
-    int deleteByPrimaryKey(Integer id);
+@Mapper
+public interface LogInfoMapper extends BaseMapper<LogInfo> {
+    int deleteByPrimaryKey(Long id);
 
     int insert(LogInfo record);
 
     int insertSelective(LogInfo record);
 
-    LogInfo selectByPrimaryKey(Integer id);
+    LogInfo selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(LogInfo record);
 
