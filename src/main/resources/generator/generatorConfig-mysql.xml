@@ -55,62 +55,134 @@
                    domainObjectName="Article" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+				   <columnOverride column="id" javaType="java.lang.Long" />
+				   <columnOverride column="parent_id" javaType="java.lang.Long" />
+				   <columnOverride column="user_id" javaType="java.lang.Long" />
+				   <columnOverride column="create_by" javaType="java.lang.Long" />
+				   <columnOverride column="update_by" javaType="java.lang.Long" />
+				   <columnOverride column="level" javaType="java.lang.Integer" />
                </table>
 			<table  tableName="comment"
                    domainObjectName="Comment" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+				<columnOverride column="id" javaType="java.lang.Long" />
+				<columnOverride column="parent_id" javaType="java.lang.Long" />
+				<columnOverride column="user_id" javaType="java.lang.Long" />
+				<columnOverride column="create_by" javaType="java.lang.Long" />
+				<columnOverride column="update_by" javaType="java.lang.Long" />
+				<columnOverride column="update_by" javaType="java.lang.Long" />
                </table>
 			<table  tableName="link"
                    domainObjectName="Link" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+				<columnOverride column="id" javaType="java.lang.Long" />
+				<columnOverride column="parent_id" javaType="java.lang.Long" />
+				<columnOverride column="user_id" javaType="java.lang.Long" />
+				<columnOverride column="create_by" javaType="java.lang.Long" />
+				<columnOverride column="update_by" javaType="java.lang.Long" />
+				<columnOverride column="update_by" javaType="java.lang.Long" />
                </table>
 			<table  tableName="log_info"
                    domainObjectName="LogInfo" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+				<columnOverride column="id" javaType="java.lang.Long" />
+				<columnOverride column="parent_id" javaType="java.lang.Long" />
+				<columnOverride column="user_id" javaType="java.lang.Long" />
+				<columnOverride column="create_by" javaType="java.lang.Long" />
+				<columnOverride column="update_by" javaType="java.lang.Long" />
+				<columnOverride column="update_by" javaType="java.lang.Long" />
                </table>
 		<table  tableName="login_info"
                    domainObjectName="LoginInfo" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+			<columnOverride column="id" javaType="java.lang.Long" />
+			<columnOverride column="parent_id" javaType="java.lang.Long" />
+			<columnOverride column="user_id" javaType="java.lang.Long" />
+			<columnOverride column="create_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
                </table>
 		<table  tableName="menu"
                    domainObjectName="Menu" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+			<columnOverride column="id" javaType="java.lang.Long" />
+			<columnOverride column="parent_id" javaType="java.lang.Long" />
+			<columnOverride column="user_id" javaType="java.lang.Long" />
+			<columnOverride column="create_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
                </table>
 		<table  tableName="options"
                    domainObjectName="Options" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+			<columnOverride column="id" javaType="java.lang.Long" />
+			<columnOverride column="parent_id" javaType="java.lang.Long" />
+			<columnOverride column="user_id" javaType="java.lang.Long" />
+			<columnOverride column="create_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
                </table>
 		<table  tableName="permission"
                    domainObjectName="Permission" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+			<columnOverride column="id" javaType="java.lang.Long" />
+			<columnOverride column="parent_id" javaType="java.lang.Long" />
+			<columnOverride column="user_id" javaType="java.lang.Long" />
+			<columnOverride column="create_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
                </table>
 		<table  tableName="role"
                    domainObjectName="Role" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+			<columnOverride column="id" javaType="java.lang.Long" />
+			<columnOverride column="parent_id" javaType="java.lang.Long" />
+			<columnOverride column="user_id" javaType="java.lang.Long" />
+			<columnOverride column="create_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
                </table>
 		<table  tableName="topic"
                    domainObjectName="Topic" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+			<columnOverride column="id" javaType="java.lang.Long" />
+			<columnOverride column="parent_id" javaType="java.lang.Long" />
+			<columnOverride column="user_id" javaType="java.lang.Long" />
+			<columnOverride column="create_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
                </table>
 		<table  tableName="user"
                    domainObjectName="User" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
+			<columnOverride column="id" javaType="java.lang.Long" />
+			<columnOverride column="parent_id" javaType="java.lang.Long" />
+			<columnOverride column="user_id" javaType="java.lang.Long" />
+			<columnOverride column="create_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
                </table>
 		<table  tableName="category"
                    domainObjectName="Category" enableCountByExample="false"
                    enableUpdateByExample="false" enableDeleteByExample="false"
                    enableSelectByExample="false">
-               </table>
+			<columnOverride column="id" javaType="java.lang.Long" />
+			<columnOverride column="parent_id" javaType="java.lang.Long" />
+			<columnOverride column="user_id" javaType="java.lang.Long" />
+			<columnOverride column="create_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
+			<columnOverride column="update_by" javaType="java.lang.Long" />
+		   </table>
 	</context>
 
 </generatorConfiguration>
