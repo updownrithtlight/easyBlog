@@ -8,8 +8,7 @@ import org.apache.shiro.subject.Subject;
  *     Controller抽象类
  * </pre>
  *
- * @author : saysky
- * @date : 2017/12/15
+ * @author : technerd
  */
 public abstract class BaseController {
 

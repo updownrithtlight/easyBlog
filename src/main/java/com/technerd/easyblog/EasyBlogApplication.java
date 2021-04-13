@@ -20,7 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableCaching
 @EnableScheduling
-//@MapperScan("com.technerd.easyblog.mapper*")
+@MapperScan("com.technerd.easyblog.mapper*")
 @ComponentScan(basePackages = {"com.technerd.easyblog"})
 public class EasyBlogApplication {
     public static void main(String[] args) {

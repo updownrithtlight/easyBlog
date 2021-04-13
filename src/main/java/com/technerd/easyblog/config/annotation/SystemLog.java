@@ -1,6 +1,8 @@
 package com.technerd.easyblog.config.annotation;
 
 
+
+
 import com.technerd.easyblog.model.enums.LogTypeEnum;
 
 import java.lang.annotation.*;

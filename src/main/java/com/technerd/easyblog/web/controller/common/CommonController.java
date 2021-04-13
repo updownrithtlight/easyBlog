@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletRequest;
  *     错误页面控制器
  * </pre>
  *
- * @author : saysky
- * @date : 2017/12/26
+ * @author : technerd
  */
 @Slf4j
 @Controller

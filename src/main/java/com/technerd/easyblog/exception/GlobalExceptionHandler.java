@@ -1,6 +1,6 @@
 package com.technerd.easyblog.exception;
 
-import com.technerd.easyblog.model.dto.JsonResult;
+import com.technerd.easyblog.model.vo.JsonResult;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -36,8 +36,7 @@ import java.util.Set;
 /**
  * 全局异常捕获
  *
- * @author 言曌
- * @date 2018/3/20 下午12:57
+ * @author technerd
  */
 
 @ControllerAdvice
@@ -204,10 +203,10 @@ public class GlobalExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(SensBusinessException.class)
+    @ExceptionHandler(MyBlogException.class)
     @ResponseBody
     public JsonResult processApiException(HttpServletResponse response,
-                                          SensBusinessException e) {
+                                          MyBlogException e) {
         JsonResult result = new JsonResult(0, e.getMessage());
         response.setStatus(200);
         response.setContentType("application/json;charset=UTF-8");

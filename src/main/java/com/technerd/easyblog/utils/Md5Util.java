@@ -13,8 +13,7 @@ import java.security.NoSuchAlgorithmException;
  *      获取文件hash
  * </pre>
  *
- * @author : Yawn
- * @date : 2018/12/04
+ * @author : technerd
  */
 public class Md5Util {
 

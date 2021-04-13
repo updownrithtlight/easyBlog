@@ -5,8 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.technerd.easyblog.common.constant.RedisKeyExpire;
-import com.technerd.easyblog.common.constant.RedisKeys;
 import com.technerd.easyblog.entity.Category;
 import com.technerd.easyblog.mapper.CategoryMapper;
 import com.technerd.easyblog.service.CategoryService;

@@ -5,23 +5,23 @@ package com.technerd.easyblog.exception;
  * @date 2019-08-09 16:47
  */
 
-public class SensBusinessException extends RuntimeException {
+public class MyBlogException extends RuntimeException {
 
     private Integer code;
 
     private String message;
 
 
-    public SensBusinessException() {
+    public MyBlogException() {
         super();
     }
 
-    public SensBusinessException(String message) {
+    public MyBlogException(String message) {
         this.code = 500;
         this.message = message;
     }
 
-    public SensBusinessException(Integer code, String message) {
+    public MyBlogException(Integer code, String message) {
         this.code = code;
         this.message = message;
     }

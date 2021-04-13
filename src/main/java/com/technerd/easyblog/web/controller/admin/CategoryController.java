@@ -1,13 +1,13 @@
 package com.technerd.easyblog.web.controller.admin;
-import com.technerd.easyblog.service.CategoryService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -15,20 +15,18 @@ import org.springframework.web.bind.annotation.*;
  *     后台分类管理控制器
  * </pre>
  *
- * @author : saysky
- * @date : 2017/12/10
+ * @author : technerd
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin/category")
 @Api(value = "分类")
 public class CategoryController extends BaseController {
 
     @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
     private LocaleMessageUtil localeMessageUtil;
+
+
 
     /**
      * 查询所有分类并渲染category页面
@@ -40,7 +38,8 @@ public class CategoryController extends BaseController {
     public String categories() {
 
 
-        return "admin/admin_category";
+
+        return "hello";
     }
 
 
