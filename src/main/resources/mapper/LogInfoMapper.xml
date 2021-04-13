@@ -22,13 +22,13 @@
     id, del_flag, create_by, update_by, create_time, update_time, name, log_type, request_url, 
     request_type, request_param, username, ip, ipInfo, cost_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from log_info
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from log_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
