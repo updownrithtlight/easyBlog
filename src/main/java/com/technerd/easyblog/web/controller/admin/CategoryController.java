@@ -1,4 +1,6 @@
 package com.technerd.easyblog.web.controller.admin;
+import com.technerd.easyblog.entity.Category;
+import com.technerd.easyblog.service.CategoryService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
 import io.swagger.annotations.Api;
@@ -26,6 +28,10 @@ public class CategoryController extends BaseController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
+    @Autowired
+    private CategoryService categoryService;
+
+
 
 
     /**
@@ -38,6 +44,15 @@ public class CategoryController extends BaseController {
     public String categories() {
 
 
+
+        return "hello";
+    }
+
+    @PostMapping
+    @ApiOperation(value = "v")
+    public String insert(Category category) {
+
+        categoryService.insert(category);
 
         return "hello";
     }
