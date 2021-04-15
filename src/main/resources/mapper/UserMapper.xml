@@ -37,20 +37,6 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.technerd.easyblog.entity.User" >
-    insert into user (id, del_flag, create_by, 
-      update_by, create_time, update_time, 
-      name, nick_name, password, 
-      email, gender, vip_level, register_time, 
-      is_admin, email_enable, status, 
-      user_desc, user_avatar)
-    values (#{id,jdbcType=INTEGER}, #{delFlag,jdbcType=BIT}, #{createBy,jdbcType=INTEGER}, 
-      #{updateBy,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{name,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, #{password,jdbcType=CHAR}, 
-      #{email,jdbcType=VARCHAR}, #{gender,jdbcType=BIT}, #{vipLevel,jdbcType=BIT}, #{registerTime,jdbcType=TIMESTAMP}, 
-      #{isAdmin,jdbcType=CHAR}, #{emailEnable,jdbcType=BIT}, #{status,jdbcType=BIT}, 
-      #{userDesc,jdbcType=VARCHAR}, #{userAvatar,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.technerd.easyblog.entity.User" >
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -222,25 +208,16 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.technerd.easyblog.entity.User" >
-    update user
-    set del_flag = #{delFlag,jdbcType=BIT},
-      create_by = #{createBy,jdbcType=INTEGER},
-      update_by = #{updateBy,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      name = #{name,jdbcType=VARCHAR},
-      nick_name = #{nickName,jdbcType=VARCHAR},
-      password = #{password,jdbcType=CHAR},
-      email = #{email,jdbcType=VARCHAR},
-      gender = #{gender,jdbcType=BIT},
-      vip_level = #{vipLevel,jdbcType=BIT},
-      register_time = #{registerTime,jdbcType=TIMESTAMP},
-      is_admin = #{isAdmin,jdbcType=CHAR},
-      email_enable = #{emailEnable,jdbcType=BIT},
-      status = #{status,jdbcType=BIT},
-      user_desc = #{userDesc,jdbcType=VARCHAR},
-      user_avatar = #{userAvatar,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+  <select id="findByUserName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where name= #{name,jdbcType=VARCHAR}
+  </select>
+  <select id="findByEmail" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where email = #{email,jdbcType=VARCHAR}
+  </select>
 </mapper>

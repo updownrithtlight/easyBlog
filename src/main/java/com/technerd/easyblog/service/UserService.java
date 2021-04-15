@@ -14,7 +14,7 @@ import java.util.List;
  * @author : saysky
  * @date : 2017/11/14
  */
-public interface UserService extends BaseService<User, Long> {
+public interface UserService  {
 
     /**
      * 根据用户名获得用户
@@ -42,63 +42,36 @@ public interface UserService extends BaseService<User, Long> {
     void updatePassword(Long userId, String password);
 
     /**
-     * 分页获取所有用户
      *
-     * @param roleName 角色名称
-     * @param condition 查询条件
-     * @param page 分页信息
-     * @return 用户列表
+     * @param user
      */
-    Page<User> findByRoleAndCondition(String roleName, User condition, Page<User> page);
+    User insert(User user) ;
 
     /**
-     * 根据用户编号和密码查询
      *
-     * @param userId   userid
-     * @param userPass userpass
-     * @return User
-     */
-    User findByUserIdAndUserPass(Long userId, String userPass);
-
-    /**
-     * 修改禁用状态
-     *
-     * @param enable enable
-     */
-    void updateUserLoginEnable(User user, String enable);
-
-    /**
-     * 增加登录错误次数
-     *
-     * @return 登录错误次数
-     */
-    Integer updateUserLoginError(User user);
-
-    /**
-     * 修改用户的登录状态为正常
-     *
-     * @return User
-     */
-    User updateUserLoginNormal(User user);
-
-    /**
-     * 获得今日新增数量
+     * @param user
      * @return
      */
-    Integer getTodayCount();
+    User update(User user);
 
     /**
-     * 获得用户文章数排行榜
-     * limit 前几名
+     *
+     * @param id
      * @return
      */
-    List<User> getUserPostRanking(Integer limit);
+    User get(Long id);
 
     /**
-     * 获得最新注册用户
-     * @param limit
+     *
+     * @param entity
      * @return
      */
-    List<User> getLatestRegisterUser(Integer limit);
+    User insertOrUpdate(User entity);
+
+    /**
+     *
+     * @param userId
+     */
+    void delete(Long userId);
 
 }

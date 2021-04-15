@@ -37,157 +37,32 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
-//
-//    @Autowired
-//    private RoleService roleService;
-//
-//    @Autowired
-//    private PostService postService;
-//
-//    @Autowired
-//    private CommentService commentService;
-//
-//    @Autowired
-//    private CategoryService categoryService;
-//
-//    @Autowired
-//    private TagService tagService;
 
     @Autowired
     private RedisUtil redisUtil;
 
     @Override
     public User findByUserName(String userName) {
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("user_name", userName);
-        return userMapper.selectOne(queryWrapper);
+
+        return userMapper.findByUserName(userName);
     }
 
     @Override
     public User findByEmail(String userEmail) {
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("user_email", userEmail);
-        return userMapper.selectOne(queryWrapper);
+
+        return userMapper.findByEmail(userEmail);
     }
 
     @Override
     public void updatePassword(Long userId, String password) {
         User user = new User();
         user.setId(userId);
-        user.setPassword(Md5Util.toMd5(password, "sens", 10));
-        userMapper.updateById(user);
+        user.setPassword(Md5Util.toMd5(password, "nerd", 10));
+        userMapper.updateByPrimaryKeySelective(user);
         redisUtil.del(RedisKeys.USER + userId);
 
     }
 
-    @Override
-    public Page<User> findByRoleAndCondition(String roleName, User condition, Page<User> page) {
-//        Role role = roleService.findByRoleName(roleName);
-//        List<User> users;
-//        if (role != null && !Objects.equals(roleName, RoleEnum.NONE.getValue())) {
-//            users = userMapper.findByRoleIdAndCondition(role.getId(), condition, page);
-//        } else {
-//            users = userMapper.findByWithoutRole(page);
-//        }
-//        return page.setRecords(users);
-        return null;
-    }
-
-
-    @Override
-    public User findByUserIdAndUserPass(Long userId, String userPass) {
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("user_id", userId);
-        queryWrapper.eq("user_pass", userPass);
-        return userMapper.selectOne(queryWrapper);
-    }
-
-
-    /**
-     * 修改禁用状态
-     *
-     * @param enable enable
-     */
-    @Override
-    public void updateUserLoginEnable(User user, String enable) {
-//        //如果是修改为正常, 重置错误次数
-//        if (Objects.equals(TrueFalseEnum.TRUE.getValue(), enable)) {
-//            user.setLoginError(0);
-//        }
-//        user.setLoginEnable(enable);
-//        user.setLoginLast(new Date());
-//        userMapper.updateById(user);
-//        redisUtil.del(RedisKeys.USER + user.getId());
-    }
-
-
-    /**
-     * 增加登录错误次数
-     *
-     * @return 登录错误次数
-     */
-    @Override
-    public Integer updateUserLoginError(User user) {
-//        user.setLoginError((user.getLoginError() == null ? 0 : user.getLoginError()) + 1);
-//        userMapper.updateById(user);
-//        redisUtil.del(RedisKeys.USER + user.getId());
-//        return user.getLoginError();
-        return null;
-    }
-
-    /**
-     * 修改用户的状态为正常
-     *
-     * @return User
-     */
-    @Override
-    public User updateUserLoginNormal(User user) {
-//        user.setLoginEnable(TrueFalseEnum.TRUE.getValue());
-//        user.setLoginError(0);
-//        user.setLoginLast(new Date());
-        userMapper.updateById(user);
-        redisUtil.del(RedisKeys.USER + user.getId());
-        return user;
-    }
-
-    @Override
-    public Integer getTodayCount() {
-//        return userMapper.getTodayCount();
-        return null;
-    }
-
-    @Override
-    public List<User> getUserPostRanking(Integer limit) {
-//        return userMapper.getUserPostRanking(limit);
-        return null;
-    }
-
-    @Override
-    public List<User> getLatestRegisterUser(Integer limit) {
-//        return userMapper.getLatestUser(limit);
-        return null;
-    }
-
-
-    @Override
-    public BaseMapper<User> getRepository() {
-        return userMapper;
-    }
-
-    @Override
-    public QueryWrapper<User> getQueryWrapper(User user) {
-        //对指定字段查询
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        if (user != null) {
-            if (StrUtil.isNotBlank(user.getName())) {
-                queryWrapper.eq("user_name", user.getName());
-            }
-            if (StrUtil.isNotBlank(user.getEmail())) {
-                queryWrapper.eq("user_email", user.getEmail());
-            }
-        }
-        return queryWrapper;
-    }
 
     @Override
     public User insert(User user) {
@@ -195,7 +70,7 @@ public class UserServiceImpl implements UserService {
         basicUserCheck(user);
         //2.验证用户名和邮箱是否存在
         checkUserNameAndUserName(user);
-        String userPass = Md5Util.toMd5(user.getPassword(), "sens", 10);
+        String userPass = Md5Util.toMd5(user.getPassword(), "nerd", 10);
         user.setPassword(userPass);
         userMapper.insert(user);
         return user;
@@ -212,7 +87,7 @@ public class UserServiceImpl implements UserService {
             String userPass = Md5Util.toMd5(user.getPassword(), "sens", 10);
             user.setPassword(userPass);
         }
-        userMapper.updateById(user);
+        userMapper.updateByPrimaryKeySelective(user);
         redisUtil.del(RedisKeys.USER + user.getId());
         return user;
     }
@@ -298,7 +173,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotEmpty(value)) {
             return JSON.parseObject(value, User.class);
         }
-        User user = userMapper.selectById(id);
+        User user = userMapper.selectByPrimaryKey(id);
         if(user != null) {
             redisUtil.set(RedisKeys.USER + id, JSON.toJSONString(user), RedisKeyExpire.USER);
         }
