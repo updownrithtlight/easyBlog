@@ -38,8 +38,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private RedisUtil redisUtil;
+//    @Autowired
+//    private RedisUtil redisUtil;
 
     @Override
     public User findByUserName(String userName) {
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
         user.setId(userId);
         user.setPassword(Md5Util.toMd5(password, "nerd", 10));
         userMapper.updateByPrimaryKeySelective(user);
-        redisUtil.del(RedisKeys.USER + userId);
+//        redisUtil.del(RedisKeys.USER + userId);
 
     }
 
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(userPass);
         }
         userMapper.updateByPrimaryKeySelective(user);
-        redisUtil.del(RedisKeys.USER + user.getId());
+//        redisUtil.del(RedisKeys.USER + user.getId());
         return user;
     }
 
@@ -168,15 +168,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(Long id) {
-        String value = redisUtil.get(RedisKeys.USER + id);
+//        String value = redisUtil.get(RedisKeys.USER + id);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseObject(value, User.class);
-        }
+//        if (StringUtils.isNotEmpty(value)) {
+//            return JSON.parseObject(value, User.class);
+//        }
         User user = userMapper.selectByPrimaryKey(id);
-        if(user != null) {
-            redisUtil.set(RedisKeys.USER + id, JSON.toJSONString(user), RedisKeyExpire.USER);
-        }
+//        if(user != null) {
+//            redisUtil.set(RedisKeys.USER + id, JSON.toJSONString(user), RedisKeyExpire.USER);
+//        }
         return user;
     }
 }

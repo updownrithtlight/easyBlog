@@ -8,6 +8,7 @@ import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.LoginTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
+import com.technerd.easyblog.model.vo.UserVo;
 import com.technerd.easyblog.service.UserService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
@@ -48,8 +49,40 @@ public class UserController extends BaseController {
 
     @PostMapping(value = "/register")
     @ApiOperation(value = "用户注册")
-    public User register(@RequestBody User user) {
-        return userService.insert(user);
+    public JsonResult register(@RequestBody User user) {
+         userService.insert(user);
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.register.success"));
+    }
+
+    /**
+     * 管理员给用户修改密码
+     *
+     * @param userVo 新密码
+     * @return JsonResult
+     */
+    @PostMapping(value = "/proxy/changePass")
+    @SystemLog(description = "管理员修改其他用户密码", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "管理员修改其他用户密码")
+    public JsonResult adminChangePass(@RequestBody UserVo userVo) {
+        User user = userService.get(userVo.getUserId());
+        if (null != user) {
+            userService.updatePassword(user.getId(), userVo.getPassword());
+        }
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.user.update-password-success"));
+    }
+
+    /**
+     * 管理员修改用户资料
+     *
+     * @param user user
+     * @return JsonResult
+     */
+    @PostMapping(value = "/profile/save/proxy")
+    @SystemLog(description = "管理员修改其他用户信息", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "管理员修改其他用户信息")
+    public JsonResult adminSaveProfile(@RequestBody User user) {
+        userService.insertOrUpdate(user);
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.edit-success"));
     }
 
 }
