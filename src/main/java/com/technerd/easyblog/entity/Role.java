@@ -1,26 +1,44 @@
 package com.technerd.easyblog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.technerd.easyblog.common.base.BaseEntity;
 import lombok.Data;
 
-import java.util.Date;
+import java.util.List;
+
+/**
+ * @author liuyanzhao
+ */
 @Data
-public class Role {
-    private Long id;
+@TableName("rbac_role")
+public class Role  extends BaseEntity {
 
-    private Boolean delFlag;
-
-    private Long createBy;
-
-    private Long updateBy;
-
-    private Date createTime;
-
-    private Date updateTime;
-
+    /**
+     * 角色名称：admin，author，subscriber
+     */
     private String role;
 
+    /**
+     * 描述：管理员，作者，订阅者
+     */
     private String description;
 
+    /**
+     * 级别
+     */
     private Integer level;
+
+    /**
+     * 该角色对应的用户数量，非数据库字段
+     */
+    @TableField(exist = false)
+    private Integer count;
+
+    /**
+     * 当前角色的权限列表
+     */
+    @TableField(exist = false)
+    private List<Permission> permissions;
 
 }

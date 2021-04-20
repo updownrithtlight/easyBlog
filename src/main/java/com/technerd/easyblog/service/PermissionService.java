@@ -1,7 +1,6 @@
 package com.technerd.easyblog.service;
 
-
-
+import com.technerd.easyblog.common.base.BaseService;
 import com.technerd.easyblog.entity.Permission;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.Set;
  * @author : saysky
  * @date : 2017/11/14
  */
-public interface PermissionService {
+public interface PermissionService extends BaseService<Permission, Long> {
 
     /**
      * 根据角色Id获得权限列表
@@ -47,23 +46,10 @@ public interface PermissionService {
      */
     List<Permission> findByResourceType(String resourceType);
 
-
-
-    void insert(Permission entity) ;
-    void insertOrUpdate(Permission entity) ;
-
     /**
-     * 修改
-     *
-     * @param entity
+     * 获得权限列表
+     * @param resourceType
      * @return
      */
-    void update(Permission entity) ;
-
-    /**
-     *
-     * @param id
-     */
-    void delete(Long id) ;
-
+    List<Permission> findPermissionListWithLevel(Integer resourceType);
 }

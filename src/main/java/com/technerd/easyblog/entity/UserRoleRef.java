@@ -1,24 +1,34 @@
 package com.technerd.easyblog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.technerd.easyblog.common.base.BaseEntity;
 import lombok.Data;
 
-import java.util.Date;
+
+/**
+ * 用户和角色关联
+ * @author liuyanzhao
+ */
 @Data
-public class UserRoleRef {
-    private Long id;
+@TableName("user_role_ref")
+public class UserRoleRef  extends BaseEntity {
 
-    private Boolean delFlag;
 
-    private Long createBy;
-
-    private Long updateBy;
-
-    private Date createTime;
-
-    private Date updateTime;
-
+    /**
+     * 用户Id
+     */
     private Long userId;
 
+    /**
+     * 角色Id
+     */
     private Long roleId;
 
+    public UserRoleRef(Long userId, Long roleId) {
+        this.userId = userId;
+        this.roleId = roleId;
+    }
+
+    public UserRoleRef() {
+    }
 }

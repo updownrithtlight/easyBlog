@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @author technerd
+ * @author liuyanzhao
  */
 @Data
 public class SearchVo implements Serializable {

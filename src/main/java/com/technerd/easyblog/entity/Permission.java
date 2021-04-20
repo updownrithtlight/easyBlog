@@ -1,34 +1,67 @@
 package com.technerd.easyblog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.technerd.easyblog.common.base.BaseEntity;
 import lombok.Data;
 
-import java.util.Date;
+import java.util.List;
+
+
+/**
+ *
+ * 权限，后台的菜单
+ * @author liuyanzhao
+ */
 @Data
-public class Permission {
-    private Long id;
+@TableName("permission")
+public class Permission  extends BaseEntity {
 
-    private Boolean delFlag;
-
-    private Long createBy;
-
-    private Long updateBy;
-
-    private Date createTime;
-
-    private Date updateTime;
-
+    /**
+     * 权限名称
+     */
     private String name;
 
-    private String url;
+    /**
+     * pid
+     */
+    private Long pid;
 
-    private String icon;
-
-    private Integer sort;
-
+    /**
+     * 资源类型
+     */
     private String resourceType;
 
-    private Integer pid;
+    /**
+     * 请求URL
+     */
+    private String url;
 
+    /**
+     * 图标
+     */
+    private String icon;
+
+    /**
+     * 序号(越小越靠前)
+     */
+    private Double sort;
+
+    /**
+     * 打开方式(_self或target)
+     */
+    private String target;
+
+    /**
+     * 级别
+     */
+    @TableField(exist = false)
     private Integer level;
+
+    /**
+     * 子权限列表
+     */
+    @TableField(exist = false)
+    private List<Permission> childPermissions;
 
 }

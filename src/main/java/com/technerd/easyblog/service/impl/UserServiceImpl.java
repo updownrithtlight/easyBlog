@@ -8,11 +8,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.technerd.easyblog.common.constant.RedisKeyExpire;
 import com.technerd.easyblog.common.constant.RedisKeys;
+import com.technerd.easyblog.entity.Role;
 import com.technerd.easyblog.entity.User;
 import com.technerd.easyblog.exception.MyBlogException;
 import com.technerd.easyblog.mapper.UserMapper;
-import com.technerd.easyblog.service.RoleService;
-import com.technerd.easyblog.service.UserService;
+import com.technerd.easyblog.model.enums.RoleEnum;
+import com.technerd.easyblog.model.enums.TrueFalseEnum;
+import com.technerd.easyblog.service.*;
 import com.technerd.easyblog.utils.Md5Util;
 import com.technerd.easyblog.utils.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,31 +41,151 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
-//    @Autowired
-//    private RedisUtil redisUtil;
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private PostService postService;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private TagService tagService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public User findByUserName(String userName) {
-
-        return userMapper.findByUserName(userName);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("user_name", userName);
+        return userMapper.selectOne(queryWrapper);
     }
 
     @Override
     public User findByEmail(String userEmail) {
-
-        return userMapper.findByEmail(userEmail);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("user_email", userEmail);
+        return userMapper.selectOne(queryWrapper);
     }
 
     @Override
     public void updatePassword(Long userId, String password) {
         User user = new User();
         user.setId(userId);
-        user.setPassword(Md5Util.toMd5(password, "nerd", 10));
-        userMapper.updateByPrimaryKeySelective(user);
-//        redisUtil.del(RedisKeys.USER + userId);
+        user.setUserPass(Md5Util.toMd5(password, "sens", 10));
+        userMapper.updateById(user);
+        redisUtil.del(RedisKeys.USER + userId);
 
     }
 
+    @Override
+    public Page<User> findByRoleAndCondition(String roleName, User condition, Page<User> page) {
+        Role role = roleService.findByRoleName(roleName);
+        List<User> users;
+        if (role != null && !Objects.equals(roleName, RoleEnum.NONE.getValue())) {
+            users = userMapper.findByRoleIdAndCondition(role.getId(), condition, page);
+        } else {
+            users = userMapper.findByWithoutRole(page);
+        }
+        return page.setRecords(users);
+    }
+
+
+    @Override
+    public User findByUserIdAndUserPass(Long userId, String userPass) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("user_id", userId);
+        queryWrapper.eq("user_pass", userPass);
+        return userMapper.selectOne(queryWrapper);
+    }
+
+
+    /**
+     * 修改禁用状态
+     *
+     * @param enable enable
+     */
+    @Override
+    public void updateUserLoginEnable(User user, String enable) {
+        //如果是修改为正常, 重置错误次数
+        if (Objects.equals(TrueFalseEnum.TRUE.getValue(), enable)) {
+            user.setLoginError(0);
+        }
+        user.setLoginEnable(enable);
+        user.setLoginLast(new Date());
+        userMapper.updateById(user);
+        redisUtil.del(RedisKeys.USER + user.getId());
+    }
+
+
+    /**
+     * 增加登录错误次数
+     *
+     * @return 登录错误次数
+     */
+    @Override
+    public Integer updateUserLoginError(User user) {
+        user.setLoginError((user.getLoginError() == null ? 0 : user.getLoginError()) + 1);
+        userMapper.updateById(user);
+        redisUtil.del(RedisKeys.USER + user.getId());
+        return user.getLoginError();
+    }
+
+    /**
+     * 修改用户的状态为正常
+     *
+     * @return User
+     */
+    @Override
+    public User updateUserLoginNormal(User user) {
+        user.setLoginEnable(TrueFalseEnum.TRUE.getValue());
+        user.setLoginError(0);
+        user.setLoginLast(new Date());
+        userMapper.updateById(user);
+        redisUtil.del(RedisKeys.USER + user.getId());
+        return user;
+    }
+
+    @Override
+    public Integer getTodayCount() {
+        return userMapper.getTodayCount();
+    }
+
+    @Override
+    public List<User> getUserPostRanking(Integer limit) {
+        return userMapper.getUserPostRanking(limit);
+    }
+
+    @Override
+    public List<User> getLatestRegisterUser(Integer limit) {
+        return userMapper.getLatestUser(limit);
+    }
+
+
+    @Override
+    public BaseMapper<User> getRepository() {
+        return userMapper;
+    }
+
+    @Override
+    public QueryWrapper<User> getQueryWrapper(User user) {
+        //对指定字段查询
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (user != null) {
+            if (StrUtil.isNotBlank(user.getUserName())) {
+                queryWrapper.eq("user_name", user.getUserName());
+            }
+            if (StrUtil.isNotBlank(user.getUserEmail())) {
+                queryWrapper.eq("user_email", user.getUserEmail());
+            }
+        }
+        return queryWrapper;
+    }
 
     @Override
     public User insert(User user) {
@@ -70,8 +193,8 @@ public class UserServiceImpl implements UserService {
         basicUserCheck(user);
         //2.验证用户名和邮箱是否存在
         checkUserNameAndUserName(user);
-        String userPass = Md5Util.toMd5(user.getPassword(), "nerd", 10);
-        user.setPassword(userPass);
+        String userPass = Md5Util.toMd5(user.getUserPass(), "sens", 10);
+        user.setUserPass(userPass);
         userMapper.insert(user);
         return user;
     }
@@ -83,50 +206,50 @@ public class UserServiceImpl implements UserService {
         //2.验证用户名和邮箱是否存在
         checkUserNameAndUserName(user);
 
-        if(user.getPassword() != null) {
-            String userPass = Md5Util.toMd5(user.getPassword(), "sens", 10);
-            user.setPassword(userPass);
+        if(user.getUserPass() != null) {
+            String userPass = Md5Util.toMd5(user.getUserPass(), "sens", 10);
+            user.setUserPass(userPass);
         }
-        userMapper.updateByPrimaryKeySelective(user);
-//        redisUtil.del(RedisKeys.USER + user.getId());
+        userMapper.updateById(user);
+        redisUtil.del(RedisKeys.USER + user.getId());
         return user;
     }
 
 
     private void basicUserCheck(User user) {
-        if (user.getName() == null || user.getEmail() == null || user.getNickName() == null) {
+        if (user.getUserName() == null || user.getUserEmail() == null || user.getUserDisplayName() == null) {
             throw new MyBlogException("请输入完整信息!");
         }
-        String userName = user.getName();
+        String userName = user.getUserName();
         userName = userName.trim().replaceAll(" ", "-");
         if (userName.length() < 4 || userName.length() > 20) {
             throw new MyBlogException("用户名长度为4-20位!");
         }
-        if (Strings.isNotEmpty(user.getPassword())) {
-            if (user.getPassword().length() < 6 || user.getPassword().length() > 20) {
+        if (Strings.isNotEmpty(user.getUserPass())) {
+            if (user.getUserPass().length() < 6 || user.getUserPass().length() > 20) {
                 throw new MyBlogException("用户密码为6-20位!");
             }
         }
-        if (!Validator.isEmail(user.getEmail())) {
+        if (!Validator.isEmail(user.getUserEmail())) {
             throw new MyBlogException("电子邮箱格式不合法!");
         }
-        if (user.getNickName().length() < 1 || user.getNickName().length() > 20) {
+        if (user.getUserDisplayName().length() < 1 || user.getUserDisplayName().length() > 20) {
             throw new MyBlogException("昵称为2-20位");
         }
     }
 
     private void checkUserNameAndUserName(User user) {
         //验证用户名和邮箱是否存在
-        if (user.getName() != null) {
-            User nameCheck = findByUserName(user.getName());
+        if (user.getUserName() != null) {
+            User nameCheck = findByUserName(user.getUserName());
             Boolean isExist = (user.getId() == null && nameCheck != null) ||
                     (user.getId() != null && nameCheck != null && !Objects.equals(nameCheck.getId(), user.getId()));
             if (isExist) {
                 throw new MyBlogException("用户名已经存在");
             }
         }
-        if (user.getEmail() != null) {
-            User emailCheck = findByEmail(user.getEmail());
+        if (user.getUserEmail() != null) {
+            User emailCheck = findByEmail(user.getUserEmail());
             Boolean isExist = (user.getId() == null && emailCheck != null) ||
                     (user.getId() != null && emailCheck != null && !Objects.equals(emailCheck.getId(), user.getId()));
             if (isExist) {
@@ -138,22 +261,22 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long userId) {
-//        //删除用户
-//        User user = get(userId);
-//        if (user != null) {
-//            //1.修改用户状态为已删除
-//            userMapper.deleteById(userId);
-//            //2.修改用户和角色关联
-//            roleService.deleteByUserId(userId);
-//            //3.文章删除
-//            postService.deleteByUserId(userId);
-//            //4.评论删除
-//            commentService.deleteByUserId(userId);
-//            commentService.deleteByAcceptUserId(userId);
-//            //5.分类和标签
-//            categoryService.deleteByUserId(userId);
-//            tagService.deleteByUserId(userId);
-//        }
+        //删除用户
+        User user = get(userId);
+        if (user != null) {
+            //1.修改用户状态为已删除
+            userMapper.deleteById(userId);
+            //2.修改用户和角色关联
+            roleService.deleteByUserId(userId);
+            //3.文章删除
+            postService.deleteByUserId(userId);
+            //4.评论删除
+            commentService.deleteByUserId(userId);
+            commentService.deleteByAcceptUserId(userId);
+            //5.分类和标签
+            categoryService.deleteByUserId(userId);
+            tagService.deleteByUserId(userId);
+        }
     }
 
     @Override
@@ -168,15 +291,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(Long id) {
-//        String value = redisUtil.get(RedisKeys.USER + id);
+        String value = redisUtil.get(RedisKeys.USER + id);
         // 先从缓存取，缓存没有从数据库取
-//        if (StringUtils.isNotEmpty(value)) {
-//            return JSON.parseObject(value, User.class);
-//        }
-        User user = userMapper.selectByPrimaryKey(id);
-//        if(user != null) {
-//            redisUtil.set(RedisKeys.USER + id, JSON.toJSONString(user), RedisKeyExpire.USER);
-//        }
+        if (StringUtils.isNotEmpty(value)) {
+            return JSON.parseObject(value, User.class);
+        }
+        User user = userMapper.selectById(id);
+        if(user != null) {
+            redisUtil.set(RedisKeys.USER + id, JSON.toJSONString(user), RedisKeyExpire.USER);
+        }
         return user;
     }
 }

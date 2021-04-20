@@ -4,7 +4,9 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.common.constant.RedisKeys;
+import com.technerd.easyblog.entity.Permission;
 import com.technerd.easyblog.entity.Role;
+import com.technerd.easyblog.entity.RolePermissionRef;
 import com.technerd.easyblog.mapper.RoleMapper;
 import com.technerd.easyblog.service.RolePermissionRefService;
 import com.technerd.easyblog.service.RoleService;
@@ -33,8 +35,8 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private RolePermissionRefService rolePermissionRefService;
 
-//    @Autowired
-//    private RedisUtil redisUtil;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public BaseMapper<Role> getRepository() {
@@ -58,7 +60,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deleteByUserId(Long userId) {
-//        roleMapper.deleteByUserId(userId);
+        roleMapper.deleteByUserId(userId);
     }
 
     @Override
@@ -75,49 +77,45 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Role> listRolesByUserId(Long userId) {
-//        return roleMapper.findByUserId(userId);
-        return null;
+        return roleMapper.findByUserId(userId);
     }
 
     @Override
     public Integer countUserByRoleId(Long roleId) {
-//        return roleMapper.countUserByRoleId(roleId);
-        return null;
+        return roleMapper.countUserByRoleId(roleId);
     }
 
     @Override
     public List<Role> findAllWithCount() {
-//        return roleMapper.findAllWithCount();
-        return null;
+        return roleMapper.findAllWithCount();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Role insert(Role role) {
-//        roleMapper.insert(role);
-//        if (role.getPermissions() != null && role.getPermissions().size() > 0) {
-//            List<RolePermissionRef> rolePermissionRefs = new ArrayList<>(role.getPermissions().size());
-//            for (Permission permission : role.getPermissions()) {
-//                rolePermissionRefs.add(new RolePermissionRef(role.getId(), permission.getId()));
-//            }
-//            rolePermissionRefService.batchSaveByRolePermissionRef(rolePermissionRefs);
-//        }
-//        return role;
-        return null;
+        roleMapper.insert(role);
+        if (role.getPermissions() != null && role.getPermissions().size() > 0) {
+            List<RolePermissionRef> rolePermissionRefs = new ArrayList<>(role.getPermissions().size());
+            for (Permission permission : role.getPermissions()) {
+                rolePermissionRefs.add(new RolePermissionRef(role.getId(), permission.getId()));
+            }
+            rolePermissionRefService.batchSaveByRolePermissionRef(rolePermissionRefs);
+        }
+        return role;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Role update(Role role) {
-//        roleMapper.updateById(role);
-//        if (role.getPermissions() != null && role.getPermissions().size() > 0) {
-//            rolePermissionRefService.deleteRefByRoleId(role.getId());
-//            List<RolePermissionRef> rolePermissionRefs = new ArrayList<>(role.getPermissions().size());
-//            for (Permission permission : role.getPermissions()) {
-//                rolePermissionRefs.add(new RolePermissionRef(role.getId(), permission.getId()));
-//            }
-//            rolePermissionRefService.batchSaveByRolePermissionRef(rolePermissionRefs);
-//        }
+        roleMapper.updateById(role);
+        if (role.getPermissions() != null && role.getPermissions().size() > 0) {
+            rolePermissionRefService.deleteRefByRoleId(role.getId());
+            List<RolePermissionRef> rolePermissionRefs = new ArrayList<>(role.getPermissions().size());
+            for (Permission permission : role.getPermissions()) {
+                rolePermissionRefs.add(new RolePermissionRef(role.getId(), permission.getId()));
+            }
+            rolePermissionRefService.batchSaveByRolePermissionRef(rolePermissionRefs);
+        }
         return role;
     }
 
@@ -129,7 +127,7 @@ public class RoleServiceImpl implements RoleService {
             update(entity);
         }
 
-//        redisUtil.delByKeys(RedisKeys.USER_PERMISSION_URLS);
+        redisUtil.delByKeys(RedisKeys.USER_PERMISSION_URLS);
         return entity;
     }
 

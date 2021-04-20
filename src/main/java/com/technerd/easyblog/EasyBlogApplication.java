@@ -17,11 +17,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @author : technerd
  */
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages ={"com.technerd.easyblog"} )
 @EnableCaching
 @EnableScheduling
 @MapperScan("com.technerd.easyblog.mapper*")
-@ComponentScan(basePackages = {"com.technerd.easyblog"})
 public class EasyBlogApplication {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(EasyBlogApplication.class, args);

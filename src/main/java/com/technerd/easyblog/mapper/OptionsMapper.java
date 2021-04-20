@@ -4,17 +4,19 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.entity.Options;
 import org.apache.ibatis.annotations.Mapper;
 
+/**
+ * @author liuyanzhao
+ */
 @Mapper
 public interface OptionsMapper extends BaseMapper<Options> {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(Options record);
+    /**
+     * 根据key查询单个option
+     *
+     * @param key key
+     * @return Options
+     */
+    Options findOptionsByOptionName(String key);
 
-    int insertSelective(Options record);
-
-    Options selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(Options record);
-
-    int updateByPrimaryKey(Options record);
 }
+

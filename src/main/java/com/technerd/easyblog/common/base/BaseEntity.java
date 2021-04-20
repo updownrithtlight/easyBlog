@@ -11,8 +11,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author technerd
-*
+ * @author 言曌
+ * @date 2019-08-07 00:28
  */
 @Data
 public class BaseEntity implements Serializable {

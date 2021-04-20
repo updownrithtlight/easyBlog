@@ -51,7 +51,7 @@ public class RoleController {
         List<Role> roles = roleService.findAll();
         model.addAttribute("roles", roles);
         //封装权限
-//        roles.forEach(role -> role.setPermissions(permissionService.listPermissionsByRoleId(role.getId())));
+        roles.forEach(role -> role.setPermissions(permissionService.listPermissionsByRoleId(role.getId())));
         return "admin/admin_role";
     }
 
@@ -72,7 +72,7 @@ public class RoleController {
                 permission.setId(permissionId);
                 permissions.add(permission);
             }
-//            role.setPermissions(permissions);
+            role.setPermissions(permissions);
         }
         roleService.insertOrUpdate(role);
         return "redirect:/admin/role";
@@ -110,12 +110,12 @@ public class RoleController {
         //更新的角色
         Role role = roleService.findByRoleId(roleId);
         //当前角色的权限列表
-//        role.setPermissions(permissionService.listPermissionsByRoleId(roleId));
+        role.setPermissions(permissionService.listPermissionsByRoleId(roleId));
         model.addAttribute("updateRole", role);
 
         //所有权限
-//        List<Permission> permissions = permissionService.findPermissionListWithLevel(null);
-//        model.addAttribute("permissions", permissions);
+        List<Permission> permissions = permissionService.findPermissionListWithLevel(null);
+        model.addAttribute("permissions", permissions);
         return "admin/admin_role_edit";
     }
 }

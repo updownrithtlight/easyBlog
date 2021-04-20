@@ -2,7 +2,7 @@ package com.technerd.easyblog.common.constant;
 
 /**
  * 常量
- * @author technerd
+ * @author 言曌
  */
 public interface CommonConstant {
 

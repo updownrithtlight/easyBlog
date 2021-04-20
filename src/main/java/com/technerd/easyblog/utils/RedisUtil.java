@@ -9,7 +9,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author technerd
+ * @author 言曌
+ * @date 2018/12/16 下午6:57
  */
 @Component
 public class RedisUtil {

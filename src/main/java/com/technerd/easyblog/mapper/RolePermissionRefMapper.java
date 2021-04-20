@@ -4,17 +4,37 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.entity.RolePermissionRef;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
+
+/**
+ * @author liuyanzhao
+ */
 @Mapper
 public interface RolePermissionRefMapper extends BaseMapper<RolePermissionRef> {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(RolePermissionRef record);
 
-    int insertSelective(RolePermissionRef record);
+    /**
+     * 根据角色Id删除
+     *
+     * @param roleId 角色Id
+     * @return 影响行数
+     */
+   Integer deleteByRoleId(Long roleId);
 
-    RolePermissionRef selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(RolePermissionRef record);
-
-    int updateByPrimaryKey(RolePermissionRef record);
+    /**
+     * 根据权限Id删除
+     *
+     * @param permissionId 权限Id
+     * @return 影响行数
+     */
+    Integer deleteByPermissionId(Long permissionId);
+    /**
+     * 批量添加
+     *
+     * @param rolePermissionRefList 列表
+     * @return 影响喊你高数
+     */
+   Integer batchInsert(List<RolePermissionRef> rolePermissionRefList);
 }
+

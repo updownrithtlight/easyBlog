@@ -4,17 +4,53 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.entity.PostCategoryRef;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
+
+/**
+ * @author liuyanzhao
+ */
 @Mapper
 public interface PostCategoryRefMapper extends BaseMapper<PostCategoryRef> {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(PostCategoryRef record);
+    /**
+     * 根据文章Id删除记录
+     *
+     * @param postId 文章Id
+     * @return 影响行数
+     */
+    Integer deleteByPostId(Long postId);
 
-    int insertSelective(PostCategoryRef record);
+    /**
+     * 根据分类Id删除记录
+     *
+     * @param cateId 分类Id
+     * @return 影响行数
+     */
+    Integer deleteByCateId(Long cateId);
 
-    PostCategoryRef selectByPrimaryKey(Long id);
+    /**
+     * 根据分类Id查询文章Id
+     *
+     * @param cateId 分类Id
+     * @return 文章Id列表
+     */
+    List<Long> selectPostIdByCateId(Long cateId);
 
-    int updateByPrimaryKeySelective(PostCategoryRef record);
+    /**
+     * 根据文章Id查询分类Id
+     *
+     * @param postId 文章Id
+     * @return 分类Id列表
+     */
+    List<Long> selectCateIdByPostId(Long postId);
 
-    int updateByPrimaryKey(PostCategoryRef record);
+    /**
+     * 统计某篇分类的文章数
+     *
+     * @param cateId 分类Id
+     * @return 文章Id列表
+     */
+    Integer countPostByCateId(Long cateId);
 }
+

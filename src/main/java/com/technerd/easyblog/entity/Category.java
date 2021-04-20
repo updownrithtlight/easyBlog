@@ -1,34 +1,64 @@
 package com.technerd.easyblog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.technerd.easyblog.common.base.BaseEntity;
 import lombok.Data;
 
-import java.util.Date;
+import javax.validation.constraints.NotBlank;
+
+/**
+ * <pre>
+ *     文章分类
+ * </pre>
+ *
+ * @author : saysky
+ * @date : 2017/11/30
+ */
 @Data
-public class Category {
-    private Long id;
+@TableName("category")
+public class Category extends BaseEntity {
 
-    private Boolean delFlag;
+    /**
+     * 分类名称
+     */
+    @NotBlank(message = "分类名称不能为空")
+    private String cateName;
 
-    private Long createBy;
+    /**
+     * 分类父节点
+     */
+    private Long catePid;
 
-    private Long updateBy;
+    /**
+     * 分类排序号
+     */
+    private Integer cateSort;
 
-    private Date createTime;
+    /**
+     * 分类层级
+     */
+    private Integer cateLevel = 1;
 
-    private Date updateTime;
-
-    private String name;
-
-    private Long parentId;
-
-    private Integer sort;
-
-    private Integer level;
-
+    /**
+     * 关系路径
+     */
     private String pathTrace;
 
-    private String desc;
+    /**
+     * 分类描述
+     */
+    private String cateDesc;
 
+    /**
+     * 所属用户ID
+     */
     private Long userId;
+
+    /**
+     * 数量
+     */
+    @TableField(exist = false)
+    private Integer count;
 
 }

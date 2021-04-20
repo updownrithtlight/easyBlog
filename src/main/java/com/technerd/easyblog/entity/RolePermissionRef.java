@@ -1,24 +1,28 @@
 package com.technerd.easyblog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.technerd.easyblog.common.base.BaseEntity;
 import lombok.Data;
 
-import java.util.Date;
 @Data
-public class RolePermissionRef {
-    private Long id;
+@TableName("role_permission_ref")
+public class RolePermissionRef  extends BaseEntity {
 
-    private Boolean delFlag;
-
-    private Long createBy;
-
-    private Long updateBy;
-
-    private Date createTime;
-
-    private Date updateTime;
-
+    /**
+     * 角色Id
+     */
     private Long roleId;
 
+    /**
+     * 权限Id
+     */
     private Long permissionId;
 
+    public RolePermissionRef() {
+    }
+
+    public RolePermissionRef(Long roleId, Long permissionId) {
+        this.roleId = roleId;
+        this.permissionId = permissionId;
+    }
 }

@@ -1,32 +1,68 @@
 package com.technerd.easyblog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.technerd.easyblog.common.base.BaseEntity;
 import lombok.Data;
 
-import java.util.Date;
+import java.util.List;
+
+/**
+ * <pre>
+ *     菜单
+ * </pre>
+ *
+ * @author : saysky
+ * @date : 2018/1/24
+ */
 @Data
-public class Menu {
-    private Long id;
+@TableName("menu")
+public class Menu  extends BaseEntity {
 
-    private Boolean delFlag;
+    /**
+     * 菜单Pid
+     */
+    private Long menuPid = 0L;
 
-    private Long createBy;
+    /**
+     * 菜单名称
+     */
+    private String menuName;
 
-    private Long updateBy;
-
-    private Date createTime;
-
-    private Date updateTime;
-
-    private String name;
-
+    /**
+     * 菜单路径
+     */
     private String menuUrl;
 
-    private String menuicon;
+    /**
+     * 排序编号
+     */
+    private Integer menuSort = 1;
 
-    private Integer cateSort;
+    /**
+     * 图标，可选，部分主题可显示
+     */
+    private String menuIcon;
 
-    private Long parentId;
+    /**
+     * 打开方式
+     */
+    private String menuTarget;
 
-    private Boolean menuType;
+    /**
+     * 菜单类型(0前台主要菜单，1前台顶部菜单)
+     */
+    private Integer menuType;
 
+    /**
+     * 菜单层级
+     */
+    @TableField(exist = false)
+    private Integer level;
+
+    /**
+     * 子菜单列表
+     */
+    @TableField(exist = false)
+    private List<Menu> childMenus;
 }

@@ -1,6 +1,6 @@
 package com.technerd.easyblog.exception;
 
-import com.technerd.easyblog.model.vo.JsonResult;
+import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthorizedException;

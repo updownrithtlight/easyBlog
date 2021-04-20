@@ -7,6 +7,7 @@
     <version>1.0.0</version>
     <name>easyblog</name>
 
+    <!-- 开发不易，请勿私自开源 -->
     <description>
         easyBlog，一个基于SpringBoot的博客系统，最求轻快，易用，以内容为中心。
     </description>
@@ -31,6 +32,8 @@
         <rome.version>1.0</rome.version>
         <commons-lang3.version>3.8</commons-lang3.version>
         <hutool-all.version>4.1.13</hutool-all.version>
+        <upyun-java-sdk.version>4.0.1</upyun-java-sdk.version>
+        <qiniu-java-sdk.version>7.2.14</qiniu-java-sdk.version>
         <thumbnailator.version>0.4.8</thumbnailator.version>
         <jaxb-api.version>2.3.0</jaxb-api.version>
         <!--<elasticsearch.version>5.5.2</elasticsearch.version>-->
@@ -98,11 +101,7 @@
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
-        <!-- freemarker依赖 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-freemarker</artifactId>
-        </dependency>
+
 
         <!-- 邮件 -->
         <dependency>
@@ -147,6 +146,19 @@
             <version>${hutool-all.version}</version>
         </dependency>
 
+        <!-- 又拍云SDK -->
+        <dependency>
+            <groupId>com.upyun</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>${upyun-java-sdk.version}</version>
+        </dependency>
+
+        <!-- 七牛云SDK -->
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>${qiniu-java-sdk.version}</version>
+        </dependency>
 
         <!-- 图片操作 -->
         <dependency>

@@ -6,14 +6,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * <pre>
  *      获取文件hash
  * </pre>
  *
- * @author : technerd
+ * @author : Yawn
+ * @date : 2018/12/04
  */
 public class Md5Util {
 

@@ -4,7 +4,8 @@ package com.technerd.easyblog.model.vo;
 import java.io.Serializable;
 
 /**
- * @author technerd
+ * @author 言曌
+ * @date 2018/9/2 下午8:34
  */
 public class Response<T> implements Serializable {
 

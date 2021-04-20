@@ -9,7 +9,8 @@ import org.apache.shiro.subject.Subject;
  *     Controller抽象类
  * </pre>
  *
- * @author : technerd
+ * @author : saysky
+ * @date : 2017/12/15
  */
 public abstract class BaseController {
 
@@ -54,41 +55,41 @@ public abstract class BaseController {
         return "redirect:/403";
     }
 
-      /**
-       * 当前登录用户
-       *
-       * @return
-       */
-      public User getLoginUser() {
-          Subject subject = SecurityUtils.getSubject();
-          if (subject.isAuthenticated()) {
-              return (User) subject.getPrincipal();
-          }
-          return null;
-      }
+    /**
+     * 当前登录用户
+     *
+     * @return
+     */
+    public User getLoginUser() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            return (User) subject.getPrincipal();
+        }
+        return null;
+    }
 
-      /**
-       * 当前用户ID
-       *
-       * @return
-       */
-      public Long getLoginUserId() {
-          return getLoginUser().getId();
-      }
+    /**
+     * 当前用户ID
+     *
+     * @return
+     */
+    public Long getLoginUserId() {
+        return getLoginUser().getId();
+    }
 
-      /**
-       * 当前用户是管理员
-       *
-       * @return
-       */
-      public Boolean loginUserIsAdmin() {
-          User loginUser = getLoginUser();
-          if (loginUser != null) {
-              return IS_ADMIN.equals(loginUser.getIsAdmin());
-          }
+    /**
+     * 当前用户是管理员
+     *
+     * @return
+     */
+    public Boolean loginUserIsAdmin() {
+        User loginUser = getLoginUser();
+        if (loginUser != null) {
+            return IS_ADMIN.equals(loginUser.getIsAdmin());
+        }
 
-          return false;
-      }
+        return false;
+    }
 
 
 }

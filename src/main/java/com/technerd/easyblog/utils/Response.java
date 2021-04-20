@@ -1,7 +1,8 @@
 package com.technerd.easyblog.utils;
 
 /**
- * @author technerd
+ * @author 言曌
+ * @date 2018/9/2 下午8:34
  */
 
 public class Response<T> {

@@ -1,28 +1,38 @@
 package com.technerd.easyblog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.technerd.easyblog.common.base.BaseEntity;
 import lombok.Data;
 
-import java.util.Date;
+/**
+ * <pre>
+ *     友情链接
+ * </pre>
+ *
+ * @author : saysky
+ * @date : 2017/11/14
+ */
 @Data
-public class Link {
-    private Long id;
+@TableName("link")
+public class Link  extends BaseEntity {
 
-    private Boolean delFlag;
-
-    private Long createBy;
-
-    private Long updateBy;
-
-    private Date createTime;
-
-    private Date updateTime;
-
+    /**
+     * 友情链接名称
+     */
     private String linkName;
 
-    private String linkUrl;
+    /**
+     * 友情链接地址
+     */
+        private String linkUrl;
 
+    /**
+     * 友情链接头像
+     */
     private String linkPic;
 
+    /**
+     * 友情链接描述
+     */
     private String linkDesc;
-
 }

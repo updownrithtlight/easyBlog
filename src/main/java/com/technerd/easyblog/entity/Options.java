@@ -1,26 +1,31 @@
 package com.technerd.easyblog.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.technerd.easyblog.common.base.BaseEntity;
 import lombok.Data;
 
-import java.util.Date;
+/**
+ * <pre>
+ *     系统设置
+ * </pre>
+ *
+ * @author : saysky
+ * @date : 2017/11/14
+ */
 @Data
-public class Options {
-    private Long id;
+@TableName("options")
+public class Options  extends BaseEntity {
 
-    private Boolean delFlag;
-
-    private Long createBy;
-
-    private Long updateBy;
-
-    private Date createTime;
-
-    private Date updateTime;
-
+    /**
+     * 设置项名称
+     */
+    @TableId(type = IdType.INPUT)
     private String optionName;
 
+    /**
+     * 设置项的值
+     */
     private String optionValue;
-
-    private Integer cateSort;
-
 }

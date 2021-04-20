@@ -1,24 +1,36 @@
 package com.technerd.easyblog.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.technerd.easyblog.common.base.BaseEntity;
 import lombok.Data;
 
-import java.util.Date;
+/**
+ * 文章分类关联表
+ *
+ * @author 言曌
+ * @date 2018/12/24 下午4:16
+ */
+
 @Data
-public class PostCategoryRef {
-    private Long id;
+@TableName("post_category_ref")
+public class PostCategoryRef  extends BaseEntity {
 
-    private Boolean delFlag;
+    private static final long serialVersionUID = 1989776329130364722L;
+    /**
+     * 文章Id
+     */
+    private Long postId;
 
-    private Long createBy;
-
-    private Long updateBy;
-
-    private Date createTime;
-
-    private Date updateTime;
-
-    private Long articleId;
-
+    /**
+     * 分类Id
+     */
     private Long cateId;
 
+    public PostCategoryRef(Long postId, Long cateId) {
+        this.postId = postId;
+        this.cateId = cateId;
+    }
+
+    public PostCategoryRef() {
+    }
 }

@@ -14,7 +14,7 @@ import java.util.List;
  * @author : saysky
  * @date : 2017/11/30
  */
-public interface CategoryService  extends BaseService<Category, Long> {
+public interface CategoryService extends BaseService<Category, Long> {
 
     /**
      * 查询所有分类目录,带count和根据level封装name
@@ -24,7 +24,7 @@ public interface CategoryService  extends BaseService<Category, Long> {
     List<Category> findByUserId(Long userId);
 
 
-    /**
+       /**
      * 查询所有分类目录,带count和根据level封装name
      *
      * @return 返回List集合
@@ -83,6 +83,4 @@ public interface CategoryService  extends BaseService<Category, Long> {
      * @return
      */
     List<Category> cateIdsToCateList(List<Long> cateIds, Long userId);
-
-
 }

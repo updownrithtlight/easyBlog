@@ -12,7 +12,8 @@ import java.util.Locale;
  *      国际化工具类
  * </pre>
  *
- * @author : technerd
+ * @author : saysky
+ * @date : 2018/9/10
  */
 @Component
 public class LocaleMessageUtil {

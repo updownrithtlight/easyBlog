@@ -22,7 +22,7 @@ public class UserRoleRefServiceImpl implements UserRoleRefService {
 
     @Override
     public void deleteByUserId(Long userId) {
-//        roleRefMapper.deleteByUserId(userId);
+        roleRefMapper.deleteByUserId(userId);
     }
 
     @Override

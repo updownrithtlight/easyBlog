@@ -3,18 +3,41 @@ package com.technerd.easyblog.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.technerd.easyblog.entity.Permission;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
+
+/**
+ * @author liuyanzhao
+ */
 @Mapper
 public interface PermissionMapper extends BaseMapper<Permission> {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(Permission record);
+    /**
+     * 根据角色Id获得权限列表
+     *
+     * @param roleId 角色Id
+     * @return 权限列表
+     */
+    List<Permission> findByRoleId(Long roleId);
 
-    int insertSelective(Permission record);
+    /**
+     * 获得某个用户的权限列表
+     *
+     * @param userId
+     * @return
+     */
+    List<Permission> findPermissionByUserId(Long userId);
 
-    Permission selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(Permission record);
-
-    int updateByPrimaryKey(Permission record);
+    /**
+     * 获得某个用户的权限列表
+     *
+     * @param userId
+     * @param resourceType
+     * @return
+     */
+    List<Permission> findPermissionByUserIdAndResourceType(@Param("userId") Long userId,
+                                                           @Param("resourceType") String resourceType);
 }
+

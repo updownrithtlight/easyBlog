@@ -1,6 +1,5 @@
 package com.technerd.easyblog.service;
 
-
 import com.technerd.easyblog.common.base.BaseService;
 import com.technerd.easyblog.entity.UserRoleRef;
 

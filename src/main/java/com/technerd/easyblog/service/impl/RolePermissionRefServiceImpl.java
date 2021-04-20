@@ -20,16 +20,16 @@ public class RolePermissionRefServiceImpl implements RolePermissionRefService {
 
     @Override
     public void deleteRefByRoleId(Long roleId) {
-//        rolePermissionRefMapper.deleteByRoleId(roleId);
+        rolePermissionRefMapper.deleteByRoleId(roleId);
     }
 
     @Override
     public void saveByRolePermissionRef(RolePermissionRef rolePermissionRef) {
-//        rolePermissionRefMapper.insert(rolePermissionRef);
+        rolePermissionRefMapper.insert(rolePermissionRef);
     }
 
     @Override
     public void batchSaveByRolePermissionRef(List<RolePermissionRef> rolePermissionRefs) {
-//        rolePermissionRefMapper.batchInsert(rolePermissionRefs);
+        rolePermissionRefMapper.batchInsert(rolePermissionRefs);
     }
 }

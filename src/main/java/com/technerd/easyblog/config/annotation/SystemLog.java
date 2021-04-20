@@ -1,15 +1,13 @@
 package com.technerd.easyblog.config.annotation;
 
 
-
-
 import com.technerd.easyblog.model.enums.LogTypeEnum;
 
 import java.lang.annotation.*;
 
 /**
  * 系统日志自定义注解
- * @author technerd
+ * @author liuyanzhao
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD})//作用于参数或方法上
 @Retention(RetentionPolicy.RUNTIME)

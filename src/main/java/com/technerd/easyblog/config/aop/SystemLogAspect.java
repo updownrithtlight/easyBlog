@@ -1,7 +1,13 @@
 package com.technerd.easyblog.config.aop;
 
 import com.technerd.easyblog.config.annotation.SystemLog;
+import com.technerd.easyblog.entity.Log;
+import com.technerd.easyblog.entity.User;
+import com.technerd.easyblog.model.enums.LogTypeEnum;
+import com.technerd.easyblog.service.LogService;
 import com.technerd.easyblog.utils.IpInfoUtil;
+import com.technerd.easyblog.utils.ObjectUtil;
+import com.technerd.easyblog.utils.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -26,7 +32,7 @@ import java.util.Objects;
 /**
  * Spring AOP实现日志管理
  *
- * @author technerd
+ * @author liuyanzhao
  */
 @Aspect
 @Component
@@ -35,8 +41,8 @@ public class SystemLogAspect {
 
     private static final ThreadLocal<Date> beginTimeThreadLocal = new NamedThreadLocal<Date>("ThreadLocal beginTime");
 
-//    @Autowired
-//    private LogService logService;
+    @Autowired
+    private LogService logService;
 
     @Autowired(required = false)
     private HttpServletRequest request;
@@ -68,79 +74,79 @@ public class SystemLogAspect {
     }
 
 
-//    /**
-//     * 后置通知(在方法执行之后并返回数据) 用于拦截Controller层无异常的操作
-//     *
-//     * @param joinPoint 切点
-//     */
-//    @AfterReturning("controllerAspect()")
-//    public void after(JoinPoint joinPoint) {
-//        try {
-//            String username = "";
-//            String description = getControllerMethodInfo(joinPoint).get("description").toString();
-//            Map<String, String[]> logParams = request.getParameterMap();
-//            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//            Subject subject = SecurityUtils.getSubject();
-//            if (subject.isAuthenticated()) {
-//                User user = (User) subject.getPrincipal();
-//                username = user.getUserName();
-//            }
-//
-//            Log log = new Log();
-//            //请求用户
-//            log.setUsername(username);
-//            //日志标题
-//            log.setName(description);
-//            //日志类型
-//            String logType = String.valueOf(getControllerMethodInfo(joinPoint).get("type"));
-//            log.setLogType(logType);
-//            //日志请求url
-//            log.setRequestUrl(request.getRequestURI());
-//            //请求方式
-//            log.setRequestType(request.getMethod());
-//            //请求参数
-//            if(Objects.equals(logType, LogTypeEnum.OPERATION.getValue())) {
-//                log.setRequestParam("忽略");
-//            } else {
-//                log.setRequestParam(ObjectUtil.mapToString(logParams));
-//            }
-//            //请求IP
-//            log.setIp(ipInfoUtil.getIpAddr(request));
-//            //IP地址
-//            //log.setIpInfo(ipInfoUtil.getIpCity(ipInfoUtil.getIpAddr(request)));
-//            //请求开始时间
-//            long beginTime = beginTimeThreadLocal.get().getTime();
-//            long endTime = System.currentTimeMillis();
-//            //请求耗时
-//            Long logElapsedTime = endTime - beginTime;
-//            log.setCostTime(logElapsedTime.intValue());
-//            //调用线程保存至数据库
-////            ThreadPoolUtil.getPool().execute(new SaveSystemLogThread(log, logService));
-//
-//        } catch (Exception e) {
-//            log.error("AOP后置通知异常", e);
-//        }
-//    }
+    /**
+     * 后置通知(在方法执行之后并返回数据) 用于拦截Controller层无异常的操作
+     *
+     * @param joinPoint 切点
+     */
+    @AfterReturning("controllerAspect()")
+    public void after(JoinPoint joinPoint) {
+        try {
+            String username = "";
+            String description = getControllerMethodInfo(joinPoint).get("description").toString();
+            Map<String, String[]> logParams = request.getParameterMap();
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            Subject subject = SecurityUtils.getSubject();
+            if (subject.isAuthenticated()) {
+                User user = (User) subject.getPrincipal();
+                username = user.getUserName();
+            }
+
+            Log log = new Log();
+            //请求用户
+            log.setUsername(username);
+            //日志标题
+            log.setName(description);
+            //日志类型
+            String logType = String.valueOf(getControllerMethodInfo(joinPoint).get("type"));
+            log.setLogType(logType);
+            //日志请求url
+            log.setRequestUrl(request.getRequestURI());
+            //请求方式
+            log.setRequestType(request.getMethod());
+            //请求参数
+            if(Objects.equals(logType, LogTypeEnum.OPERATION.getValue())) {
+                log.setRequestParam("忽略");
+            } else {
+                log.setRequestParam(ObjectUtil.mapToString(logParams));
+            }
+            //请求IP
+            log.setIp(ipInfoUtil.getIpAddr(request));
+            //IP地址
+            //log.setIpInfo(ipInfoUtil.getIpCity(ipInfoUtil.getIpAddr(request)));
+            //请求开始时间
+            long beginTime = beginTimeThreadLocal.get().getTime();
+            long endTime = System.currentTimeMillis();
+            //请求耗时
+            Long logElapsedTime = endTime - beginTime;
+            log.setCostTime(logElapsedTime.intValue());
+            //调用线程保存至数据库
+            ThreadPoolUtil.getPool().execute(new SaveSystemLogThread(log, logService));
+
+        } catch (Exception e) {
+            log.error("AOP后置通知异常", e);
+        }
+    }
 
 
     /**
      * 保存日志至数据库
      */
-//    private static class SaveSystemLogThread implements Runnable {
-//
-//        private Log log;
-////        private LogService logService;
-////
-////        public SaveSystemLogThread(Log esLog, LogService logService) {
-////            this.log = esLog;
-////            this.logService = logService;
-////        }
-//
-//        @Override
-//        public void run() {
-//            logService.insert(log);
-//        }
-//    }
+    private static class SaveSystemLogThread implements Runnable {
+
+        private Log log;
+        private LogService logService;
+
+        public SaveSystemLogThread(Log esLog, LogService logService) {
+            this.log = esLog;
+            this.logService = logService;
+        }
+
+        @Override
+        public void run() {
+            logService.insert(log);
+        }
+    }
 
     /**
      * 获取注解中对方法的描述信息 用于Controller层注解

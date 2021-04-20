@@ -1,6 +1,5 @@
 package com.technerd.easyblog.web.controller.admin;
 
-
 import com.technerd.easyblog.config.annotation.SystemLog;
 import com.technerd.easyblog.entity.Permission;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
@@ -37,8 +36,8 @@ public class PermissionController {
     @GetMapping
     public String permissions(Model model) {
         //权限列表
-//        List<Permission> permissions = permissionService.findPermissionListWithLevel(null);
-//        model.addAttribute("permissions", permissions);
+        List<Permission> permissions = permissionService.findPermissionListWithLevel(null);
+        model.addAttribute("permissions", permissions);
         return "admin/admin_permission";
     }
 
@@ -78,13 +77,13 @@ public class PermissionController {
      */
     @GetMapping(value = "/edit")
     public String toEditPermission(Model model, @RequestParam("id") Long permissionId) {
-//        //更新的权限
-//        Permission permission = permissionService.get(permissionId);
-//        model.addAttribute("updatePermission", permission);
-//
-//        //所有权限
-//        List<Permission> permissions = permissionService.findPermissionListWithLevel(null);
-//        model.addAttribute("permissions", permissions);
+        //更新的权限
+        Permission permission = permissionService.get(permissionId);
+        model.addAttribute("updatePermission", permission);
+
+        //所有权限
+        List<Permission> permissions = permissionService.findPermissionListWithLevel(null);
+        model.addAttribute("permissions", permissions);
         return "admin/admin_permission";
     }
 }

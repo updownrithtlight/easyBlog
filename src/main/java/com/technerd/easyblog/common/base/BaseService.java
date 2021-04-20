@@ -8,14 +8,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.technerd.easyblog.model.dto.QueryCondition;
 import com.technerd.easyblog.model.vo.SearchVo;
 
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 
 /**
- * @author technerd
+ * @author 言曌
  * @date 2019-09-04 22:47
  */
 // JDK8函数式接口注解 仅能包含一个抽象方法
