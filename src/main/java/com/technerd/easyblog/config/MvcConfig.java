@@ -24,7 +24,7 @@ import java.util.Locale;
 @Slf4j
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.liuyanzhao.sens.web.controller")
+@ComponentScan(basePackages = "com.technerd.easyblog.web.controller")
 @PropertySource(value = "classpath:application.yaml", ignoreResourceNotFound = true, encoding = "UTF-8")
 public class MvcConfig implements WebMvcConfigurer {
 
