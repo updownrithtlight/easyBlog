@@ -35,7 +35,7 @@ import java.util.Set;
  * @date : 2017/12/24
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin/user")
 public class UserController extends BaseController {
 

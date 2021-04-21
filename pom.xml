@@ -7,7 +7,6 @@
     <version>1.0.0</version>
     <name>easyblog</name>
 
-    <!-- 开发不易，请勿私自开源 -->
     <description>
         easyBlog，一个基于SpringBoot的博客系统，最求轻快，易用，以内容为中心。
     </description>
@@ -206,11 +205,10 @@
             <version>1.4.0</version>
         </dependency>
 
-        <!--Shiro-FreeMarker标签-->
         <dependency>
-            <groupId>net.mingsoft</groupId>
-            <artifactId>shiro-freemarker-tags</artifactId>
-            <version>0.1</version>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.4.0</version>
         </dependency>
 
         <!-- ElasticSearch -->

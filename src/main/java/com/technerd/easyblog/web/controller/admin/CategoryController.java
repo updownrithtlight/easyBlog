@@ -10,6 +10,8 @@ import com.technerd.easyblog.service.CategoryService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,8 +29,9 @@ import java.util.Objects;
  * @date : 2017/12/10
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin/category")
+@Api(value = "分类")
 public class CategoryController extends BaseController {
 
     @Autowired
@@ -43,6 +46,7 @@ public class CategoryController extends BaseController {
      * @return 模板路径admin/admin_category
      */
     @GetMapping
+    @ApiOperation("fenlei")
     public String categories(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
                              @RequestParam(value = "size", defaultValue = "50") Integer pageSize,
                              @RequestParam(value = "sort", defaultValue = "createTime") String sort,

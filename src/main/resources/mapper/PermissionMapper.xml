@@ -1,188 +1,87 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.technerd.easyblog.mapper.PermissionMapper" >
-  <resultMap id="BaseResultMap" type="com.technerd.easyblog.entity.Permission" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="del_flag" property="delFlag" jdbcType="BIT" />
-    <result column="create_by" property="createBy" jdbcType="INTEGER" />
-    <result column="update_by" property="updateBy" jdbcType="INTEGER" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="url" property="url" jdbcType="VARCHAR" />
-    <result column="icon" property="icon" jdbcType="VARCHAR" />
-    <result column="sort" property="sort" jdbcType="INTEGER" />
-    <result column="resource_type" property="resourceType" jdbcType="CHAR" />
-    <result column="pid" property="pid" jdbcType="INTEGER" />
-    <result column="level" property="level" jdbcType="INTEGER" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, del_flag, create_by, update_by, create_time, update_time, name, url, icon, sort, 
-    resource_type, pid, level
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from permission
-    where id = #{id,jdbcType=INTEGER}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.technerd.easyblog.mapper.PermissionMapper">
+
+    <select id="findByRoleId" resultType="com.technerd.easyblog.entity.Permission">
+      SELECT
+          DISTINCT t.id,
+          t.`name`,
+          t.pid,
+          t.resource_type,
+          t.url,
+          t.icon,
+          t.sort,
+          t.target
+      FROM
+          rbac_permission t,
+          rbac_role_permission_ref r
+      WHERE
+          r.role_id = #{value} AND
+          t.id = r.permission_id
+          AND t.del_flag = 0
+          AND r.del_flag = 0
+      ORDER BY t.sort ASC
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from permission
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.technerd.easyblog.entity.Permission" >
-    insert into permission (id, del_flag, create_by, 
-      update_by, create_time, update_time, 
-      name, url, icon, sort, 
-      resource_type, pid, level
-      )
-    values (#{id,jdbcType=INTEGER}, #{delFlag,jdbcType=BIT}, #{createBy,jdbcType=INTEGER}, 
-      #{updateBy,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
-      #{resourceType,jdbcType=CHAR}, #{pid,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.technerd.easyblog.entity.Permission" >
-    insert into permission
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="delFlag != null" >
-        del_flag,
-      </if>
-      <if test="createBy != null" >
-        create_by,
-      </if>
-      <if test="updateBy != null" >
-        update_by,
-      </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="updateTime != null" >
-        update_time,
-      </if>
-      <if test="name != null" >
-        name,
-      </if>
-      <if test="url != null" >
-        url,
-      </if>
-      <if test="icon != null" >
-        icon,
-      </if>
-      <if test="sort != null" >
-        sort,
-      </if>
-      <if test="resourceType != null" >
-        resource_type,
-      </if>
-      <if test="pid != null" >
-        pid,
-      </if>
-      <if test="level != null" >
-        level,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="delFlag != null" >
-        #{delFlag,jdbcType=BIT},
-      </if>
-      <if test="createBy != null" >
-        #{createBy,jdbcType=INTEGER},
-      </if>
-      <if test="updateBy != null" >
-        #{updateBy,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null" >
-        #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="icon != null" >
-        #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="sort != null" >
-        #{sort,jdbcType=INTEGER},
-      </if>
-      <if test="resourceType != null" >
-        #{resourceType,jdbcType=CHAR},
-      </if>
-      <if test="pid != null" >
-        #{pid,jdbcType=INTEGER},
-      </if>
-      <if test="level != null" >
-        #{level,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.technerd.easyblog.entity.Permission" >
-    update permission
-    <set >
-      <if test="delFlag != null" >
-        del_flag = #{delFlag,jdbcType=BIT},
-      </if>
-      <if test="createBy != null" >
-        create_by = #{createBy,jdbcType=INTEGER},
-      </if>
-      <if test="updateBy != null" >
-        update_by = #{updateBy,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null" >
-        url = #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="icon != null" >
-        icon = #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="sort != null" >
-        sort = #{sort,jdbcType=INTEGER},
-      </if>
-      <if test="resourceType != null" >
-        resource_type = #{resourceType,jdbcType=CHAR},
-      </if>
-      <if test="pid != null" >
-        pid = #{pid,jdbcType=INTEGER},
-      </if>
-      <if test="level != null" >
-        level = #{level,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.technerd.easyblog.entity.Permission" >
-    update permission
-    set del_flag = #{delFlag,jdbcType=BIT},
-      create_by = #{createBy,jdbcType=INTEGER},
-      update_by = #{updateBy,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      name = #{name,jdbcType=VARCHAR},
-      url = #{url,jdbcType=VARCHAR},
-      icon = #{icon,jdbcType=VARCHAR},
-      sort = #{sort,jdbcType=INTEGER},
-      resource_type = #{resourceType,jdbcType=CHAR},
-      pid = #{pid,jdbcType=INTEGER},
-      level = #{level,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
+    <select id="findPermissionByUserId" resultType="com.technerd.easyblog.entity.Permission">
+        SELECT
+            DISTINCT p.id,
+            p.`name`,
+            p.pid,
+            p.resource_type,
+            p.url,
+            p.icon,
+            p.sort,
+            p.target
+        FROM
+            user u,
+            rbac_role r,
+            rbac_user_role_ref ur,
+            rbac_permission p,
+            rbac_role_permission_ref rp
+        WHERE
+            u.id = #{userId}
+            AND ur.user_id = u.id
+            AND ur.role_id = r.id
+            AND rp.permission_id = p.id
+            AND rp.role_id = r.id
+            AND u.del_flag = 0
+            AND r.del_flag = 0
+            AND ur.del_flag = 0
+            AND p.del_flag = 0
+            AND rp.del_flag = 0
+        ORDER BY p.sort ASC
+    </select>
+
+
+    <select id="findPermissionByUserIdAndResourceType" resultType="com.technerd.easyblog.entity.Permission">
+        SELECT
+            DISTINCT p.id,
+            p.`name`,
+            p.pid,
+            p.resource_type,
+            p.url,
+            p.icon,
+            p.sort,
+            p.target
+        FROM
+            user u,
+            rbac_role r,
+            rbac_user_role_ref ur,
+            rbac_permission p,
+            rbac_role_permission_ref rp
+        WHERE
+            u.id = #{userId}
+            AND ur.user_id = u.id
+            AND ur.role_id = r.id
+            AND rp.permission_id = p.id
+            AND rp.role_id = r.id
+            AND p.resource_type = #{resourceType}
+            AND u.del_flag = 0
+            AND r.del_flag = 0
+            AND ur.del_flag = 0
+            AND p.del_flag = 0
+            AND rp.del_flag = 0
+        ORDER BY p.sort ASC
+    </select>
 </mapper>

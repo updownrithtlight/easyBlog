@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.technerd.easyblog.mapper.TagMapper">
+
+    <delete id="deleteByUserId">
+       DELETE
+       FROM
+           tag
+       WHERE
+           user_id = #{value}
+    </delete>
+
+    <select id="findByPostId" resultType="com.technerd.easyblog.entity.Tag">
+        SELECT
+            t.id,
+            t.tag_name,
+            t.user_id,
+            t.create_time
+        FROM
+            tag t,
+            post_tag_ref r
+        WHERE
+            r.post_id = #{value}
+            AND r.tag_id = t.id
+            AND t.del_flag = 0
+    </select>
+
+    <select id="findAllWithCount" resultType="com.technerd.easyblog.entity.Tag">
+        SELECT
+            t.id,
+            t.user_id,
+            t.tag_name,
+            t.create_time,
+            count( id )  count
+        FROM
+            `post_tag_ref`r,
+            `tag` t
+        WHERE
+            t.id = r.tag_id
+            AND t.del_flag = 0
+            AND r.del_flag = 0
+        GROUP BY
+            r.tag_id
+        ORDER BY
+            count DESC
+        LIMIT #{value}
+  </select>
+
+
+    <select id="findByUserIdWithCount" resultType="com.technerd.easyblog.entity.Tag">
+        SELECT
+            t.id,
+            t.tag_name,
+            count( r.tag_id ) count
+        FROM
+            ( SELECT id, tag_name FROM tag WHERE user_id = #{userId} ) t
+            LEFT JOIN post_tag_ref r ON r.tag_id = t.id
+        GROUP BY
+            t.id
+        ORDER BY
+            count DESC
+    </select>
+
+    <select id="findTagNotUse" resultType="com.technerd.easyblog.entity.Tag">
+      SELECT
+          t.id,
+          t.tag_name,
+          t.user_id,
+          t.create_time
+      FROM
+          tag t
+      WHERE
+          t.id NOT IN ( SELECT DISTINCT ( r.tag_id ) FROM post_tag_ref r WHERE r.del_flag = 0)
+          AND t.del_flag = 0
+  </select>
+
+    <select id="getTodayCount" resultType="java.lang.Integer">
+        SELECT
+            count( id )
+        FROM
+            post
+        WHERE
+            to_days( create_time ) = to_days( now( ) )
+            AND del_flag = 0
+    </select>
+
+    <select id="getTagRankingByUserId" resultType="com.technerd.easyblog.entity.Tag">
+        SELECT
+            t.id,
+            t.tag_name,
+            count( r.tag_id ) count
+        FROM
+            ( SELECT id, tag_name FROM tag WHERE user_id = #{userId} AND del_flag = 0) t
+            LEFT JOIN post_tag_ref r
+        ON   r.tag_id = t.id
+             AND r.del_flag = 0
+        GROUP BY
+            t.id
+        ORDER BY
+            count DESC
+            LIMIT #{limit}
+    </select>
+
+</mapper>

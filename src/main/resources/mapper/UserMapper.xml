@@ -1,223 +1,154 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.technerd.easyblog.mapper.UserMapper" >
-  <resultMap id="BaseResultMap" type="com.technerd.easyblog.entity.User" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="del_flag" property="delFlag" jdbcType="BIT" />
-    <result column="create_by" property="createBy" jdbcType="INTEGER" />
-    <result column="update_by" property="updateBy" jdbcType="INTEGER" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
-    <result column="password" property="password" jdbcType="CHAR" />
-    <result column="email" property="email" jdbcType="VARCHAR" />
-    <result column="gender" property="gender" jdbcType="BIT" />
-    <result column="vip_level" property="vipLevel" jdbcType="BIT" />
-    <result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
-    <result column="is_admin" property="isAdmin" jdbcType="CHAR" />
-    <result column="email_enable" property="emailEnable" jdbcType="BIT" />
-    <result column="status" property="status" jdbcType="BIT" />
-    <result column="user_desc" property="userDesc" jdbcType="VARCHAR" />
-    <result column="user_avatar" property="userAvatar" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, del_flag, create_by, update_by, create_time, update_time, name, nick_name, password, 
-    email, gender, vip_level, register_time, is_admin, email_enable, status, user_desc, 
-    user_avatar
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from user
-    where id = #{id,jdbcType=INTEGER}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.technerd.easyblog.mapper.UserMapper">
+
+  <sql id="normal">0</sql>
+  <sql id="ban">1</sql>
+  <sql id="deleted">2</sql>
+
+  <select id="findByRoleId" resultType="com.technerd.easyblog.entity.User">
+      SELECT
+          t.id,
+          t.user_name,
+          t.user_display_name,
+          t.user_pass,
+          t.user_email,
+          t.user_avatar,
+          t.user_desc,
+          t.user_site,
+          t.is_admin,
+          t.email_enable,
+          t.login_enable,
+          t.login_last,
+          t.login_error,
+          t.status,
+          t.create_time
+      FROM
+          user_role_ref r,
+          user t
+      WHERE
+          r.role_id = #{roleId} AND
+          r.user_id = t.id
+          AND t.del_flag = 0
+          AND r.del_flag = 0
+      ORDER BY
+          t.id DESC
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from user
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.technerd.easyblog.entity.User" >
-    insert into user
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="delFlag != null" >
-        del_flag,
-      </if>
-      <if test="createBy != null" >
-        create_by,
-      </if>
-      <if test="updateBy != null" >
-        update_by,
-      </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="updateTime != null" >
-        update_time,
-      </if>
-      <if test="name != null" >
-        name,
-      </if>
-      <if test="nickName != null" >
-        nick_name,
-      </if>
-      <if test="password != null" >
-        password,
-      </if>
-      <if test="email != null" >
-        email,
-      </if>
-      <if test="gender != null" >
-        gender,
-      </if>
-      <if test="vipLevel != null" >
-        vip_level,
-      </if>
-      <if test="registerTime != null" >
-        register_time,
-      </if>
-      <if test="isAdmin != null" >
-        is_admin,
-      </if>
-      <if test="emailEnable != null" >
-        email_enable,
-      </if>
-      <if test="status != null" >
-        status,
-      </if>
-      <if test="userDesc != null" >
-        user_desc,
-      </if>
-      <if test="userAvatar != null" >
-        user_avatar,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="delFlag != null" >
-        #{delFlag,jdbcType=BIT},
-      </if>
-      <if test="createBy != null" >
-        #{createBy,jdbcType=INTEGER},
-      </if>
-      <if test="updateBy != null" >
-        #{updateBy,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="nickName != null" >
-        #{nickName,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null" >
-        #{password,jdbcType=CHAR},
-      </if>
-      <if test="email != null" >
-        #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="gender != null" >
-        #{gender,jdbcType=BIT},
-      </if>
-      <if test="vipLevel != null" >
-        #{vipLevel,jdbcType=BIT},
-      </if>
-      <if test="registerTime != null" >
-        #{registerTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isAdmin != null" >
-        #{isAdmin,jdbcType=CHAR},
-      </if>
-      <if test="emailEnable != null" >
-        #{emailEnable,jdbcType=BIT},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=BIT},
-      </if>
-      <if test="userDesc != null" >
-        #{userDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="userAvatar != null" >
-        #{userAvatar,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.technerd.easyblog.entity.User" >
-    update user
-    <set >
-      <if test="delFlag != null" >
-        del_flag = #{delFlag,jdbcType=BIT},
-      </if>
-      <if test="createBy != null" >
-        create_by = #{createBy,jdbcType=INTEGER},
-      </if>
-      <if test="updateBy != null" >
-        update_by = #{updateBy,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="nickName != null" >
-        nick_name = #{nickName,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null" >
-        password = #{password,jdbcType=CHAR},
-      </if>
-      <if test="email != null" >
-        email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="gender != null" >
-        gender = #{gender,jdbcType=BIT},
-      </if>
-      <if test="vipLevel != null" >
-        vip_level = #{vipLevel,jdbcType=BIT},
-      </if>
-      <if test="registerTime != null" >
-        register_time = #{registerTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isAdmin != null" >
-        is_admin = #{isAdmin,jdbcType=CHAR},
-      </if>
-      <if test="emailEnable != null" >
-        email_enable = #{emailEnable,jdbcType=BIT},
-      </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=BIT},
-      </if>
-      <if test="userDesc != null" >
-        user_desc = #{userDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="userAvatar != null" >
-        user_avatar = #{userAvatar,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <select id="findByUserName" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select
-    <include refid="Base_Column_List" />
-    from user
-    where name= #{name,jdbcType=VARCHAR}
+
+    <select id="findByRoleIdAndCondition" resultType="com.technerd.easyblog.entity.User">
+      SELECT
+          t.id,
+          t.user_name,
+          t.user_display_name,
+          t.user_pass,
+          t.user_email,
+          t.user_avatar,
+          t.user_desc,
+          t.user_site,
+          t.is_admin,
+          t.email_enable,
+          t.login_enable,
+          t.login_last,
+          t.login_error,
+          t.status,
+          t.create_time
+      FROM
+          user_role_ref r,
+          user t
+      WHERE
+          t.del_flag = 0 AND
+          r.del_flag = 0 AND
+          r.role_id = #{roleId} AND
+          r.user_id = t.id
+         <if test="user.status != null and user.status != ''">
+              AND t.status = #{user.status}
+         </if>
+          <if test="user.userName != null and user.userName != ''">
+              AND t.user_name LIKE CONCAT('%', #{user.userName}, '%')
+          </if>
+          <if test="user.userDisplayName != null and user.userDisplayName != ''">
+              AND t.user_display_name LIKE CONCAT('%', #{user.userDisplayName}, '%')
+          </if>
+          <if test="user.userEmail != null and user.userEmail != ''">
+              AND t.user_email LIKE CONCAT('%', #{user.userEmail}, '%')
+          </if>
+        <if test="user.userSite != null and user.userSite != ''">
+            AND t.user_site LIKE CONCAT('%', #{user.userSite}, '%')
+        </if>
+      ORDER BY
+          t.id DESC
   </select>
-  <select id="findByEmail" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select
-    <include refid="Base_Column_List" />
-    from user
-    where email = #{email,jdbcType=VARCHAR}
+
+  <select id="findByWithoutRole" resultType="com.technerd.easyblog.entity.User">
+      SELECT
+          id,
+          user_name,
+          user_display_name,
+          user_pass,
+          user_email,
+          user_avatar,
+          user_desc,
+          user_site,
+          is_admin,
+          email_enable,
+          login_enable,
+          login_last,
+          login_error,
+          STATUS,
+          create_time
+      FROM
+          user
+      WHERE
+          id NOT IN ( SELECT user_id FROM user_role_ref )
+          AND t.del_flag = 0
   </select>
+
+    <select id="getTodayCount" resultType="java.lang.Integer">
+        SELECT
+            count( id )
+        FROM
+            post
+        WHERE
+            to_days( create_time ) = to_days( now( ) )
+            AND t.del_flag = 0
+    </select>
+
+    <select id="getUserPostRanking" resultType="com.technerd.easyblog.entity.User">
+        SELECT
+            count( * ) postCount,
+            u.id,
+            u.user_name,
+            u.user_avatar,
+            u.user_display_name,
+            u.login_last,
+            u.create_time
+        FROM
+            post p,
+            user u
+        WHERE
+            p.user_id = u.id
+            AND p.del_flag = 0
+            AND u.del_flag = 0
+        GROUP BY
+            p.user_id
+        ORDER BY
+            postCount DESC
+            LIMIT #{value}
+    </select>
+
+    <select id="getLatestUser" resultType="com.technerd.easyblog.entity.User">
+        SELECT
+            id,
+            user_name,
+            user_avatar,
+            user_display_name,
+            create_time
+        FROM
+            user
+        WHERE
+            del_flag = 0
+        ORDER BY
+            create_time DESC
+            LIMIT #{value}
+    </select>
 </mapper>

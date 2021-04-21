@@ -4,7 +4,6 @@ import com.technerd.easyblog.model.dto.SensConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.service.MailService;
 import com.technerd.easyblog.utils.SensUtils;
-import freemarker.template.Template;
 import io.github.biezhi.ome.OhMyEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,6 @@ import java.util.Map;
  */
 @Service
 public class MailServiceImpl implements MailService {
-
-    @Autowired
-    private FreeMarkerConfigurer freeMarker;
 
     /**
      * 发送邮件
@@ -70,8 +66,6 @@ public class MailServiceImpl implements MailService {
                 SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_PASSWORD.getProp()));
         String text = "";
         try {
-            Template template = freeMarker.getConfiguration().getTemplate(templateName);
-            text = FreeMarkerTemplateUtils.processTemplateIntoString(template, content);
             OhMyEmail.subject(subject)
                     .from(SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_FROM_NAME.getProp()))
                     .to(to)
@@ -101,8 +95,6 @@ public class MailServiceImpl implements MailService {
         File file = new File(attachSrc);
         String text = "";
         try {
-            Template template = freeMarker.getConfiguration().getTemplate(templateName);
-            text = FreeMarkerTemplateUtils.processTemplateIntoString(template, content);
             OhMyEmail.subject(subject)
                     .from(SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_FROM_NAME.getProp()))
                     .to(to)

@@ -1,128 +1,36 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.technerd.easyblog.mapper.RolePermissionRefMapper" >
-  <resultMap id="BaseResultMap" type="com.technerd.easyblog.entity.RolePermissionRef" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="del_flag" property="delFlag" jdbcType="BIT" />
-    <result column="create_by" property="createBy" jdbcType="INTEGER" />
-    <result column="update_by" property="updateBy" jdbcType="INTEGER" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="role_id" property="roleId" jdbcType="INTEGER" />
-    <result column="permission_id" property="permissionId" jdbcType="INTEGER" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, del_flag, create_by, update_by, create_time, update_time, role_id, permission_id
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from role_permission_ref
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from role_permission_ref
-    where id = #{id,jdbcType=INTEGER}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.technerd.easyblog.mapper.RolePermissionRefMapper">
+
+  <delete id="deleteByRoleId">
+      DELETE
+      FROM
+          role_permission_ref
+      WHERE
+          role_id = #{value}
+          AND del_flag = 0
   </delete>
-  <insert id="insert" parameterType="com.technerd.easyblog.entity.RolePermissionRef" >
-    insert into role_permission_ref (id, del_flag, create_by, 
-      update_by, create_time, update_time, 
-      role_id, permission_id)
-    values (#{id,jdbcType=INTEGER}, #{delFlag,jdbcType=BIT}, #{createBy,jdbcType=INTEGER}, 
-      #{updateBy,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{roleId,jdbcType=INTEGER}, #{permissionId,jdbcType=INTEGER})
+
+    <delete id="deleteByPermissionId">
+      DELETE
+      FROM
+          role_permission_ref
+      WHERE
+          permission_id = #{value}
+          AND del_flag = 0
+  </delete>
+
+
+    <insert id="batchInsert">
+    <foreach collection="list" item="item">
+        INSERT INTO
+        role_permission_ref
+        ( role_id, permission_id )
+        VALUES
+        (
+            #{item.roleId}, #{item.permissionId}
+        );
+    </foreach>
   </insert>
-  <insert id="insertSelective" parameterType="com.technerd.easyblog.entity.RolePermissionRef" >
-    insert into role_permission_ref
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="delFlag != null" >
-        del_flag,
-      </if>
-      <if test="createBy != null" >
-        create_by,
-      </if>
-      <if test="updateBy != null" >
-        update_by,
-      </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="updateTime != null" >
-        update_time,
-      </if>
-      <if test="roleId != null" >
-        role_id,
-      </if>
-      <if test="permissionId != null" >
-        permission_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="delFlag != null" >
-        #{delFlag,jdbcType=BIT},
-      </if>
-      <if test="createBy != null" >
-        #{createBy,jdbcType=INTEGER},
-      </if>
-      <if test="updateBy != null" >
-        #{updateBy,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="roleId != null" >
-        #{roleId,jdbcType=INTEGER},
-      </if>
-      <if test="permissionId != null" >
-        #{permissionId,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.technerd.easyblog.entity.RolePermissionRef" >
-    update role_permission_ref
-    <set >
-      <if test="delFlag != null" >
-        del_flag = #{delFlag,jdbcType=BIT},
-      </if>
-      <if test="createBy != null" >
-        create_by = #{createBy,jdbcType=INTEGER},
-      </if>
-      <if test="updateBy != null" >
-        update_by = #{updateBy,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="roleId != null" >
-        role_id = #{roleId,jdbcType=INTEGER},
-      </if>
-      <if test="permissionId != null" >
-        permission_id = #{permissionId,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.technerd.easyblog.entity.RolePermissionRef" >
-    update role_permission_ref
-    set del_flag = #{delFlag,jdbcType=BIT},
-      create_by = #{createBy,jdbcType=INTEGER},
-      update_by = #{updateBy,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      role_id = #{roleId,jdbcType=INTEGER},
-      permission_id = #{permissionId,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
 </mapper>

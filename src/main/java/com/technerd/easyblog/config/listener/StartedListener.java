@@ -4,7 +4,6 @@ import com.technerd.easyblog.model.dto.SensConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.service.OptionsService;
 import com.technerd.easyblog.web.controller.common.BaseController;
-import freemarker.template.TemplateModelException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +29,14 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     @Autowired
     private OptionsService optionsService;
 
-    @Autowired
-    private freemarker.template.Configuration configuration;
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
-        try {
-            this.loadActiveTheme();
-        } catch (TemplateModelException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            this.loadActiveTheme();
+//        } catch (TemplateModelException e) {
+//            e.printStackTrace();
+//        }
         this.loadOptions();
         this.loadOwo();
         //启动定时任务
@@ -47,19 +44,19 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         log.info("The scheduled task starts successfully!");
     }
 
-    /**
-     * 加载主题设置
-     */
-    private void loadActiveTheme() throws TemplateModelException {
-        String themeValue = optionsService.findOneOption(BlogPropertiesEnum.THEME.getProp());
-        if (StringUtils.isNotEmpty(themeValue) && !StringUtils.equals(themeValue, null)) {
-            BaseController.THEME = themeValue;
-        } else {
-            //以防万一
-            BaseController.THEME = "begin";
-        }
-        configuration.setSharedVariable("themeName", BaseController.THEME);
-    }
+//    /**
+//     * 加载主题设置
+//     */
+//    private void loadActiveTheme() throws TemplateModelException {
+//        String themeValue = optionsService.findOneOption(BlogPropertiesEnum.THEME.getProp());
+//        if (StringUtils.isNotEmpty(themeValue) && !StringUtils.equals(themeValue, null)) {
+//            BaseController.THEME = themeValue;
+//        } else {
+//            //以防万一
+//            BaseController.THEME = "begin";
+//        }
+//        configuration.setSharedVariable("themeName", BaseController.THEME);
+//    }
 
     /**
      * 加载设置选项

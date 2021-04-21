@@ -3,7 +3,6 @@ package com.technerd.easyblog.web.controller.admin;
 import com.technerd.easyblog.model.enums.TrueFalseEnum;
 import com.technerd.easyblog.service.OptionsService;
 import com.technerd.easyblog.web.controller.common.BaseController;
-import freemarker.template.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +28,6 @@ public class ThemeController extends BaseController {
     @Autowired
     private OptionsService optionsService;
 
-    @Autowired
-    private Configuration configuration;
 
 
     /**

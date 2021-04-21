@@ -6,12 +6,14 @@ import cn.hutool.core.lang.Validator;
 import com.technerd.easyblog.entity.Permission;
 import com.technerd.easyblog.entity.Role;
 import com.technerd.easyblog.entity.User;
+import com.technerd.easyblog.jwt.JwtToken;
 import com.technerd.easyblog.model.enums.CommonParamsEnum;
 import com.technerd.easyblog.model.enums.TrueFalseEnum;
 import com.technerd.easyblog.model.enums.UserStatusEnum;
 import com.technerd.easyblog.service.PermissionService;
 import com.technerd.easyblog.service.RoleService;
 import com.technerd.easyblog.service.UserService;
+import com.technerd.easyblog.utils.JwtUtil;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -55,52 +57,42 @@ public class NormalRealm extends AuthorizingRealm {
     private LocaleMessageUtil localeMessageUtil;
 
     /**
-     * 认证信息(身份验证) Authentication 是用来验证用户身份
+     * 默认使用此方法进行用户名正确与否验证，错误抛出异常即可。
+     * @param auth
+     * @return
+     * @throws AuthenticationException
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        log.info("认证-->MyShiroRealm.doGetAuthenticationInfo()");
-        //1.验证用户名
-        User user = null;
-        String account = (String) token.getPrincipal();
-        if (Validator.isEmail(account)) {
-            user = userService.findByEmail(account);
-        } else {
-            user = userService.findByUserName(account);
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
+        String token = (String) auth.getCredentials();
+        // 解密获得username，用于和数据库进行对比
+        String username = null;
+        try {
+            //这里工具类没有处理空指针等异常这里处理一下(这里处理科学一些)
+            username = JwtUtil.getUsername(token);
+        } catch (Exception e) {
+            throw new AuthenticationException("heard的token拼写错误或者值为空");
         }
-        if (user == null) {
-            //用户不存在
-            log.info("用户不存在! 登录名:{}, 密码:{}", account, token.getCredentials());
-            return null;
+        if (username == null) {
+            log.error("token无效(空''或者null都不行!)");
+            throw new AuthenticationException("token无效");
         }
-
-        //2.判断账号是否被封号
-        if (!Objects.equals(user.getStatus(), UserStatusEnum.NORMAL.getCode())) {
-            throw new LockedAccountException(localeMessageUtil.getMessage("code.admin.login.disabled.forever"));
+        User userBean = userService.findByUserName(username);
+        if (userBean == null) {
+            log.error("用户不存在!)");
+            throw new AuthenticationException("用户不存在!");
         }
-
-        //3.首先判断是否已经被禁用已经是否已经过了10分钟
-        Date loginLast = DateUtil.date();
-        if (null != user.getLoginLast()) {
-            loginLast = user.getLoginLast();
+        if (!JwtUtil.verify(token, username, userBean.getUserPass())) {
+            log.error("用户名或密码错误(token无效或者与登录者不匹配)!)");
+            throw new AuthenticationException("用户名或密码错误(token无效或者与登录者不匹配)!");
         }
-        Long between = DateUtil.between(loginLast, DateUtil.date(), DateUnit.MINUTE);
-        if (StringUtils.equals(user.getLoginEnable(), TrueFalseEnum.FALSE.getValue()) && (between < CommonParamsEnum.TEN.getValue())) {
-            log.info("账号已锁定! 登录名:{}, 密码:{}", account, token.getCredentials());
-            throw new LockedAccountException(localeMessageUtil.getMessage("code.admin.login.disabled"));
-        }
-        //4.封装authenticationInfo，准备验证密码
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                user, // 用户名
-                user.getUserPass(), // 密码
-                ByteSource.Util.bytes("sens"), // 盐
-                getName() // realm name
-        );
-        System.out.println("realName:" + getName());
-        return authenticationInfo;
+        return new SimpleAuthenticationInfo(token, token, "my_realm");
     }
-
-
+    /**
+     * 只有当需要检测用户权限的时候才会调用此方法，例如checkRole,checkPermission之类的
+     * @param principals
+     * @return
+     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 
@@ -118,4 +110,17 @@ public class NormalRealm extends AuthorizingRealm {
         }
         return authorizationInfo;
     }
+
+
+    /**
+     * 必须重写此方法，不然Shiro会报错
+     * @param token
+     * @return
+     */
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof JwtToken;
+    }
+
+
 }
