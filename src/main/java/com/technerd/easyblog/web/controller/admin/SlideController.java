@@ -24,7 +24,7 @@ import java.util.List;
  * @date : 2018/1/30
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin/slide")
 public class SlideController {
 

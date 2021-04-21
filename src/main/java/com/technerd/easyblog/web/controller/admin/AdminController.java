@@ -9,14 +9,12 @@ import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.service.*;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.management.*;
 import java.util.List;
@@ -30,8 +28,9 @@ import java.util.List;
  * @date : 2017/12/5
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin")
+@Api(value = "后台首页控制器")
 public class AdminController extends BaseController {
 
     @Autowired

@@ -38,7 +38,7 @@ import java.util.Set;
  * @author 言曌
  * @date 2019-10-13 17:58
  */
-@Controller
+@RestController
 @RequestMapping("/admin")
 @Slf4j
 public class LoginController extends BaseController {

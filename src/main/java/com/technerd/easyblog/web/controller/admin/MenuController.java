@@ -6,6 +6,8 @@ import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.MenuTypeEnum;
 import com.technerd.easyblog.service.MenuService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,8 +25,9 @@ import java.util.List;
  * @date : 2018/1/30
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin/menu")
+@Api(value = "后台菜单管理控制器")
 public class MenuController {
 
     @Autowired
@@ -57,9 +60,10 @@ public class MenuController {
      */
     @PostMapping(value = "/save")
     @SystemLog(description = "保存菜单", type = LogTypeEnum.OPERATION)
-    public String saveMenu(@ModelAttribute Menu menu) {
+    @ApiOperation("保存菜单")
+    public String saveMenu(@RequestBody Menu menu) {
         menuService.insertOrUpdate(menu);
-        return "redirect:/admin/menu";
+        return "admin/menu";
     }
 
     /**

@@ -42,7 +42,7 @@ import java.util.Objects;
  * @date : 2017/12/10
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin/comment")
 public class CommentController extends BaseController {
 

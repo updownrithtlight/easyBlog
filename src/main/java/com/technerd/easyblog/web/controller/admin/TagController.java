@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
  * @date : 2017/12/10
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin/tag")
 public class TagController extends BaseController {
 

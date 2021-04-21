@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
  * @date : 2017/12/10
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin/notice")
 public class NoticeController extends BaseController {
 

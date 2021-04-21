@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -84,6 +85,31 @@ public class JwtUtil {
          * 测试生成一个token
          */
         String sign = sign("18888888888", "123456");
-       log.warn("测试生成一个token\n"+sign);
+        log.warn("测试生成一个token\n"+sign);
+    }
+
+    /**
+     * 根据request中的token获取账号
+     *
+     * @param request request
+     * @return 用户的账号
+     */
+    public static Long getUserId(HttpServletRequest request) {
+        String accessToken = request.getHeader("token");
+        return getUserId(accessToken);
+    }
+
+    /**
+     * 获得token中的信息
+     *
+     * @return token中包含的用户id
+     */
+    public static long getUserId(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getClaim("userId").asLong();
+        } catch (JWTDecodeException e) {
+            return -1L;
+        }
     }
 }

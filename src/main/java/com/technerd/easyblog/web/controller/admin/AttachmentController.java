@@ -40,7 +40,7 @@ import java.util.Objects;
  * @date : 2017/12/19
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin/attachment")
 public class AttachmentController extends BaseController {
 

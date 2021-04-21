@@ -25,7 +25,7 @@ import java.util.Map;
  * @date : 2017/12/13
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/admin/option")
 public class OptionController {
 

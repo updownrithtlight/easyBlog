@@ -14,6 +14,7 @@ import com.technerd.easyblog.service.*;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -189,9 +190,8 @@ public class UserController extends BaseController {
      * @return 重定向到/admin/user
      */
     @PostMapping(value = "/save")
-    @ResponseBody
     @SystemLog(description = "保存用户", type = LogTypeEnum.OPERATION)
-    public JsonResult saveUser(@ModelAttribute User user,
+    public JsonResult saveUser(@RequestBody User user,
                                @RequestParam("roleList") List<Long> roleList) {
         if (roleList == null || roleList.size() == 0) {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.user.need-choose-role"));
@@ -238,7 +238,8 @@ public class UserController extends BaseController {
     @PostMapping(value = "/profile/save/proxy")
     @ResponseBody
     @SystemLog(description = "管理员修改其他用户信息", type = LogTypeEnum.OPERATION)
-    public JsonResult adminSaveProfile(@ModelAttribute User user) {
+    @ApiOperation(value = "管理员修改用户资料")
+    public JsonResult adminSaveProfile(@RequestBody User user) {
         userService.insertOrUpdate(user);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.edit-success"));
     }

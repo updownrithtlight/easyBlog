@@ -31,7 +31,7 @@ import java.util.Objects;
  * @date : 2017/12/24
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "/admin/user")
 public class ProfileController extends BaseController {
 
