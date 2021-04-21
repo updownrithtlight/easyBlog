@@ -16,6 +16,8 @@ import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.Md5Util;
 import com.technerd.easyblog.utils.RedisUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -24,23 +26,21 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
- * @author 言曌
- * @date 2019-10-13 17:58
+ * @author technerd
  */
 @RestController
 @RequestMapping("/admin")
 @Slf4j
+@Api(value = "登录模块")
 public class LoginController extends BaseController {
 
     @Autowired
@@ -154,39 +154,35 @@ public class LoginController extends BaseController {
     /**
      * 验证注册信息
      *
-     * @param userName  用户名
-     * @param userEmail 邮箱
+     * @param user  用户
      * @return JsonResult JsonResult
      */
     @PostMapping(value = "/getRegister")
-    @ResponseBody
     @SystemLog(description = "用户注册", type = LogTypeEnum.REGISTER)
-    public JsonResult getRegister(@ModelAttribute("userName") String userName,
-                                  @ModelAttribute("userPass") String userPass,
-                                  @ModelAttribute("userEmail") String userEmail) {
+    @ApiOperation(value = "用户注册")
+    public JsonResult getRegister(@RequestBody User user) {
         if (StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.OPEN_REGISTER.getProp()), TrueFalseEnum.FALSE.getValue())) {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.register.close"));
         }
         //1.检查用户名
-        User checkUser = userService.findByUserName(userName);
+        User checkUser = userService.findByUserName(user.getUserName());
         if (checkUser != null) {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.user.user-name-exist"));
         }
         //2.检查用户名
-        User checkEmail = userService.findByEmail(userEmail);
+        User checkEmail = userService.findByEmail(user.getUserEmail());
         if (checkEmail != null) {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.user.user-email-exist"));
         }
         //3.创建用户
-        User user = new User();
-        user.setUserName(userName);
-        user.setUserDisplayName(userName);
-        user.setUserEmail(userEmail);
         user.setEmailEnable(TrueFalseEnum.FALSE.getValue());
         user.setLoginEnable(TrueFalseEnum.TRUE.getValue());
         user.setLoginError(0);
-        user.setUserPass(userPass);
-        user.setUserAvatar("/static/images/avatar/" + RandomUtils.nextInt(1, 41) + ".jpeg");
+        //加密用户的密码
+        String salt = UUID.randomUUID().toString().substring(0, 24);
+        String password = new SimpleHash("MD5", user.getUserPass(), salt, 32).toString();
+//        user.setSalt(salt);
+        user.setUserPass(password);
         user.setStatus(UserStatusEnum.NORMAL.getCode());
         userService.insert(user);
 
