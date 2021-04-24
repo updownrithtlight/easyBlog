@@ -66,23 +66,23 @@ public class NormalRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
         String token = (String) auth.getCredentials();
         // 解密获得username，用于和数据库进行对比
-        String username = null;
+        Long userId = null;
         try {
             //这里工具类没有处理空指针等异常这里处理一下(这里处理科学一些)
-            username = JwtUtil.getUsername(token);
+            userId = JwtUtil.getUserId(token);
         } catch (Exception e) {
             throw new AuthenticationException("heard的token拼写错误或者值为空");
         }
-        if (username == null) {
+        if (userId == null) {
             log.error("token无效(空''或者null都不行!)");
             throw new AuthenticationException("token无效");
         }
-        User userBean = userService.findByUserName(username);
+        User userBean = userService.get(userId);
         if (userBean == null) {
             log.error("用户不存在!)");
             throw new AuthenticationException("用户不存在!");
         }
-        if (!JwtUtil.verify(token, username, userBean.getUserPass())) {
+        if (!JwtUtil.verify(token)) {
             log.error("用户名或密码错误(token无效或者与登录者不匹配)!)");
             throw new AuthenticationException("用户名或密码错误(token无效或者与登录者不匹配)!");
         }

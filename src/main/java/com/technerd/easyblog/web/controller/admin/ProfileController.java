@@ -13,6 +13,9 @@ import com.technerd.easyblog.service.UserService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.Md5Util;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import com.technerd.easyblog.web.query.PassChange;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +36,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping(value = "/admin/user")
+@Api(value = "后台用户管理控制器")
 public class ProfileController extends BaseController {
 
     @Autowired
@@ -44,42 +48,38 @@ public class ProfileController extends BaseController {
     @Autowired
     private ThirdAppBindService thirdAppBindService;
 
-
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
     /**
-     * 获取用户信息并跳转
      *
-     * @return 模板路径admin/admin_profile
+     * @param bindId
+     * @return
      */
     @GetMapping("/profile")
-    public String profile(Model model) {
+    @ApiOperation("获取用户详细信息")
+    public JsonResult profile(@RequestParam("id") Long bindId) {
         //1.用户信息
         User user = getLoginUser();
-        model.addAttribute("user", user);
 
         //2.第三方信息
         List<ThirdAppBind> thirdAppBinds = thirdAppBindService.findByUserId(user.getId());
-        model.addAttribute("thirdAppBinds", thirdAppBinds);
 
         //3.角色列表
         List<Role> roles = roleService.listRolesByUserId(user.getId());
-        model.addAttribute("roles", roles);
-        return "admin/admin_profile";
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.edit-success-login-again"));
     }
 
 
     /**
-     * 处理修改用户资料的请求
      *
-     * @param user user
-     * @return JsonResult
+     * @param user
+     * @return
      */
     @PostMapping(value = "/profile/save")
-    @ResponseBody
     @SystemLog(description = "修改个人资料", type = LogTypeEnum.OPERATION)
-    public JsonResult saveProfile(@ModelAttribute User user) {
+    @ApiOperation(value = "修改个人资料")
+    public JsonResult saveProfile(@RequestBody User user) {
         User loginUser = getLoginUser();
 
         User saveUser = userService.get(loginUser.getId());
@@ -97,21 +97,19 @@ public class ProfileController extends BaseController {
 
 
     /**
-     * 处理修改密码的请求
      *
-     * @param beforePass 旧密码
-     * @param newPass    新密码
-     * @return JsonResult
+     * @param passChange
+     * @return
      */
     @PostMapping(value = "/changePass")
     @ResponseBody
     @SystemLog(description = "修改密码", type = LogTypeEnum.OPERATION)
-    public JsonResult changePass(@ModelAttribute("beforePass") String beforePass,
-                                 @ModelAttribute("newPass") String newPass) {
+    @ApiOperation(value = "修改密码")
+    public JsonResult changePass(@RequestBody PassChange passChange) {
         User loginUser = getLoginUser();
         User user = userService.get(loginUser.getId());
-        if (user != null && Objects.equals(user.getUserPass(), Md5Util.toMd5(beforePass, "sens", 10))) {
-            userService.updatePassword(user.getId(), newPass);
+        if (user != null && Objects.equals(user.getUserPass(), Md5Util.toMd5(passChange.getBeforePass(), "sens", 10))) {
+            userService.updatePassword(user.getId(), passChange.getNewPass());
         } else {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.user.old-password-error"));
         }
@@ -125,8 +123,8 @@ public class ProfileController extends BaseController {
      * @return JsonResult
      */
     @PostMapping(value = "/deleteBind")
-    @ResponseBody
     @SystemLog(description = "取消第三方关联", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "取消第三方关联")
     public JsonResult checkDelete(@RequestParam("id") Long bindId) {
         //1.判断是否存在
         ThirdAppBind thirdAppBind = thirdAppBindService.findByThirdAppBindId(bindId);

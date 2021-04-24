@@ -7,6 +7,8 @@ import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.model.enums.SlideTypeEnum;
 import com.technerd.easyblog.service.SlideService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,12 +22,13 @@ import java.util.List;
  *     后台幻灯片管理控制器
  * </pre>
  *
- * @author : saysky
+ * @author : technerd
  * @date : 2018/1/30
  */
 @Slf4j
 @RestController
 @RequestMapping(value = "/admin/slide")
+@Api(value = "后台幻灯片管理控制器")
 public class SlideController {
 
     @Autowired
@@ -33,61 +36,53 @@ public class SlideController {
 
 
     /**
-     * 渲染幻灯片设置页面
-     *
-     * @return 模板路径/admin/admin_slide
+     * 幻灯片列表
+     * @return
      */
     @GetMapping
-    public String slides(Model model) {
+    @ApiOperation(value = "幻灯片列表")
+    public JsonResult<List<Slide>> slides() {
         //前台主要幻灯片
         List<Slide> slides = slideService.findBySlideType(SlideTypeEnum.INDEX_SLIDE.getCode());
-        model.addAttribute("slides", slides);
-        return "/admin/admin_slide";
+        return new JsonResult<List<Slide>>(ResultCodeEnum.SUCCESS.getCode(), "查询成功",slides);
     }
 
     /**
-     * 新增/修改幻灯片
      *
-     * @param slide slide
-     * @return 重定向到/admin/slide
+     * @param slide
+     * @return
      */
     @PostMapping(value = "/save")
     @SystemLog(description = "保存幻灯片", type = LogTypeEnum.OPERATION)
-    public String saveSlide(@ModelAttribute Slide slide) {
+    @ApiOperation(value = "保存幻灯片")
+    public JsonResult saveSlide(@RequestBody Slide slide) {
         slideService.insertOrUpdate(slide);
-        return "redirect:/admin/slide";
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), "删除成功");
     }
 
     /**
-     * 跳转到修改页面
-     *
-     * @param slideId 幻灯片编号
-     * @param model   model
-     * @return 模板路径/admin/admin_slide
+     * 查询详情
+     * @param slideId
+     * @return
      */
-    @GetMapping(value = "/edit")
-    public String updateSlide(@RequestParam("id") Long slideId, Model model) {
+    @GetMapping(value = "/get")
+    @ApiOperation("查询详情")
+    public JsonResult<Slide> get(@RequestParam("id") Long slideId) {
         Slide slide = slideService.get(slideId);
-        model.addAttribute("updateSlide", slide);
-
-        List<Slide> slides = slideService.findBySlideType(SlideTypeEnum.INDEX_SLIDE.getCode());
-        model.addAttribute("slides", slides);
-        return "/admin/admin_slide";
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), "查询成功",slide);
     }
 
     /**
-     * 删除幻灯片
      *
-     * @param slideId 幻灯片编号
-     * @return 重定向到/admin/slide
+     * @param slideId
+     * @return
      */
     @PostMapping(value = "/delete")
     @SystemLog(description = "删除幻灯片", type = LogTypeEnum.OPERATION)
-    @ResponseBody
+    @ApiOperation("删除幻灯片")
     public JsonResult removeSlide(@RequestParam("id") Long slideId) {
         slideService.delete(slideId);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), "删除成功");
-
     }
 
 }

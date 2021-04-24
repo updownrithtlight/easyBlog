@@ -3,6 +3,7 @@ package com.technerd.easyblog.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.technerd.easyblog.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -107,4 +108,12 @@ public class User  extends BaseEntity {
      */
     @TableField(exist = false)
     private Integer commentCount;
+
+    /**
+     * 加密使用的盐值
+     */
+    @ApiModelProperty(value = "盐值",hidden = true)
+    private String salt;
+
+    private String gender;
 }

@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.technerd.easyblog.mapper.CommentMapper">
-    <select id="findLatestCommentByLimit" resultType="com.technerd.easyblog.entity.Comment">
+    <resultMap id="BaseResultMap" type="com.technerd.easyblog.entity.Comment" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="del_flag" property="delFlag" jdbcType="BIT" />
+        <result column="create_by" property="createBy" jdbcType="INTEGER" />
+        <result column="update_by" property="updateBy" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="post_id" property="postId" jdbcType="INTEGER" />
+        <result column="comment_author" property="commentAuthor" jdbcType="VARCHAR" />
+        <result column="comment_author_email" property="commentAuthorEmail" jdbcType="VARCHAR" />
+        <result column="comment_author_url" property="commentAuthorUrl" jdbcType="VARCHAR" />
+        <result column="comment_author_ip" property="commentAuthorIp" jdbcType="VARCHAR" />
+        <result column="comment_author_email_Md5" property="commentAuthorEmailMd5" jdbcType="VARCHAR" />
+        <result column="comment_author_avatar" property="commentAuthorAvatar" jdbcType="VARCHAR" />
+        <result column="comment_content" property="commentContent" jdbcType="VARCHAR" />
+        <result column="comment_agent" property="commentAgent" jdbcType="VARCHAR" />
+        <result column="commentParent" property="commentparent" jdbcType="INTEGER" />
+        <result column="comment_status" property="commentStatus" jdbcType="BIT" />
+        <result column="is_admin" property="isAdmin" jdbcType="BIT" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="path_trace" property="pathTrace" jdbcType="VARCHAR" />
+        <result column="accept_user_id" property="acceptUserId" jdbcType="VARCHAR" />
+        <result column="comment_type" property="commentType" jdbcType="BIT" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, del_flag, create_by, update_by, create_time, update_time, post_id, comment_author,
+        comment_author_email, comment_author_url, comment_author_ip, comment_author_email_Md5,
+        comment_author_avatar, comment_content, comment_agent, commentParent, comment_status,
+        is_admin, user_id, path_trace, accept_user_id, comment_type
+    </sql>
+    <select id="findLatestCommentByLimit" resultMap="BaseResultMap">
         SELECT
             id,
             post_id,
@@ -50,7 +80,7 @@
             AND del_flag = 0
     </delete>
 
-    <select id="getLatestCommentByIP" resultType="com.technerd.easyblog.entity.Comment">
+    <select id="getLatestCommentByIP" resultMap="BaseResultMap">
         SELECT
             id,
             post_id,
@@ -101,7 +131,7 @@
              AND del_flag = 0
     </select>
 
-    <select id="getLatestCommentByAcceptUser" resultType="com.technerd.easyblog.entity.Comment">
+    <select id="getLatestCommentByAcceptUser" resultMap="BaseResultMap">
         SELECT
             id,
             comment_author,

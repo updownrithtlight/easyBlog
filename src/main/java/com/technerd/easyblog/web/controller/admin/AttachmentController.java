@@ -16,6 +16,8 @@ import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.utils.SensUtils;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping(value = "/admin/attachment")
+@Api(value = "后台附件控制器")
 public class AttachmentController extends BaseController {
 
     @Autowired
@@ -77,20 +80,15 @@ public class AttachmentController extends BaseController {
     }
 
     /**
-     * 处理获取附件详情的请求
      *
-     * @param model    model
-     * @param attachId 附件编号
-     * @return 模板路径admin/widget/_attachment-detail
+     * @param attachId
+     * @return
      */
     @GetMapping(value = "/detail")
-    public String attachmentDetail(Model model, @RequestParam("id") Long attachId) {
+    @ApiOperation(value = "获取附件详情")
+    public JsonResult<Attachment> attachmentDetail( @RequestParam("id") Long attachId) {
         Attachment attachment = attachmentService.get(attachId);
-        model.addAttribute("attachment", attachment);
-        if (attachment != null) {
-            model.addAttribute("isPicture", SensUtils.isPicture(attachment.getAttachSuffix()));
-        }
-        return "admin/widget/_attachment-detail";
+        return new JsonResult<Attachment>(ResultCodeEnum.SUCCESS.getCode(),attachment);
     }
 
     /**
@@ -132,8 +130,8 @@ public class AttachmentController extends BaseController {
      * @return Map
      */
     @PostMapping(value = "/upload", produces = {"application/json;charset=UTF-8"})
-    @ResponseBody
     @SystemLog(description = "上传文件", type = LogTypeEnum.ATTACHMENT)
+    @ApiOperation("上传文件")
     public Map<String, Object> upload(@RequestParam("file") MultipartFile file,
                                       HttpServletRequest request) {
         return uploadAttachment(file, request);
@@ -187,14 +185,12 @@ public class AttachmentController extends BaseController {
      * 移除附件的请求
      *
      * @param attachId 附件编号
-     * @param request  request
      * @return JsonResult
      */
     @GetMapping(value = "/delete")
-    @ResponseBody
     @SystemLog(description = "删除附件", type = LogTypeEnum.ATTACHMENT)
-    public JsonResult removeAttachment(@RequestParam("id") Long attachId,
-                                       HttpServletRequest request) {
+    @ApiOperation(value = "删除附件")
+    public JsonResult removeAttachment(@RequestParam("id") Long attachId) {
         //检验权限
         Long userId = getLoginUserId();
         Attachment attachment = attachmentService.get(attachId);

@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.technerd.easyblog.mapper.TagMapper">
-
+    <resultMap id="BaseResultMap" type="com.technerd.easyblog.entity.Tag" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="del_flag" property="delFlag" jdbcType="BIT" />
+        <result column="create_by" property="createBy" jdbcType="INTEGER" />
+        <result column="update_by" property="updateBy" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="tag_name" property="tagName" jdbcType="VARCHAR" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="count" property="count" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, del_flag, create_by, update_by, create_time, update_time, tag_name, user_id,
+        count
+    </sql>
     <delete id="deleteByUserId">
        DELETE
        FROM
@@ -10,7 +24,7 @@
            user_id = #{value}
     </delete>
 
-    <select id="findByPostId" resultType="com.technerd.easyblog.entity.Tag">
+    <select id="findByPostId" resultMap="BaseResultMap">
         SELECT
             t.id,
             t.tag_name,
@@ -25,7 +39,7 @@
             AND t.del_flag = 0
     </select>
 
-    <select id="findAllWithCount" resultType="com.technerd.easyblog.entity.Tag">
+    <select id="findAllWithCount" resultMap="BaseResultMap">
         SELECT
             t.id,
             t.user_id,
@@ -47,7 +61,7 @@
   </select>
 
 
-    <select id="findByUserIdWithCount" resultType="com.technerd.easyblog.entity.Tag">
+    <select id="findByUserIdWithCount" resultMap="BaseResultMap">
         SELECT
             t.id,
             t.tag_name,
@@ -61,7 +75,7 @@
             count DESC
     </select>
 
-    <select id="findTagNotUse" resultType="com.technerd.easyblog.entity.Tag">
+    <select id="findTagNotUse" resultMap="BaseResultMap">
       SELECT
           t.id,
           t.tag_name,
@@ -84,7 +98,7 @@
             AND del_flag = 0
     </select>
 
-    <select id="getTagRankingByUserId" resultType="com.technerd.easyblog.entity.Tag">
+    <select id="getTagRankingByUserId" resultMap="BaseResultMap">
         SELECT
             t.id,
             t.tag_name,

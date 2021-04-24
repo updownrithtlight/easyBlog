@@ -23,6 +23,8 @@ import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.utils.SensUtils;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping(value = "/admin/post")
+@Api(value = "后台文章管理控制器")
 public class PostController extends BaseController {
 
     @Autowired
@@ -67,92 +70,25 @@ public class PostController extends BaseController {
     public static final String CONTENT = "content";
 
 
-    /**
-     * 处理后台获取文章列表的请求
-     *
-     * @param model model
-     * @return 模板路径admin/admin_post
-     */
     @GetMapping
-    public String posts(Model model,
-                        @RequestParam(value = "status", defaultValue = "0") Integer status,
-                        @RequestParam(value = "keywords", defaultValue = "") String keywords,
-                        @RequestParam(value = "searchType", defaultValue = "") String searchType,
-                        @RequestParam(value = "postSource", defaultValue = "-1") Integer postSource,
-                        @RequestParam(value = "page", defaultValue = "1") Integer pageNumber,
-                        @RequestParam(value = "size", defaultValue = "15") Integer pageSize,
-                        @RequestParam(value = "sort", defaultValue = "createTime") String sort,
-                        @RequestParam(value = "order", defaultValue = "desc") String order,
-                        @ModelAttribute SearchVo searchVo) {
-
-        Long loginUserId = getLoginUserId();
-        Post condition = new Post();
-        if (!StringUtils.isBlank(keywords)) {
-            if (TITLE.equals(searchType)) {
-                condition.setPostTitle(keywords);
-            } else {
-                condition.setPostContent(keywords);
-            }
-        }
-        condition.setPostType(PostTypeEnum.POST_TYPE_POST.getValue());
-        condition.setPostStatus(status);
-        condition.setUserId(loginUserId);
-        condition.setPostSource(postSource);
-
-        Page page = PageUtil.initMpPage(pageNumber, pageSize, sort, order);
-        Page<Post> posts = postService.findAll(
-                page,
-                new QueryCondition<>(condition, searchVo));
-
-        //封装分类和标签
-        model.addAttribute("posts", posts.getRecords());
-        model.addAttribute("pageInfo", PageUtil.convertPageVo(page));
-        model.addAttribute("publishCount", postService.countArticleByUserIdAndStatus(loginUserId, PostStatusEnum.PUBLISHED.getCode()));
-        model.addAttribute("checkingCount", postService.countArticleByUserIdAndStatus(loginUserId, PostStatusEnum.CHECKING.getCode()));
-        model.addAttribute("draftCount", postService.countArticleByUserIdAndStatus(loginUserId, PostStatusEnum.DRAFT.getCode()));
-        model.addAttribute("trashCount", postService.countArticleByUserIdAndStatus(loginUserId, PostStatusEnum.RECYCLE.getCode()));
-        model.addAttribute("status", status);
-        model.addAttribute("keywords", keywords);
-        model.addAttribute("searchType", searchType);
-        model.addAttribute("postSource", postSource);
-        model.addAttribute("order", order);
-        model.addAttribute("sort", sort);
-        return "admin/admin_post";
+    @ApiOperation(value = "文章列表")
+    public JsonResult<Page<Post>> posts(@RequestBody  Post post  ) {
+        Page page = PageUtil.initMpPage(post);
+        Page<Post> posts = postService.findAll(page );
+        return new JsonResult<Page<Post>>(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"),posts);
     }
 
 
     /**
-     * 处理跳转到新建文章页面
      *
-     * @return 模板路径admin/admin_editor
-     */
-    @GetMapping(value = "/new")
-    public String newPost(Model model) {
-        Long userId = getLoginUserId();
-        //所有分类
-        List<Category> allCategories = categoryService.findByUserIdWithLevel(userId);
-        //所有标签
-        List<Tag> allTags = tagService.findByUserId(userId);
-        model.addAttribute("categories", allCategories);
-        model.addAttribute("tags", allTags);
-        return "admin/admin_post_editor";
-    }
-
-    /**
-     * 添加/更新文章
-     *
-     * @param post    Post实体
-     * @param cateIds 分类列表
-     * @param tagList 标签列表
+     * @param post
+     * @return
      */
     @PostMapping(value = "/save")
-    @ResponseBody
     @SystemLog(description = "保存文章", type = LogTypeEnum.OPERATION)
-    public JsonResult pushPost(@ModelAttribute Post post,
-                               @RequestParam("cateList") List<Long> cateIds,
-                               @RequestParam("tagList") String tagList) {
-
-        checkCategoryAndTag(cateIds, tagList);
+    @ApiOperation(value = "添加/更新文章")
+    public JsonResult pushPost(@RequestBody Post post) {
+//        checkCategoryAndTag(cateIds, tagList);
         User user = getLoginUser();
         Boolean isAdmin = loginUserIsAdmin();
         //1、如果开启了文章审核，非管理员文章默认状态为审核
@@ -192,21 +128,21 @@ public class PostController extends BaseController {
         }
 
         //4、分类标签
-        List<Category> categories = categoryService.cateIdsToCateList(cateIds, user.getId());
-        post.setCategories(categories);
-        if (StringUtils.isNotEmpty(tagList)) {
-            List<Tag> tags = tagService.strListToTagList(user.getId(), StringUtils.deleteWhitespace(tagList));
-            post.setTags(tags);
-        }
-        //当没有选择文章缩略图的时候，自动分配一张内置的缩略图
-        if (StringUtils.equals(post.getPostThumbnail(), BlogPropertiesEnum.DEFAULT_THUMBNAIL.getProp())) {
-            String staticUrl = SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_STATIC_URL.getProp());
-            if (!Strings.isNullOrEmpty(staticUrl)) {
-                post.setPostThumbnail(staticUrl + "/static/images/thumbnail/img_" + RandomUtil.randomInt(0, 14) + ".jpg");
-            } else {
-                post.setPostThumbnail("/static/images/thumbnail/img_" + RandomUtil.randomInt(0, 14) + ".jpg");
-            }
-        }
+//        List<Category> categories = categoryService.cateIdsToCateList(cateIds, user.getId());
+//        post.setCategories(categories);
+//        if (StringUtils.isNotEmpty(tagList)) {
+//            List<Tag> tags = tagService.strListToTagList(user.getId(), StringUtils.deleteWhitespace(tagList));
+//            post.setTags(tags);
+//        }
+//        //当没有选择文章缩略图的时候，自动分配一张内置的缩略图
+//        if (StringUtils.equals(post.getPostThumbnail(), BlogPropertiesEnum.DEFAULT_THUMBNAIL.getProp())) {
+//            String staticUrl = SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_STATIC_URL.getProp());
+//            if (!Strings.isNullOrEmpty(staticUrl)) {
+//                post.setPostThumbnail(staticUrl + "/static/images/thumbnail/img_" + RandomUtil.randomInt(0, 14) + ".jpg");
+//            } else {
+//                post.setPostThumbnail("/static/images/thumbnail/img_" + RandomUtil.randomInt(0, 14) + ".jpg");
+//            }
+//        }
         post.setPostType(PostTypeEnum.POST_TYPE_POST.getValue());
         postService.insertOrUpdate(post);
         if (isOpenCheck && !isAdmin) {
@@ -243,8 +179,8 @@ public class PostController extends BaseController {
      * @return 重定向到/admin/post
      */
     @PostMapping(value = "/throw")
-    @ResponseBody
     @SystemLog(description = "将文章移到回收站", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "将文章移到回收站")
     public JsonResult moveToTrash(@RequestParam("id") Long postId) {
         Post post = postService.get(postId);
         basicCheck(post);
@@ -260,8 +196,8 @@ public class PostController extends BaseController {
      * @return 重定向到/admin/post
      */
     @PostMapping(value = "/revert")
-    @ResponseBody
     @SystemLog(description = "将文章改为已发布", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "将文章改为已发布")
     public JsonResult moveToPublish(@RequestParam("id") Long postId) {
         Post post = postService.get(postId);
         basicCheck(post);
@@ -277,8 +213,8 @@ public class PostController extends BaseController {
      * @return 重定向到/admin/post
      */
     @PostMapping(value = "/pass")
-    @ResponseBody
     @SystemLog(description = "审核通过文章", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "审核通过文章")
     public JsonResult passCheck(@RequestParam("id") Long postId) {
         Post post = postService.get(postId);
         basicCheck(post);
@@ -295,8 +231,8 @@ public class PostController extends BaseController {
      * @return 重定向到/admin/post
      */
     @PostMapping(value = "/delete")
-    @ResponseBody
     @SystemLog(description = "删除文章", type = LogTypeEnum.OPERATION)
+    @ApiOperation("删除文章")
     public JsonResult removePost(@RequestParam("id") Long postId) {
         Post post = postService.get(postId);
         basicCheck(post);
@@ -311,8 +247,8 @@ public class PostController extends BaseController {
      * @return 重定向到/admin/post
      */
     @DeleteMapping(value = "/batchDelete")
-    @ResponseBody
     @SystemLog(description = "批量删除文章", type = LogTypeEnum.OPERATION)
+    @ApiOperation("批量删除文章")
     public JsonResult batchDelete(@RequestParam("ids") List<Long> ids) {
         Long userId = getLoginUserId();
         //批量操作
@@ -360,64 +296,18 @@ public class PostController extends BaseController {
     }
 
     /**
-     * 跳转到编辑文章页面
      *
-     * @param postId 文章编号
-     * @param model  model
-     * @return 模板路径admin/admin_editor
+     * @param postId
+     * @return
      */
-    @GetMapping(value = "/edit")
-    public String editPost(@RequestParam("id") Long postId, Model model) {
-        Long userId = getLoginUserId();
+    @GetMapping(value = "/get")
+    @ApiOperation(value = "文章页面")
+    public JsonResult<Post> get(@RequestParam("id") Long postId) {
         Post post = postService.get(postId);
-        basicCheck(post);
-        //当前文章标签
-        List<Tag> tags = tagService.findByPostId(postId);
-        post.setTags(tags);
-        //当前文章分类
-        List<Category> categories = categoryService.findByPostId(postId);
-        post.setCategories(categories);
-
-        //所有分类
-        List<Category> allCategories = categoryService.findByUserIdWithLevel(userId);
-        //所有标签
-        List<Tag> allTags = tagService.findByUserId(userId);
-
-        model.addAttribute("post", post);
-        model.addAttribute("categories", allCategories);
-        model.addAttribute("tags", allTags);
-        return "admin/admin_post_editor";
+        return new JsonResult<Post>(ResultCodeEnum.SUCCESS.getCode(), "",post);
     }
 
 
-    /**
-     * 待审核文章列表
-     *
-     * @param model model
-     * @return 模板路径admin/admin_post
-     */
-    @GetMapping("/check")
-    public String postCheckList(Model model,
-                                @RequestParam(value = "page", defaultValue = "1") Integer pageNumber,
-                                @RequestParam(value = "size", defaultValue = "15") Integer pageSize,
-                                @RequestParam(value = "sort", defaultValue = "createTime") String sort,
-                                @RequestParam(value = "order", defaultValue = "desc") String order,
-                                @ModelAttribute SearchVo searchVo) {
-        Post condition = new Post();
-        condition.setPostType(PostTypeEnum.POST_TYPE_POST.getValue());
-        condition.setPostStatus(PostStatusEnum.CHECKING.getCode());
-        Page page = PageUtil.initMpPage(pageNumber, pageSize, sort, order);
-        Page<Post> posts = postService.findAll(
-                page,
-                new QueryCondition<>(condition, searchVo));
-        List<Post> postList = posts.getRecords();
-        postList.forEach(post -> userService.get(post.getUserId()));
-        model.addAttribute("posts", postList);
-        model.addAttribute("pageInfo", PageUtil.convertPageVo(page));
-        model.addAttribute("order", order);
-        model.addAttribute("sort", sort);
-        return "admin/admin_post_check";
-    }
 
     /**
      * 验证文章路径是否已经存在
@@ -425,8 +315,8 @@ public class PostController extends BaseController {
      * @param postUrl 文章路径
      * @return JsonResult
      */
-    @GetMapping(value = "/checkUrl")
-    @ResponseBody
+    @GetMapping(value = "/postUrl")
+    @ApiOperation(value = "验证文章路径")
     public JsonResult checkUrlExists(@RequestParam("postUrl") String postUrl) {
         postUrl = urlFilter(postUrl);
         Post post = postService.findByPostUrl(postUrl, PostTypeEnum.POST_TYPE_POST.getValue());
@@ -444,8 +334,8 @@ public class PostController extends BaseController {
      * @return JsonResult
      */
     @PostMapping(value = "/resetAllSummary")
-    @ResponseBody
     @SystemLog(description = "更新所有摘要", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "更新所有摘要")
     public JsonResult resetAllSummary(@RequestParam("postSummary") Integer postSummary) {
         postService.updateAllSummary(postSummary);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.update-success"));
@@ -458,7 +348,6 @@ public class PostController extends BaseController {
      * @return JsonResult
      */
     @PostMapping(value = "/saveAllToBaidu")
-    @ResponseBody
     @SystemLog(description = "将所有文章推送到百度", type = LogTypeEnum.OPERATION)
     public JsonResult pushAllToBaidu(@RequestParam("baiduToken") String baiduToken) {
         if (StringUtils.isEmpty(baiduToken)) {

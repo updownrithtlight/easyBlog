@@ -15,6 +15,8 @@ import com.technerd.easyblog.service.LogService;
 import com.technerd.easyblog.service.PostService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping(value = "/admin/page")
+@Api(value = "后台页面管理控制器")
 public class PageController extends BaseController {
 
     @Autowired
@@ -47,8 +50,6 @@ public class PageController extends BaseController {
     @Autowired
     private LogService logService;
 
-    @Autowired
-    private HttpServletRequest request;
 
     @Autowired
     LocaleMessageUtil localeMessageUtil;
@@ -128,39 +129,31 @@ public class PageController extends BaseController {
     }
 
     /**
-     * 发表页面
+     * 保存页面
      *
      * @param post post
      */
     @PostMapping(value = "/save")
-    @ResponseBody
-    public JsonResult pushPage(@ModelAttribute Post post) {
+    @ApiOperation(value = "保存页面")
+    public JsonResult pushPage(@RequestBody Post post) {
         String msg = localeMessageUtil.getMessage("code.admin.common.save-success");
         //发表用户
-        User loginUser = getLoginUser();
-        post.setUserId(loginUser.getId());
         post.setPostType(PostTypeEnum.POST_TYPE_PAGE.getValue());
-        //当没有选择文章缩略图的时候，自动分配一张内置的缩略图
-        if (StringUtils.equals(post.getPostThumbnail(), BlogPropertiesEnum.DEFAULT_THUMBNAIL.getProp())) {
-            post.setPostThumbnail("/static/images/thumbnail/img_" + RandomUtil.randomInt(0, 14) + ".jpg");
-        }
         postService.insertOrUpdate(post);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), msg);
     }
 
 
     /**
-     * 跳转到修改页面
-     *
-     * @param pageId 页面编号
-     * @param model  model
-     * @return admin/admin_page_editor
+     * 获取页面详情
+     * @param pageId
+     * @return
      */
-    @GetMapping(value = "/edit")
-    public String editPage(@RequestParam("id") Long pageId, Model model) {
+    @GetMapping(value = "/get")
+    @ApiOperation(value = "获取页面详情")
+    public JsonResult<Post> get(@RequestParam("id") Long pageId) {
         Post post = postService.get(pageId);
-        model.addAttribute("post", post);
-        return "admin/admin_page_editor";
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(),post);
     }
 
     /**
@@ -170,7 +163,7 @@ public class PageController extends BaseController {
      * @return JsonResult
      */
     @GetMapping(value = "/checkUrl")
-    @ResponseBody
+    @ApiOperation(value = "检查该路径是否已经存在")
     public JsonResult checkUrlExists(@RequestParam("postUrl") String postUrl) {
         Post post = postService.findByPostUrl(postUrl, PostTypeEnum.POST_TYPE_PAGE.getValue());
         if (null != post) {

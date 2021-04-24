@@ -15,6 +15,8 @@ import com.technerd.easyblog.service.PostService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping(value = "/admin/notice")
+@Api(value = "后台公告管理控制器")
 public class NoticeController extends BaseController {
 
 
@@ -167,14 +170,13 @@ public class NoticeController extends BaseController {
     }
 
     /**
-     * 处理删除公告的请求
      *
-     * @param postId 公告编号
-     * @return 重定向到/admin/post
+     * @param postId
+     * @return
      */
     @PostMapping(value = "/delete")
-    @ResponseBody
     @SystemLog(description = "删除公告", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "删除公告")
     public JsonResult removePost(@RequestParam("id") Long postId) {
         Post post = postService.get(postId);
         if (post == null) {

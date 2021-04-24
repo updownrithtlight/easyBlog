@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.technerd.easyblog.mapper.UserMapper">
-
+    <resultMap id="BaseResultMap" type="com.technerd.easyblog.entity.User" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="del_flag" property="delFlag" jdbcType="BIT" />
+        <result column="create_by" property="createBy" jdbcType="INTEGER" />
+        <result column="update_by" property="updateBy" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="user_display_name" property="userDisplayName" jdbcType="VARCHAR" />
+        <result column="user_pass" property="userPass" jdbcType="VARCHAR" />
+        <result column="user_email" property="userEmail" jdbcType="VARCHAR" />
+        <result column="gender" property="gender" jdbcType="BIT" />
+        <result column="email_enable" property="emailEnable" jdbcType="BIT" />
+        <result column="is_admin" property="isAdmin" jdbcType="CHAR" />
+        <result column="user_avatar" property="userAvatar" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="BIT" />
+        <result column="user_desc" property="userDesc" jdbcType="VARCHAR" />
+        <result column="salt" property="salt" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, del_flag, create_by, update_by, create_time, update_time, user_name, user_display_name,
+        user_pass, user_email, gender, email_enable, is_admin, user_avatar, status, user_desc,
+        salt
+    </sql>
   <sql id="normal">0</sql>
   <sql id="ban">1</sql>
   <sql id="deleted">2</sql>
 
-  <select id="findByRoleId" resultType="com.technerd.easyblog.entity.User">
+  <select id="findByRoleId" resultMap="BaseResultMap">
       SELECT
           t.id,
           t.user_name,
@@ -35,7 +58,7 @@
           t.id DESC
   </select>
 
-    <select id="findByRoleIdAndCondition" resultType="com.technerd.easyblog.entity.User">
+    <select id="findByRoleIdAndCondition" resultMap="BaseResultMap">
       SELECT
           t.id,
           t.user_name,
@@ -79,7 +102,7 @@
           t.id DESC
   </select>
 
-  <select id="findByWithoutRole" resultType="com.technerd.easyblog.entity.User">
+  <select id="findByWithoutRole" resultMap="BaseResultMap">
       SELECT
           id,
           user_name,
@@ -113,7 +136,7 @@
             AND t.del_flag = 0
     </select>
 
-    <select id="getUserPostRanking" resultType="com.technerd.easyblog.entity.User">
+    <select id="getUserPostRanking" resultMap="BaseResultMap">
         SELECT
             count( * ) postCount,
             u.id,
@@ -136,7 +159,7 @@
             LIMIT #{value}
     </select>
 
-    <select id="getLatestUser" resultType="com.technerd.easyblog.entity.User">
+    <select id="getLatestUser" resultMap="BaseResultMap">
         SELECT
             id,
             user_name,

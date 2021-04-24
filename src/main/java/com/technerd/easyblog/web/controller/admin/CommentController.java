@@ -20,6 +20,8 @@ import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.OwoUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping(value = "/admin/comment")
+@Api(value = "后台评论管理控制器")
 public class CommentController extends BaseController {
 
     @Autowired
@@ -133,8 +136,8 @@ public class CommentController extends BaseController {
      * @return 重定向到/admin/comment
      */
     @PostMapping(value = "/revert")
-    @ResponseBody
     @SystemLog(description = "回滚评论", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "回滚评论")
     public JsonResult moveToPublish(@RequestParam("id") Long commentId) {
         User loginUser = getLoginUser();
         //评论
@@ -154,11 +157,11 @@ public class CommentController extends BaseController {
      * 删除评论
      *
      * @param commentId commentId
-     * @return string 重定向到/admin/comment
+     * @return string
      */
     @PostMapping(value = "/delete")
-    @ResponseBody
     @SystemLog(description = "删除评论", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "删除评论")
     public JsonResult moveToAway(@RequestParam("id") Long commentId) {
         //评论
         Comment comment = commentService.get(commentId);
@@ -182,8 +185,8 @@ public class CommentController extends BaseController {
      * @return 重定向到/admin/comment
      */
     @PostMapping(value = "/reply")
-    @ResponseBody
     @SystemLog(description = "回复评论", type = LogTypeEnum.OPERATION)
+    @ApiOperation("回复评论")
     public JsonResult replyComment(@RequestParam("id") Long commentId,
                                    @RequestParam("commentContent") String commentContent,
                                    @RequestParam("userAgent") String userAgent,
@@ -244,6 +247,7 @@ public class CommentController extends BaseController {
     @DeleteMapping(value = "/batchDelete")
     @ResponseBody
     @SystemLog(description = "批量删除评论", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "批量删除评论")
     public JsonResult batchDelete(@RequestParam("ids") List<Long> ids) {
         Long loginUserId = getLoginUserId();
         //批量操作

@@ -3,6 +3,7 @@ package com.technerd.easyblog.utils;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.technerd.easyblog.common.base.BaseEntity;
 import com.technerd.easyblog.model.vo.PageVo;
 
 import java.util.ArrayList;
@@ -18,7 +19,16 @@ public class PageUtil {
      * 最大分页大小
      */
     public static final int MAX_PAGE_SIZE = 100;
-
+    public static Page initMpPage(BaseEntity baseEntity){
+        PageVo pageVo = baseEntity.getPageVo();
+        long page = pageVo.getPage();
+        long current = pageVo.getCurrent();
+        String sort = pageVo.getSort();
+        long size = pageVo.getSize();
+        long pages = pageVo.getPages();
+        String order = pageVo.getOrder();
+        return initMpPage(current,size,sort,order);
+    }
     /**
      * mybatis分页封装
      *
@@ -144,5 +154,4 @@ public class PageUtil {
         }
         return pageVo;
     }
-
 }

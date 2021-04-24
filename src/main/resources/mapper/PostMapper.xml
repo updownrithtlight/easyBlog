@@ -1,13 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.technerd.easyblog.mapper.PostMapper">
-
+    <resultMap id="BaseResultMap" type="com.technerd.easyblog.entity.Post" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="del_flag" property="delFlag" jdbcType="BIT" />
+        <result column="create_by" property="createBy" jdbcType="INTEGER" />
+        <result column="update_by" property="updateBy" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="post_title" property="postTitle" jdbcType="VARCHAR" />
+        <result column="post_type" property="postType" jdbcType="VARCHAR" />
+        <result column="post_content" property="postContent" jdbcType="VARCHAR" />
+        <result column="post_url" property="postUrl" jdbcType="VARCHAR" />
+        <result column="post_summary" property="postSummary" jdbcType="VARCHAR" />
+        <result column="post_thumbnail" property="postThumbnail" jdbcType="VARCHAR" />
+        <result column="post_status" property="postStatus" jdbcType="VARCHAR" />
+        <result column="post_views" property="postViews" jdbcType="VARCHAR" />
+        <result column="post_likes" property="postLikes" jdbcType="VARCHAR" />
+        <result column="comment_size" property="commentSize" jdbcType="VARCHAR" />
+        <result column="post_source" property="postSource" jdbcType="VARCHAR" />
+        <result column="allow_comment" property="allowComment" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, del_flag, create_by, update_by, create_time, update_time, user_id, post_title,
+        post_type, post_content, post_url, post_summary, post_thumbnail, post_status, post_views,
+        post_likes, comment_size, post_source, allow_comment
+    </sql>
     <sql id="publish_status">0</sql>
     <sql id="draft_status">1</sql>
     <sql id="trash_status">2</sql>
 
 
-    <select id="findTopFive" resultType="com.technerd.easyblog.entity.Post">
+    <select id="findTopFive" resultMap="BaseResultMap">
         SELECT
             id,
             user_id,
@@ -42,7 +67,7 @@
             AND del_flag = 0
     </select>
 
-    <select id="findPostGroupByYearAndMonth" resultType="com.technerd.easyblog.model.dto.Archive">
+    <select id="findPostGroupByYearAndMonth" resultMap="BaseResultMap">
         SELECT
             YEAR  ( create_time ) YEAR,
             MONTH ( create_time ) MONTH,
@@ -61,7 +86,7 @@
         MONTH DESC
     </select>
 
-    <select id="findPostGroupByYear" resultType="com.technerd.easyblog.model.dto.Archive">
+    <select id="findPostGroupByYear" resultMap="BaseResultMap">
         SELECT
             YEAR ( create_time ) year,
             COUNT( id ) count

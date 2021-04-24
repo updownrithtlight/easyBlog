@@ -11,7 +11,7 @@ import lombok.Data;
  * @date : 2018/5/24
  */
 @Data
-public class JsonResult {
+public class JsonResult<T> {
 
     /**
      * 返回的状态码，0：失败，1：成功
@@ -26,7 +26,7 @@ public class JsonResult {
     /**
      * 返回的数据
      */
-    private Object result;
+    private T result;
 
     /**
      * 不返回数据的构造方法
@@ -46,7 +46,7 @@ public class JsonResult {
      * @param msg    信息
      * @param result 数据
      */
-    public JsonResult(Integer code, String msg, Object result) {
+    public JsonResult(Integer code, String msg, T result) {
         this.code = code;
         this.msg = msg;
         this.result = result;
@@ -58,8 +58,12 @@ public class JsonResult {
      * @param code   状态码
      * @param result 数据
      */
-    public JsonResult(Integer code, Object result) {
+    public JsonResult(Integer code, T result) {
         this.code = code;
         this.result = result;
+    }
+
+
+    public JsonResult() {
     }
 }

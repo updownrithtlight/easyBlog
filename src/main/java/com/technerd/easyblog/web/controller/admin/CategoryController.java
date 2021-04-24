@@ -6,15 +6,16 @@ import com.technerd.easyblog.entity.Category;
 import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
+import com.technerd.easyblog.model.vo.CommonEnum;
 import com.technerd.easyblog.service.CategoryService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
+import com.technerd.easyblog.utils.RedisUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping(value = "/admin/category")
-@Api(value = "分类")
+@Api(value = "后台分类管理控制器")
 public class CategoryController extends BaseController {
 
     @Autowired
@@ -39,40 +40,33 @@ public class CategoryController extends BaseController {
 
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
-     * 查询所有分类并渲染category页面
      *
-     * @return 模板路径admin/admin_category
+     * @param category
+     * @return
      */
-    @GetMapping
-    @ApiOperation("fenlei")
-    public String categories(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
-                             @RequestParam(value = "size", defaultValue = "50") Integer pageSize,
-                             @RequestParam(value = "sort", defaultValue = "createTime") String sort,
-                             @RequestParam(value = "order", defaultValue = "desc") String order, Model model) {
+    @PostMapping(value = "/list")
+    @ApiOperation("查询所有分类")
+    public JsonResult<Page<Category>> categories(@RequestBody Category category) {
         Long userId = getLoginUserId();
-        Page page = PageUtil.initMpPage(pageNumber, pageSize, sort, order);
-
+        Page page = PageUtil.initMpPage(category);
         Page<Category> categoryPage = categoryService.findByUserIdWithCountAndLevel(userId, page);
-        model.addAttribute("categories", categoryPage.getRecords());
-        model.addAttribute("pageInfo", PageUtil.convertPageVo(page));
-        return "admin/admin_category";
+        return new JsonResult<Page<Category>>(CommonEnum.SUCCESS.getCode(),categoryPage) ;
     }
 
     /**
-     * 新增/修改分类目录
      *
-     * @param category category对象
-     * @return 重定向到/admin/category
+     * @param category
+     * @return
      */
     @PostMapping(value = "/save")
-    @ResponseBody
-    @SystemLog(description = "保存分类", type = LogTypeEnum.OPERATION)
-    public JsonResult saveCategory(@ModelAttribute Category category) {
+    @SystemLog(description = "新增/修改分类目录", type = LogTypeEnum.OPERATION)
+    @ApiOperation("新增/修改分类目录")
+    public JsonResult saveCategory(@RequestBody Category category) {
         Long userId = getLoginUserId();
-
-        //我容易嘛，就怕你们乱搞，o(╥﹏╥)o
         if(category.getId() != null) {
             //1.判断id是否为当前用户
             Category checkId = categoryService.get(category.getId());
@@ -86,7 +80,6 @@ public class CategoryController extends BaseController {
                 return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
             }
         }
-
         //3.do
         category.setUserId(userId);
         categoryService.insertOrUpdate(category);
@@ -100,8 +93,8 @@ public class CategoryController extends BaseController {
      * @return JsonResult
      */
     @GetMapping(value = "/delete")
-    @ResponseBody
     @SystemLog(description = "删除分类", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "删除分类")
     public JsonResult checkDelete(@RequestParam("id") Long cateId) {
         //1.判断这个分类是否属于该用户
         Long userId = getLoginUserId();
@@ -126,33 +119,14 @@ public class CategoryController extends BaseController {
 
 
     /**
-     * 跳转到修改页面
+     * 查询详情
      *
-     * @param cateId cateId
-     * @param model  model
-     * @return 模板路径admin/admin_category
+     * @param cateId
      */
-    @GetMapping(value = "/edit")
-    public String toEditCategory(Model model,
-                                 @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
-                                 @RequestParam(value = "size", defaultValue = "50") Integer pageSize,
-                                 @RequestParam(value = "sort", defaultValue = "createTime") String sort,
-                                 @RequestParam(value = "order", defaultValue = "desc") String order,
-                                 @RequestParam("id") Long cateId) {
-        Long userId = getLoginUserId();
-        Page page = PageUtil.initMpPage(pageNumber, pageSize, sort, order);
-
-        //更新的分类
+    @GetMapping(value = "/getOne/{cateId}")
+    @ApiOperation("查询详情")
+    public JsonResult<Category> getCategory( @PathVariable("cateId") Long cateId) {
         Category category = categoryService.get(cateId);
-        if (category == null) {
-            return this.renderNotFound();
-        }
-        model.addAttribute("updateCategory", category);
-
-        // 所有分类
-        Page<Category> categoryPage = categoryService.findByUserIdWithCountAndLevel(userId, page);
-        model.addAttribute("categories", categoryPage.getRecords());
-        model.addAttribute("pageInfo", PageUtil.convertPageVo(page));
-        return "admin/admin_category";
+      return new JsonResult<Category>(CommonEnum.SUCCESS.getCode(),category) ;
     }
 }

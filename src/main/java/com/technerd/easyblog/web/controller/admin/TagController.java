@@ -10,6 +10,8 @@ import com.technerd.easyblog.service.TagService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping(value = "/admin/tag")
+@Api(value = "后台标签管理控制器")
 public class TagController extends BaseController {
 
     @Autowired
@@ -36,22 +39,23 @@ public class TagController extends BaseController {
     private LocaleMessageUtil localeMessageUtil;
 
     /**
-     * 渲染标签管理页面
      *
-     * @return 模板路径admin/admin_tag
+     * @param pageNumber
+     * @param pageSize
+     * @param sort
+     * @param order
+     * @return
      */
     @GetMapping
-    public String tags(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+    @ApiOperation(value = "标签列表")
+    public JsonResult<Page<Tag>> tags(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
                        @RequestParam(value = "size", defaultValue = "50") Integer pageSize,
                        @RequestParam(value = "sort", defaultValue = "createTime") String sort,
-                       @RequestParam(value = "order", defaultValue = "desc") String order, Model model) {
+                       @RequestParam(value = "order", defaultValue = "desc") String order) {
         Long userId = getLoginUserId();
         Page page = PageUtil.initMpPage(pageNumber, pageSize, sort, order);
-
         Page<Tag> tagPage = tagService.findByUserIdWithCount(userId, page);
-        model.addAttribute("tags", tagPage.getRecords());
-        model.addAttribute("pageInfo", PageUtil.convertPageVo(page));
-        return "admin/admin_tag";
+        return new JsonResult<Page<Tag>>(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"),tagPage);
     }
 
     /**
@@ -60,9 +64,9 @@ public class TagController extends BaseController {
      * @param tag tag
      */
     @PostMapping(value = "/save")
-    @ResponseBody
     @SystemLog(description = "保存标签", type = LogTypeEnum.OPERATION)
-    public JsonResult saveTag(@ModelAttribute Tag tag) {
+    @ApiOperation(value = "保存标签")
+    public JsonResult saveTag(@RequestBody Tag tag) {
         Long userId = getLoginUserId();
         //1.判断该标签是否为当前用户
         if (tag.getId() != null) {
@@ -85,40 +89,23 @@ public class TagController extends BaseController {
      * @return JsonResult
      */
     @GetMapping(value = "/delete")
-    @ResponseBody
     @SystemLog(description = "删除标签", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "删除标签")
     public JsonResult checkDelete(@RequestParam("id") Long tagId) {
         tagService.delete(tagId);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.delete-success"));
     }
 
     /**
-     * 跳转到修改标签页面
-     *
-     * @param model model
-     * @param tagId 标签编号
-     * @return 模板路径admin/admin_tag
+     * 标签详情
+     * @param tagId
+     * @return
      */
-    @GetMapping(value = "/edit")
-    public String toEditTag(Model model,
-                            @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
-                            @RequestParam(value = "size", defaultValue = "50") Integer pageSize,
-                            @RequestParam(value = "sort", defaultValue = "createTime") String sort,
-                            @RequestParam(value = "order", defaultValue = "desc") String order,
-                            @RequestParam("id") Long tagId) {
-        Long userId = getLoginUserId();
+    @GetMapping(value = "/get")
+    @ApiOperation(value = "获取标签详情")
+    public JsonResult<Tag> get(@RequestParam("id") Long tagId) {
         //当前修改的标签
         Tag tag = tagService.get(tagId);
-        if (tag == null) {
-            return this.renderNotFound();
-        }
-        model.addAttribute("updateTag", tag);
-
-        //所有标签
-        Page page = PageUtil.initMpPage(pageNumber, pageSize, sort, order);
-        Page<Tag> tagPage = tagService.findByUserIdWithCount(userId, page);
-        model.addAttribute("tags", tagPage.getRecords());
-        model.addAttribute("pageInfo", PageUtil.convertPageVo(page));
-        return "admin/admin_tag";
+        return new JsonResult<Tag>(ResultCodeEnum.SUCCESS.getCode(),"",tag);
     }
 }

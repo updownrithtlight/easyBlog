@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.technerd.easyblog.mapper.LogMapper">
-
-    <select id="findLatestLog" resultType="com.technerd.easyblog.entity.Log">
+    <resultMap id="BaseResultMap" type="com.technerd.easyblog.entity.Log" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="del_flag" property="delFlag" jdbcType="BIT" />
+        <result column="create_by" property="createBy" jdbcType="INTEGER" />
+        <result column="update_by" property="updateBy" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="log_type" property="logType" jdbcType="BIT" />
+        <result column="request_url" property="requestUrl" jdbcType="VARCHAR" />
+        <result column="request_type" property="requestType" jdbcType="CHAR" />
+        <result column="request_param" property="requestParam" jdbcType="VARCHAR" />
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="ip" property="ip" jdbcType="VARCHAR" />
+        <result column="ipInfo" property="ipinfo" jdbcType="VARCHAR" />
+        <result column="cost_time" property="costTime" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, del_flag, create_by, update_by, create_time, update_time, name, log_type, request_url,
+        request_type, request_param, username, ip, ipInfo, cost_time
+    </sql>
+    <select id="findLatestLog" resultMap="BaseResultMap">
         SELECT
             id,
             username,
@@ -21,7 +41,7 @@
             LIMIT #{value}
   </select>
 
-    <select id="findLatestLogByLogTypes" resultType="com.technerd.easyblog.entity.Log">
+    <select id="findLatestLogByLogTypes" resultMap="BaseResultMap">
         SELECT
             id,
             username,
@@ -60,7 +80,7 @@
             to_days( create_time ) = to_days( now( ) );
     </select>
 
-    <select id="findLatestLogByUsername" resultType="com.technerd.easyblog.entity.Log">
+    <select id="findLatestLogByUsername" resultMap="BaseResultMap">
         SELECT
             id,
             username,

@@ -117,6 +117,8 @@ public class RedisUtil {
         redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.SECONDS);
     }
 
+
+
     /**
      * 实现命令：GET key，返回 key所关联的字符串值。
      *

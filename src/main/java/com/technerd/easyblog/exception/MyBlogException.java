@@ -1,8 +1,7 @@
 package com.technerd.easyblog.exception;
 
 /**
- * @author 言曌
- * @date 2019-08-09 16:47
+ * @author technerd
  */
 
 public class MyBlogException extends RuntimeException {

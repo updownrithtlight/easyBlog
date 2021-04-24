@@ -1,7 +1,6 @@
 package com.technerd.easyblog.web.controller.admin;
 
 import com.technerd.easyblog.config.annotation.SystemLog;
-import com.technerd.easyblog.entity.Permission;
 import com.technerd.easyblog.entity.Role;
 import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
@@ -9,14 +8,11 @@ import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.service.PermissionService;
 import com.technerd.easyblog.service.RoleService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <pre>
@@ -29,6 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping(value = "/admin/role")
+@Api(value = "后台角色管理控制器")
 public class RoleController {
 
     @Autowired
@@ -40,20 +37,7 @@ public class RoleController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
-    /**
-     * 查询所有角色并渲染role页面
-     *
-     * @return 模板路径admin/admin_role
-     */
-    @GetMapping
-    public String roles(Model model) {
-        //角色列表
-        List<Role> roles = roleService.findAll();
-        model.addAttribute("roles", roles);
-        //封装权限
-        roles.forEach(role -> role.setPermissions(permissionService.listPermissionsByRoleId(role.getId())));
-        return "admin/admin_role";
-    }
+
 
     /**
      * 新增/修改角色
@@ -63,19 +47,10 @@ public class RoleController {
      */
     @PostMapping(value = "/save")
     @SystemLog(description = "保存角色", type = LogTypeEnum.OPERATION)
-    public String saveRole(@ModelAttribute Role role,
-                           @RequestParam(value = "ids", required = false) List<Long> permissionList) {
-        if (permissionList != null && permissionList.size() != 0) {
-            List<Permission> permissions = new ArrayList<>(permissionList.size());
-            for (Long permissionId : permissionList) {
-                Permission permission = new Permission();
-                permission.setId(permissionId);
-                permissions.add(permission);
-            }
-            role.setPermissions(permissions);
-        }
+    @ApiOperation(value = "保存角色")
+    public JsonResult saveRole(@RequestBody Role role) {
         roleService.insertOrUpdate(role);
-        return "redirect:/admin/role";
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage(""));
     }
 
     /**
@@ -84,9 +59,9 @@ public class RoleController {
      * @param roleId 角色Id
      * @return JsonResult
      */
-    @GetMapping(value = "/delete")
-    @ResponseBody
+    @DeleteMapping(value = "/delete")
     @SystemLog(description = "删除角色", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "删除角色")
     public JsonResult checkDelete(@RequestParam("id") Long roleId) {
         //判断这个角色有没有用户
         Integer userCount = roleService.countUserByRoleId(roleId);
@@ -94,28 +69,19 @@ public class RoleController {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.role.delete-failed"));
         }
         roleService.delete(roleId);
-        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), "");
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.delete-success"));
     }
 
 
     /**
-     * 跳转到修改页面
      *
-     * @param roleId roleId
-     * @param model  model
-     * @return 模板路径admin/admin_role
+     * @param roleId
+     * @return
      */
-    @GetMapping(value = "/edit")
-    public String toEditRole(Model model, @RequestParam("id") Long roleId) {
-        //更新的角色
+    @GetMapping(value = "/get")
+    @ApiOperation(value = "获取角色")
+    public JsonResult<Role> get(@RequestParam("id") Long roleId) {
         Role role = roleService.findByRoleId(roleId);
-        //当前角色的权限列表
-        role.setPermissions(permissionService.listPermissionsByRoleId(roleId));
-        model.addAttribute("updateRole", role);
-
-        //所有权限
-        List<Permission> permissions = permissionService.findPermissionListWithLevel(null);
-        model.addAttribute("permissions", permissions);
-        return "admin/admin_role_edit";
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), "",role);
     }
 }

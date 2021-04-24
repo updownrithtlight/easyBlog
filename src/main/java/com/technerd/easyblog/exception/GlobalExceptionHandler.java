@@ -44,7 +44,6 @@ import java.util.Set;
 public class GlobalExceptionHandler {
 
     //错误显示页面
-    public static final String viewName = "common/error/error";
 
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
@@ -71,12 +70,10 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public String handleMissingServletRequestParameterException(MissingServletRequestParameterException e, Model model) {
+    public JsonResult handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         log.error("缺少请求参数", e);
         String message = "【缺少请求参数】" + e.getMessage();
-        model.addAttribute("message", message);
-        model.addAttribute("code", 400);
-        return viewName;
+        return new JsonResult(400,message);
     }
 
     /**
@@ -84,12 +81,10 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public String handleHttpMessageNotReadableException(HttpMessageNotReadableException e, Model model) {
+    public JsonResult handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.error("参数解析失败", e);
         String message = "【参数解析失败】" + e.getMessage();
-        model.addAttribute("message", message);
-        model.addAttribute("code", 400);
-        return viewName;
+        return new JsonResult(400,message);
     }
 
     /**
@@ -97,16 +92,14 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException e, Model model) {
+    public JsonResult handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("参数验证失败", e);
         BindingResult result = e.getBindingResult();
         FieldError error = result.getFieldError();
         String field = error.getField();
         String code = error.getDefaultMessage();
         String message = "【参数验证失败】" + String.format("%s:%s", field, code);
-        model.addAttribute("message", message);
-        model.addAttribute("code", 400);
-        return viewName;
+        return new JsonResult(400,message);
     }
 
     /**
@@ -114,17 +107,14 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
-    public String handleBindException(BindException e, Model model) {
+    public JsonResult handleBindException(BindException e) {
         log.error("参数绑定失败", e);
         BindingResult result = e.getBindingResult();
         FieldError error = result.getFieldError();
         String field = error.getField();
         String code = error.getDefaultMessage();
         String message = "【参数绑定失败】" + String.format("%s:%s", field, code);
-
-        model.addAttribute("message", message);
-        model.addAttribute("code", 400);
-        return viewName;
+        return new JsonResult(400,message);
     }
 
 
@@ -133,14 +123,12 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public String handleServiceException(ConstraintViolationException e, Model model) {
+    public JsonResult handleServiceException(ConstraintViolationException e) {
         log.error("参数验证失败", e);
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
         ConstraintViolation<?> violation = violations.iterator().next();
         String message = "【参数验证失败】" + violation.getMessage();
-        model.addAttribute("message", message);
-        model.addAttribute("code", 400);
-        return viewName;
+        return new JsonResult(400,message);
     }
 
     /**
@@ -148,12 +136,10 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValidationException.class)
-    public String handleValidationException(ValidationException e, Model model) {
+    public JsonResult handleValidationException(ValidationException e) {
         log.error("参数验证失败", e);
         String message = "【参数验证失败】" + e.getMessage();
-        model.addAttribute("message", message);
-        model.addAttribute("code", 400);
-        return viewName;
+        return new JsonResult(400,message);
     }
 
     /**
@@ -161,12 +147,10 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoHandlerFoundException.class)
-    public String noHandlerFoundException(NoHandlerFoundException e, Model model) {
+    public JsonResult noHandlerFoundException(NoHandlerFoundException e) {
         log.error("Not Found", e);
         String message = "【页面不存在】" + e.getMessage();
-        model.addAttribute("message", message);
-        model.addAttribute("code", 404);
-        return viewName;
+        return new JsonResult(404,message);
     }
 
 
@@ -175,12 +159,10 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public String handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, Model model) {
+    public JsonResult handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("不支持当前请求方法", e);
         String message = "【不支持当前请求方法】" + e.getMessage();
-        model.addAttribute("message", message);
-        model.addAttribute("code", 405);
-        return viewName;
+        return new JsonResult(405,message);
     }
 
     /**
@@ -188,12 +170,10 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public String handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e, Model model) {
+    public JsonResult handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         log.error("不支持当前媒体类型", e);
         String message = "【不支持当前媒体类型】" + e.getMessage();
-        model.addAttribute("message", message);
-        model.addAttribute("code", 415);
-        return viewName;
+        return new JsonResult(415,message);
     }
 
     /**
@@ -222,35 +202,31 @@ public class GlobalExceptionHandler {
      * @throws Exception
      */
     @ExceptionHandler(value = Exception.class)
-    public ModelAndView defaultErrorHandler(HttpServletRequest request,
+    public JsonResult defaultErrorHandler(HttpServletRequest request,
                                             HttpServletResponse response,
-                                            Exception e, Model model) throws IOException {
+                                            Exception e) throws IOException {
         e.printStackTrace();
-
+        JsonResult jsonResult = new JsonResult();
         if (isAjax(request)) {
-            ModelAndView mav = new ModelAndView();
-            MappingJackson2JsonView view = new MappingJackson2JsonView();
-            Map<String, Object> attributes = new HashMap<String, Object>();
             if (e instanceof UnauthorizedException) {
-                attributes.put("msg", "没有权限");
+                jsonResult.setMsg("没有权限");
             } else {
-                attributes.put("msg", e.getMessage());
+                jsonResult.setMsg(e.getMessage());
             }
-            attributes.put("code", "0");
-            view.setAttributesMap(attributes);
-            mav.setView(view);
-            return mav;
+            jsonResult.setCode(0);
+            return jsonResult;
         }
 
         if (e instanceof UnauthorizedException) {
             //请登录
             log.error("无权访问", e);
-            return new ModelAndView("common/error/403");
+            jsonResult.setCode(403);
+            jsonResult.setMsg("无权访问");
         }
         //其他异常
         String message = e.getMessage();
-        model.addAttribute("code", 500);
-        model.addAttribute("message", message);
-        return new ModelAndView("common/error/500");
+        jsonResult.setCode(500);
+        jsonResult.setMsg(message);
+        return jsonResult;
     }
 }

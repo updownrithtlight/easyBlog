@@ -139,11 +139,10 @@ public class AdminController extends BaseController {
      * @return
      */
     @GetMapping(value = "/currentMenus")
-    @ResponseBody
-    public JsonResult getMenu() {
+    public JsonResult<List<Permission>> getMenu() {
         Long userId = getLoginUserId();
         List<Permission> permissions = permissionService.findPermissionTreeByUserIdAndResourceType(userId, "menu");
-        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), "", permissions);
+        return new JsonResult<List<Permission>>(ResultCodeEnum.SUCCESS.getCode(), "", permissions);
     }
 
     /**

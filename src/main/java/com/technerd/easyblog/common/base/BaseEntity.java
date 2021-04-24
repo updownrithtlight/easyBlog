@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.technerd.easyblog.common.constant.CommonConstant;
+import com.technerd.easyblog.model.vo.PageVo;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -49,4 +50,7 @@ public class BaseEntity implements Serializable {
      * 更新时间
      */
     private Date updateTime;
+
+    @TableField(exist = false)
+    private transient PageVo pageVo;
 }
