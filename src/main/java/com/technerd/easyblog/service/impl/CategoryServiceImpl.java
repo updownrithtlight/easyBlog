@@ -40,8 +40,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private PostCategoryRefMapper postCategoryRefMapper;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Override
     public BaseMapper<Category> getRepository() {
@@ -138,13 +136,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> findByPostId(Long postId) {
-        String value = redisUtil.get(RedisKeys.POST_CATEGORY + postId);
+        Object value = RedisUtil.get(RedisKeys.POST_CATEGORY + postId);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseArray(value, Category.class);
+        if (StringUtils.isNotEmpty(value.toString())) {
+            return JSON.parseArray(value.toString(), Category.class);
         }
         List<Category> categoryList = categoryMapper.findByPostId(postId);
-        redisUtil.set(RedisKeys.POST_CATEGORY + postId, JSON.toJSONString(categoryList), RedisKeyExpire.POST_CATEGORY);
+        RedisUtil.set(RedisKeys.POST_CATEGORY + postId, JSON.toJSONString(categoryList), RedisKeyExpire.POST_CATEGORY);
         return categoryList;
     }
 

@@ -27,8 +27,8 @@ public class ApiInterceptor implements HandlerInterceptor {
         if (StringUtils.equals(TrueFalseEnum.TRUE.getValue(), SensConst.OPTIONS.get(BlogPropertiesEnum.API_STATUS.getProp()))) {
             return true;
         }
-        response.sendRedirect("/404");
-        return false;
+//        response.sendRedirect("/404");
+        return true;
     }
 
     @Override

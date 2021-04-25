@@ -3,6 +3,7 @@ package com.technerd.easyblog.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.technerd.easyblog.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -88,32 +89,38 @@ public class Comment  extends BaseEntity {
     /**
      * 用户ID
      */
+    @ApiModelProperty(readOnly = true)
     private Long userId;
     /**
      * 关系路径
      */
+    @ApiModelProperty(readOnly = true)
     private String pathTrace;
 
     /**
      * 接受者用户Id
      */
+    @ApiModelProperty(readOnly = true)
     private Long acceptUserId;
 
     /**
      * 评论类型(匿名评论0，登录评论1)
      */
+    @ApiModelProperty(readOnly = true)
     private Integer commentType;
 
     /**
      * 评论文章
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private Post post;
 
     /**
      * 当前评论下的所有子评论
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private List<Comment> childComments;
 
 }

@@ -72,8 +72,8 @@ public class PostController extends BaseController {
 
     @GetMapping
     @ApiOperation(value = "文章列表")
-    public JsonResult<Page<Post>> posts(@RequestBody  Post post  ) {
-        Page page = PageUtil.initMpPage(post);
+    public JsonResult<Page<Post>> posts(@RequestBody  SearchVo searchVo ) {
+        Page page = PageUtil.initMpPage(searchVo);
         Page<Post> posts = postService.findAll(page );
         return new JsonResult<Page<Post>>(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"),posts);
     }

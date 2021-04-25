@@ -21,7 +21,6 @@ public class Options  extends BaseEntity {
     /**
      * 设置项名称
      */
-    @TableId(type = IdType.INPUT)
     private String optionName;
 
     /**

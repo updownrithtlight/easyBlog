@@ -1,34 +1,24 @@
 package com.technerd.easyblog.config.shiro;
 
-import cn.hutool.core.date.DateUnit;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Validator;
 import com.technerd.easyblog.entity.Permission;
 import com.technerd.easyblog.entity.Role;
 import com.technerd.easyblog.entity.User;
 import com.technerd.easyblog.jwt.JwtToken;
-import com.technerd.easyblog.model.enums.CommonParamsEnum;
-import com.technerd.easyblog.model.enums.TrueFalseEnum;
-import com.technerd.easyblog.model.enums.UserStatusEnum;
 import com.technerd.easyblog.service.PermissionService;
 import com.technerd.easyblog.service.RoleService;
 import com.technerd.easyblog.service.UserService;
 import com.technerd.easyblog.utils.JwtUtil;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 

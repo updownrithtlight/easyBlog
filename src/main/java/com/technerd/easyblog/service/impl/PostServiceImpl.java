@@ -86,8 +86,6 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private RestHighLevelClient highLevelClient;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Override
     public Post updatePostStatus(Long postId, Integer status) {
@@ -427,8 +425,8 @@ public class PostServiceImpl implements PostService {
             }
         }
         //删除缓存
-        redisUtil.del(RedisKeys.USER_POST_RANKING_BY_VIEWS + post.getUserId());
-        redisUtil.del(RedisKeys.ALL_POST_RANKING_BY_VIEWS);
+        RedisUtil.del(RedisKeys.USER_POST_RANKING_BY_VIEWS + post.getUserId());
+        RedisUtil.del(RedisKeys.ALL_POST_RANKING_BY_VIEWS);
         return post;
     }
 
@@ -443,7 +441,7 @@ public class PostServiceImpl implements PostService {
                 PostCategoryRef postCategoryRef = new PostCategoryRef(post.getId(), post.getCategories().get(i).getId());
                 postCategoryRefMapper.insert(postCategoryRef);
                 // 删除缓存
-                redisUtil.del(RedisKeys.POST_CATEGORY + post.getId());
+                RedisUtil.del(RedisKeys.POST_CATEGORY + post.getId());
             }
         }
         if (post.getTags() != null) {
@@ -454,7 +452,7 @@ public class PostServiceImpl implements PostService {
                 PostTagRef postTagRef = new PostTagRef(post.getId(), post.getTags().get(i).getId());
                 postTagRefMapper.insert(postTagRef);
                 // 删除缓存
-                redisUtil.del(RedisKeys.POST_TAG + post.getId());
+                RedisUtil.del(RedisKeys.POST_TAG + post.getId());
             }
         }
         return post;
@@ -470,8 +468,8 @@ public class PostServiceImpl implements PostService {
             postMapper.deleteById(post.getId());
         }
         //删除缓存
-        redisUtil.del(RedisKeys.USER_POST_RANKING_BY_VIEWS + post.getUserId());
-        redisUtil.del(RedisKeys.ALL_POST_RANKING_BY_VIEWS);
+        RedisUtil.del(RedisKeys.USER_POST_RANKING_BY_VIEWS + post.getUserId());
+        RedisUtil.del(RedisKeys.ALL_POST_RANKING_BY_VIEWS);
     }
 
     @Override
@@ -521,25 +519,25 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostSimpleDto> getPostRankingByPostView(Integer limit) {
-        String value = redisUtil.get(RedisKeys.ALL_POST_RANKING_BY_VIEWS);
+        Object value = RedisUtil.get(RedisKeys.ALL_POST_RANKING_BY_VIEWS);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseArray(value, PostSimpleDto.class);
+        if (StringUtils.isNotEmpty(value.toString())) {
+            return JSON.parseArray(value.toString(), PostSimpleDto.class);
         }
         List<PostSimpleDto> postList = postMapper.getPostRankingByPostView(limit);
-        redisUtil.set(RedisKeys.ALL_POST_RANKING_BY_VIEWS, JSON.toJSONString(postList), RedisKeyExpire.ALL_POST_RANKING_BY_VIEWS);
+        RedisUtil.set(RedisKeys.ALL_POST_RANKING_BY_VIEWS, JSON.toJSONString(postList), RedisKeyExpire.ALL_POST_RANKING_BY_VIEWS);
         return postList;
     }
 
     @Override
     public List<PostSimpleDto> getPostRankingByUserIdAndPostView(Long userId, Integer limit) {
-        String value = redisUtil.get(RedisKeys.USER_POST_RANKING_BY_VIEWS + userId);
+        Object value = RedisUtil.get(RedisKeys.USER_POST_RANKING_BY_VIEWS + userId);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseArray(value, PostSimpleDto.class);
+        if (StringUtils.isNotEmpty(value.toString())) {
+            return JSON.parseArray(value.toString(), PostSimpleDto.class);
         }
         List<PostSimpleDto> postList = postMapper.getPostRankingByUserIdAndPostView(userId, limit);
-        redisUtil.set(RedisKeys.USER_POST_RANKING_BY_VIEWS + userId, JSON.toJSONString(postList), RedisKeyExpire.USER_POST_RANKING_BY_VIEWS);
+        RedisUtil.set(RedisKeys.USER_POST_RANKING_BY_VIEWS + userId, JSON.toJSONString(postList), RedisKeyExpire.USER_POST_RANKING_BY_VIEWS);
         return postList;
     }
 
@@ -550,10 +548,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public CountDTO getAllCount() {
-        String value = redisUtil.get(RedisKeys.ALL_COUNT);
+        Object value = RedisUtil.get(RedisKeys.ALL_COUNT);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseObject(value, CountDTO.class);
+        if (StringUtils.isNotEmpty(value.toString())) {
+            return JSON.parseObject(value.toString(), CountDTO.class);
         }
         CountDTO countDTO = new CountDTO();
         countDTO.setUserCount(userMapper.selectCount(null));
@@ -563,7 +561,7 @@ public class PostServiceImpl implements PostService {
         countDTO.setCommentCount(commentMapper.selectCount(null));
         countDTO.setLinkCount(linkMapper.selectCount(null));
         countDTO.setViewCount(this.getTotalPostViews());
-        redisUtil.set(RedisKeys.ALL_COUNT, JSON.toJSONString(countDTO), RedisKeyExpire.ALL_COUNT);
+        RedisUtil.set(RedisKeys.ALL_COUNT, JSON.toJSONString(countDTO), RedisKeyExpire.ALL_COUNT);
         return countDTO;
     }
 }

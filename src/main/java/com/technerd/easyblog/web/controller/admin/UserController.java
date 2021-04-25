@@ -1,18 +1,12 @@
 package com.technerd.easyblog.web.controller.admin;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.technerd.easyblog.config.annotation.SystemLog;
-import com.technerd.easyblog.config.shiro.UserToken;
-import com.technerd.easyblog.entity.Role;
 import com.technerd.easyblog.entity.User;
-import com.technerd.easyblog.entity.UserRoleRef;
 import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
-import com.technerd.easyblog.model.enums.LoginTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.service.*;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
-import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
 import com.technerd.easyblog.web.query.UserVo;
 import io.swagger.annotations.Api;

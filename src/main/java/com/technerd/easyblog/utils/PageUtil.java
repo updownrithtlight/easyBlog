@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.technerd.easyblog.common.base.BaseEntity;
 import com.technerd.easyblog.model.vo.PageVo;
+import com.technerd.easyblog.model.vo.SearchVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,8 @@ public class PageUtil {
      * 最大分页大小
      */
     public static final int MAX_PAGE_SIZE = 100;
-    public static Page initMpPage(BaseEntity baseEntity){
-        PageVo pageVo = baseEntity.getPageVo();
+    public static Page initMpPage(SearchVo searchVo){
+        PageVo pageVo = searchVo.getPageVo();
         long page = pageVo.getPage();
         long current = pageVo.getCurrent();
         String sort = pageVo.getSort();

@@ -3,6 +3,7 @@ package com.technerd.easyblog.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.technerd.easyblog.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -62,6 +63,7 @@ public class Permission  extends BaseEntity {
      * 子权限列表
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private List<Permission> childPermissions;
 
 }

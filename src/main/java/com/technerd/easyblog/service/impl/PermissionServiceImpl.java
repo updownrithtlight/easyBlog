@@ -40,8 +40,6 @@ public class PermissionServiceImpl implements PermissionService {
     @Autowired
     private RolePermissionRefMapper rolePermissionRefMapper;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
 
     @Override
@@ -51,14 +49,14 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public Set<String> findPermissionUrlsByUserId(Long userId) {
-        String value = redisUtil.get(RedisKeys.USER_PERMISSION_URLS + userId);
+        Object o = RedisUtil.get(RedisKeys.USER_PERMISSION_URLS + userId);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseObject(value, Set.class);
+        if (StringUtils.isNotEmpty(o.toString())) {
+            return JSON.parseObject(o.toString(), Set.class);
         }
         List<Permission> permissions = permissionMapper.findPermissionByUserId(userId);
         Set<String> urls = permissions.stream().map(p -> p.getUrl()).collect(Collectors.toSet());
-        redisUtil.set(RedisKeys.USER_PERMISSION_URLS + userId, JSON.toJSONString(urls), RedisKeyExpire.USER_PERMISSION_URLS);
+        RedisUtil.set(RedisKeys.USER_PERMISSION_URLS + userId, JSON.toJSONString(urls), RedisKeyExpire.USER_PERMISSION_URLS);
         return urls;
     }
 
@@ -120,7 +118,7 @@ public class PermissionServiceImpl implements PermissionService {
         permissionMapper.deleteById(id);
         rolePermissionRefMapper.deleteByPermissionId(id);
         // 删除所有的用户的权限列表缓存
-        redisUtil.delByKeys(RedisKeys.USER_PERMISSION_URLS);
+        RedisUtil.del(RedisKeys.USER_PERMISSION_URLS);
     }
 
     @Override

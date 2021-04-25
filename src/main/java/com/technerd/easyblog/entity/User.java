@@ -73,6 +73,7 @@ public class User  extends BaseEntity {
     /**
      * 最后一次登录时间
      */
+    @ApiModelProperty(readOnly = true)
     private Date loginLast;
 
     /**
@@ -95,18 +96,21 @@ public class User  extends BaseEntity {
     /**
      * 注册时间
      */
+    @ApiModelProperty(readOnly = true)
     private Date createTime;
 
     /**
      * 文章数
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private Integer postCount;
 
     /**
      * 评论数
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private Integer commentCount;
 
     /**

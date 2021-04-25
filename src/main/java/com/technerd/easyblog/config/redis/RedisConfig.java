@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl .LaissezFaireSubTypeValidator;
-import com.technerd.easyblog.common.AnotherRedisUtil;
+import com.technerd.easyblog.utils.RedisUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -48,7 +48,7 @@ public class RedisConfig {
         template.afterPropertiesSet();
 
         //设置RedisUtil工具类
-        AnotherRedisUtil.setRedisTemplate(template);
+        RedisUtil.setRedisTemplate(template);
         return template;
     }
 

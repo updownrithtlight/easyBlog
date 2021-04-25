@@ -38,5 +38,4 @@ public interface MenuService extends BaseService<Menu, Long> {
      * @return 菜单
      */
     List<Menu> findMenuListWithLevel(Integer menuType);
-
 }

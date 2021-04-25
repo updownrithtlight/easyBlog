@@ -56,8 +56,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TagService tagService;
 
-    @Autowired
-    private RedisUtil redisUtil;
+
 
     @Override
     public User findByUserName(String userName) {
@@ -79,7 +78,7 @@ public class UserServiceImpl implements UserService {
         user.setId(userId);
         user.setUserPass(Md5Util.toMd5(password, "sens", 10));
         userMapper.updateById(user);
-        redisUtil.del(RedisKeys.USER + userId);
+        RedisUtil.del(RedisKeys.USER + userId);
 
     }
 
@@ -119,7 +118,7 @@ public class UserServiceImpl implements UserService {
         user.setLoginEnable(enable);
         user.setLoginLast(new Date());
         userMapper.updateById(user);
-        redisUtil.del(RedisKeys.USER + user.getId());
+        RedisUtil.del(RedisKeys.USER + user.getId());
     }
 
 
@@ -132,7 +131,7 @@ public class UserServiceImpl implements UserService {
     public Integer updateUserLoginError(User user) {
         user.setLoginError((user.getLoginError() == null ? 0 : user.getLoginError()) + 1);
         userMapper.updateById(user);
-        redisUtil.del(RedisKeys.USER + user.getId());
+        RedisUtil.del(RedisKeys.USER + user.getId());
         return user.getLoginError();
     }
 
@@ -147,7 +146,7 @@ public class UserServiceImpl implements UserService {
         user.setLoginError(0);
         user.setLoginLast(new Date());
         userMapper.updateById(user);
-        redisUtil.del(RedisKeys.USER + user.getId());
+        RedisUtil.del(RedisKeys.USER + user.getId());
         return user;
     }
 
@@ -211,7 +210,7 @@ public class UserServiceImpl implements UserService {
             user.setUserPass(userPass);
         }
         userMapper.updateById(user);
-        redisUtil.del(RedisKeys.USER + user.getId());
+        RedisUtil.del(RedisKeys.USER + user.getId());
         return user;
     }
 
@@ -291,14 +290,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(Long id) {
-        String value = redisUtil.get(RedisKeys.USER + id);
+        Object value = RedisUtil.get(RedisKeys.USER + id);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseObject(value, User.class);
+        if (StringUtils.isNotEmpty(value.toString())) {
+            return JSON.parseObject(value.toString(), User.class);
         }
         User user = userMapper.selectById(id);
         if(user != null) {
-            redisUtil.set(RedisKeys.USER + id, JSON.toJSONString(user), RedisKeyExpire.USER);
+            RedisUtil.set(RedisKeys.USER + id, JSON.toJSONString(user), RedisKeyExpire.USER);
         }
         return user;
     }

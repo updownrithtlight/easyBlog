@@ -3,6 +3,7 @@ package com.technerd.easyblog.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.technerd.easyblog.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -58,11 +59,13 @@ public class Menu  extends BaseEntity {
      * 菜单层级
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private Integer level;
 
     /**
      * 子菜单列表
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private List<Menu> childMenus;
 }

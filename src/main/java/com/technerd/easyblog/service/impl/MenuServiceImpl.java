@@ -37,8 +37,6 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private PermissionMapper permissionMapper;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Override
     public List<Menu> findByMenuPid(Long id) {
@@ -49,17 +47,17 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<Menu> findMenuTree(Integer menuType) {
-        String value = redisUtil.get(RedisKeys.FRONT_MENU + menuType);
+        Object value = RedisUtil.get(RedisKeys.FRONT_MENU + menuType);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseArray(value, Menu.class);
+        if (StringUtils.isNotEmpty(value.toString())) {
+            return JSON.parseArray(value.toString(), Menu.class);
         }
         Map<String, Object> condition = new HashMap<>(1);
         condition.put("menu_type", menuType);
         List<Menu> menuList = menuMapper.selectByMap(condition);
         //以层级(树)关系显示
         List<Menu> menuTree = MenuUtil.getMenuTree(menuList);
-        redisUtil.set(RedisKeys.FRONT_MENU + menuType, JSON.toJSONString(menuTree), RedisKeyExpire.FRONT_MENU);
+        RedisUtil.set(RedisKeys.FRONT_MENU + menuType, JSON.toJSONString(menuTree), RedisKeyExpire.FRONT_MENU);
         return menuTree;
     }
 
@@ -122,7 +120,7 @@ public class MenuServiceImpl implements MenuService {
             update(menu);
         }
         //删除缓存
-        redisUtil.del(RedisKeys.FRONT_MENU + menu.getMenuType());
+        RedisUtil.del(RedisKeys.FRONT_MENU + menu.getMenuType());
         return menu;
     }
 
@@ -132,7 +130,8 @@ public class MenuServiceImpl implements MenuService {
         if (menu != null) {
             menuMapper.deleteById(id);
             //删除缓存
-            redisUtil.del(RedisKeys.FRONT_MENU + menu.getMenuType());
+            RedisUtil.del(RedisKeys.FRONT_MENU + menu.getMenuType());
         }
     }
+
 }

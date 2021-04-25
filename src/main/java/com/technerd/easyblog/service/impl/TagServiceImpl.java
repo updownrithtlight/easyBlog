@@ -38,8 +38,6 @@ public class TagServiceImpl implements TagService {
     @Autowired
     private PostTagRefMapper postTagRefMapper;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
 
     @Override
@@ -106,13 +104,13 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> findByPostId(Long postId) {
-        String value = redisUtil.get(RedisKeys.POST_TAG+ postId);
+        Object value = RedisUtil.get(RedisKeys.POST_TAG+ postId);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseArray(value, Tag.class);
+        if (StringUtils.isNotEmpty(value.toString())) {
+            return JSON.parseArray(value.toString(), Tag.class);
         }
         List<Tag> tagList = tagMapper.findByPostId(postId);
-        redisUtil.set(RedisKeys.POST_TAG + postId, JSON.toJSONString(tagList), RedisKeyExpire.POST_TAG);
+        RedisUtil.set(RedisKeys.POST_TAG + postId, JSON.toJSONString(tagList), RedisKeyExpire.POST_TAG);
         return tagList;
     }
 
@@ -183,13 +181,13 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> getTagRankingByUserId(Long userId, Integer limit) {
-        String value = redisUtil.get(RedisKeys.USER_TAG_RANKING + userId);
+        Object value = RedisUtil.get(RedisKeys.USER_TAG_RANKING + userId);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseArray(value, Tag.class);
+        if (StringUtils.isNotEmpty(value.toString())) {
+            return JSON.parseArray(value.toString(), Tag.class);
         }
         List<Tag> tagList = tagMapper.getTagRankingByUserId(userId, limit);
-        redisUtil.set(RedisKeys.USER_TAG_RANKING + userId, JSON.toJSONString(tagList), RedisKeyExpire.USER_TAG_RANKING);
+        RedisUtil.set(RedisKeys.USER_TAG_RANKING + userId, JSON.toJSONString(tagList), RedisKeyExpire.USER_TAG_RANKING);
         return tagList;
     }
 }

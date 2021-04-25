@@ -1,5 +1,6 @@
 package com.technerd.easyblog.model.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,4 +20,6 @@ public class SearchVo implements Serializable {
      * 结束日期
      */
     private String endDate;
+
+    private transient PageVo pageVo;
 }

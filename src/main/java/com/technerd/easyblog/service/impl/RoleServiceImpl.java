@@ -35,8 +35,6 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private RolePermissionRefService rolePermissionRefService;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Override
     public BaseMapper<Role> getRepository() {
@@ -127,7 +125,7 @@ public class RoleServiceImpl implements RoleService {
             update(entity);
         }
 
-        redisUtil.delByKeys(RedisKeys.USER_PERMISSION_URLS);
+        RedisUtil.del(RedisKeys.USER_PERMISSION_URLS);
         return entity;
     }
 

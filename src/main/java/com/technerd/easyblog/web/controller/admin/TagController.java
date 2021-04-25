@@ -6,6 +6,7 @@ import com.technerd.easyblog.entity.Tag;
 import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
+import com.technerd.easyblog.model.vo.SearchVo;
 import com.technerd.easyblog.service.TagService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
@@ -38,23 +39,12 @@ public class TagController extends BaseController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
-    /**
-     *
-     * @param pageNumber
-     * @param pageSize
-     * @param sort
-     * @param order
-     * @return
-     */
-    @GetMapping
+
+    @PostMapping("/list")
     @ApiOperation(value = "标签列表")
-    public JsonResult<Page<Tag>> tags(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
-                       @RequestParam(value = "size", defaultValue = "50") Integer pageSize,
-                       @RequestParam(value = "sort", defaultValue = "createTime") String sort,
-                       @RequestParam(value = "order", defaultValue = "desc") String order) {
-        Long userId = getLoginUserId();
-        Page page = PageUtil.initMpPage(pageNumber, pageSize, sort, order);
-        Page<Tag> tagPage = tagService.findByUserIdWithCount(userId, page);
+    public JsonResult<Page<Tag>> tags(@RequestBody SearchVo searchVo) {
+        Page page = PageUtil.initMpPage(searchVo);
+        Page<Tag> tagPage = tagService.findAll( page);
         return new JsonResult<Page<Tag>>(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"),tagPage);
     }
 

@@ -1,7 +1,6 @@
 package com.technerd.easyblog.web.controller.admin;
 
 import com.google.common.base.Strings;
-import com.technerd.easyblog.common.AnotherRedisUtil;
 import com.technerd.easyblog.config.annotation.SystemLog;
 import com.technerd.easyblog.entity.Role;
 import com.technerd.easyblog.entity.User;
@@ -13,6 +12,7 @@ import com.technerd.easyblog.model.vo.CommonEnum;
 import com.technerd.easyblog.service.*;
 import com.technerd.easyblog.utils.JwtUtil;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
+import com.technerd.easyblog.utils.RedisUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
 import com.technerd.easyblog.web.query.UserVo;
 import io.swagger.annotations.Api;
@@ -82,7 +82,7 @@ public class LoginController extends BaseController {
         String token = JwtUtil.sign(dbUser.getId(), timeMillis);
         dbUser.setUserPass(null);
         //token放入redis
-        AnotherRedisUtil.set(dbUser.getId().toString(), timeMillis, JwtUtil.REFRESH_EXPIRE_TIME);
+        RedisUtil.set(dbUser.getId().toString(), timeMillis, JwtUtil.REFRESH_EXPIRE_TIME);
         response.setHeader("Authorization", token);
         response.setHeader("Access-Control-Expose-Headers", "Authorization");
         return new JsonResult(CommonEnum.SUCCESS.getCode(), "");
@@ -206,7 +206,7 @@ public class LoginController extends BaseController {
          * 清除redis中的RefreshToken即可
          */
         Long userId = JwtUtil.getUserId(request);
-        AnotherRedisUtil.del(Long.toString(userId));
+        RedisUtil.del(Long.toString(userId));
         return new JsonResult<Boolean>(CommonEnum.SUCCESS.getCode(),"");
     }
 }

@@ -29,8 +29,6 @@ public class OptionsServiceImpl implements OptionsService {
     @Autowired
     private OptionsMapper optionsMapper;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
     /**
      * 批量保存设置
@@ -43,7 +41,7 @@ public class OptionsServiceImpl implements OptionsService {
             options.forEach((k, v) -> saveOption(k, v));
         }
         // 删除缓存
-        redisUtil.del(RedisKeys.ALL_OPTIONS);
+        RedisUtil.del(RedisKeys.ALL_OPTIONS);
     }
 
     /**
@@ -93,17 +91,19 @@ public class OptionsServiceImpl implements OptionsService {
      */
     @Override
     public Map<String, String> findAllOptions() {
-        String value = redisUtil.get(RedisKeys.ALL_OPTIONS);
+        Object value = RedisUtil.get(RedisKeys.ALL_OPTIONS);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseObject(value, Map.class);
+        if(value!=null){
+            if (StringUtils.isNotEmpty(value.toString())) {
+                return JSON.parseObject(value.toString(), Map.class);
+            }
         }
         List<Options> optionsList = optionsMapper.selectList(null);
         Map<String, String> options = new HashMap<>(optionsList.size());
         if (null != optionsList) {
             optionsList.forEach(option -> options.put(option.getOptionName(), option.getOptionValue()));
         }
-        redisUtil.set(RedisKeys.ALL_OPTIONS, JSON.toJSONString(options), RedisKeyExpire.ALL_OPTIONS);
+        RedisUtil.set(RedisKeys.ALL_OPTIONS, JSON.toJSONString(options), RedisKeyExpire.ALL_OPTIONS);
         return options;
     }
 

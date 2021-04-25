@@ -31,8 +31,6 @@ public class LinkServiceImpl implements LinkService {
     @Autowired
     private LinkMapper linkMapper;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Override
     public BaseMapper<Link> getRepository() {
@@ -62,7 +60,7 @@ public class LinkServiceImpl implements LinkService {
             update(entity);
         }
         // 删除缓存
-        redisUtil.del(RedisKeys.ALL_LINK);
+        RedisUtil.del(RedisKeys.ALL_LINK);
         return entity;
     }
 
@@ -70,18 +68,18 @@ public class LinkServiceImpl implements LinkService {
     public void delete(Long id) {
         linkMapper.deleteById(id);
         // 删除缓存
-        redisUtil.del(RedisKeys.ALL_LINK);
+        RedisUtil.del(RedisKeys.ALL_LINK);
     }
 
     @Override
     public List<Link> findAll() {
-        String value = redisUtil.get(RedisKeys.ALL_LINK);
+        Object o = RedisUtil.get(RedisKeys.ALL_LINK);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseArray(value, Link.class);
+        if (StringUtils.isNotEmpty(o.toString())) {
+            return JSON.parseArray(o.toString(), Link.class);
         }
         List<Link> linkList = linkMapper.selectList(null);
-        redisUtil.set(RedisKeys.ALL_LINK, JSON.toJSONString(linkList), RedisKeyExpire.ALL_LINK);
+        RedisUtil.set(RedisKeys.ALL_LINK, JSON.toJSONString(linkList), RedisKeyExpire.ALL_LINK);
         return linkList;
     }
 }

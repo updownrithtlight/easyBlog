@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.technerd.easyblog.entity.Category;
 import com.technerd.easyblog.model.dto.QueryCondition;
 import com.technerd.easyblog.model.vo.SearchVo;
 
@@ -83,9 +84,14 @@ public interface BaseService<E, ID extends Serializable> {
     default E insertOrUpdate(E entity) {
         try {
             Object id = entity.getClass().getMethod("getId").invoke(entity);
+            Date date = new Date();
             if (id != null) {
+                entity.getClass().getMethod("setUpdateTime",Date.class).invoke(entity,date);
                 update(entity);
             } else {
+
+                entity.getClass().getMethod("setId",Long.class).invoke(entity);
+                entity.getClass().getMethod("setCreateTime",Date.class).invoke(entity,date);
                 insert(entity);
             }
         } catch (IllegalAccessException e) {

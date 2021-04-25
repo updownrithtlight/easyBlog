@@ -7,6 +7,7 @@ import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.model.vo.CommonEnum;
+import com.technerd.easyblog.model.vo.SearchVo;
 import com.technerd.easyblog.service.CategoryService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
@@ -40,19 +41,17 @@ public class CategoryController extends BaseController {
 
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
-    @Autowired
-    private RedisUtil redisUtil;
 
     /**
      *
-     * @param category
+     * @param searchVo
      * @return
      */
     @PostMapping(value = "/list")
     @ApiOperation("查询所有分类")
-    public JsonResult<Page<Category>> categories(@RequestBody Category category) {
+    public JsonResult<Page<Category>> categories(@RequestBody SearchVo searchVo) {
         Long userId = getLoginUserId();
-        Page page = PageUtil.initMpPage(category);
+        Page page = PageUtil.initMpPage(searchVo);
         Page<Category> categoryPage = categoryService.findByUserIdWithCountAndLevel(userId, page);
         return new JsonResult<Page<Category>>(CommonEnum.SUCCESS.getCode(),categoryPage) ;
     }
@@ -66,22 +65,20 @@ public class CategoryController extends BaseController {
     @SystemLog(description = "新增/修改分类目录", type = LogTypeEnum.OPERATION)
     @ApiOperation("新增/修改分类目录")
     public JsonResult saveCategory(@RequestBody Category category) {
-        Long userId = getLoginUserId();
-        if(category.getId() != null) {
-            //1.判断id是否为当前用户
-            Category checkId = categoryService.get(category.getId());
-            if (checkId != null && !Objects.equals(checkId.getUserId(), userId)) {
-                return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
-            }
-
-            //2.判断pid是否为该用户
-            Category checkPid = categoryService.get(category.getCatePid());
-            if (checkPid != null && !Objects.equals(checkPid.getUserId(), userId)) {
-                return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
-            }
-        }
+//        if(category.getId() != null) {
+//            //1.判断id是否为当前用户
+//            Category checkId = categoryService.get(category.getId());
+//            if (checkId != null && !Objects.equals(checkId.getUserId(), userId)) {
+//                return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
+//            }
+//
+//            //2.判断pid是否为该用户
+//            Category checkPid = categoryService.get(category.getCatePid());
+//            if (checkPid != null && !Objects.equals(checkPid.getUserId(), userId)) {
+//                return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
+//            }
+//        }
         //3.do
-        category.setUserId(userId);
         categoryService.insertOrUpdate(category);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"));
     }

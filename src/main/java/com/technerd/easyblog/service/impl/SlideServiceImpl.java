@@ -32,20 +32,18 @@ public class SlideServiceImpl implements SlideService {
     @Autowired
     private SlideMapper slideMapper;
 
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Override
     public List<Slide> findBySlideType(Integer slideType) {
-        String value = redisUtil.get(RedisKeys.SLIDE + slideType);
+        Object o = RedisUtil.get(RedisKeys.SLIDE + slideType);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseArray(value, Slide.class);
+        if (StringUtils.isNotEmpty(o.toString())) {
+            return JSON.parseArray(o.toString(), Slide.class);
         }
         Map<String, Object> map = new HashMap<>(1);
         map.put("slide_type", slideType);
         List<Slide> slideList = slideMapper.selectByMap(map);
-        redisUtil.set(RedisKeys.SLIDE + slideType, JSON.toJSONString(slideList), RedisKeyExpire.SLIDE);
+        RedisUtil.set(RedisKeys.SLIDE + slideType, JSON.toJSONString(slideList), RedisKeyExpire.SLIDE);
         return slideList;
     }
 
@@ -77,7 +75,7 @@ public class SlideServiceImpl implements SlideService {
             update(slide);
         }
         // 删除缓存
-        redisUtil.del(RedisKeys.SLIDE + slide.getSlideType());
+        RedisUtil.del(RedisKeys.SLIDE + slide.getSlideType());
         return slide;
     }
 
@@ -87,7 +85,7 @@ public class SlideServiceImpl implements SlideService {
         if (slide != null) {
             slideMapper.deleteById(id);
             // 删除缓存
-            redisUtil.del(RedisKeys.SLIDE + slide.getSlideType());
+            RedisUtil.del(RedisKeys.SLIDE + slide.getSlideType());
         }
     }
 }

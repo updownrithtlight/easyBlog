@@ -3,6 +3,7 @@ package com.technerd.easyblog.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.technerd.easyblog.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 
@@ -32,6 +33,7 @@ public class Tag  extends BaseEntity {
      * 数量
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private Integer count;
 
 }

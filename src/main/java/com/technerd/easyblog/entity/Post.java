@@ -3,6 +3,7 @@ package com.technerd.easyblog.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.technerd.easyblog.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -68,21 +69,25 @@ public class Post  extends BaseEntity {
     /**
      * 文章访问量
      */
+    @ApiModelProperty(readOnly = true)
     private Long postViews;
 
     /**
      * 点赞访问量
      */
+    @ApiModelProperty(readOnly = true)
     private Long postLikes;
 
     /**
      * 评论数量(冗余字段，加快查询速度)
      */
+    @ApiModelProperty(readOnly = true)
     private Long commentSize;
 
     /**
      * 文章来源（原创1，转载2，翻译3）
      */
+    @ApiModelProperty(readOnly = true)
     private Integer postSource;
 
     /**
@@ -94,24 +99,28 @@ public class Post  extends BaseEntity {
      * 发表用户 多对一
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private User user;
 
     /**
      * 文章所属分类
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private List<Category> categories = new ArrayList<>();
 
     /**
      * 文章所属标签
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private List<Tag> tags = new ArrayList<>();
 
     /**
      * 文章的评论
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private List<Comment> comments = new ArrayList<>();
 
 

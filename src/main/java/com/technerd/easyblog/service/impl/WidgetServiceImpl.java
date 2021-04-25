@@ -32,20 +32,19 @@ public class WidgetServiceImpl implements WidgetService {
     @Autowired
     private WidgetMapper widgetMapper;
 
-    @Autowired
-    private RedisUtil redisUtil;
+
 
     @Override
     public List<Widget> findByWidgetType(Integer widgetType) {
-        String value = redisUtil.get(RedisKeys.WIDGET + widgetType);
+        Object value = RedisUtil.get(RedisKeys.WIDGET + widgetType);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value)) {
-            return JSON.parseArray(value, Widget.class);
+        if (StringUtils.isNotEmpty(value.toString())) {
+            return JSON.parseArray(value.toString(), Widget.class);
         }
         Map<String, Object> map = new HashMap<>(1);
         map.put("widget_type", widgetType);
         List<Widget> widgetList = widgetMapper.selectByMap(map);
-        redisUtil.set(RedisKeys.WIDGET + widgetType, JSON.toJSONString(widgetList), RedisKeyExpire.WIDGET);
+        RedisUtil.set(RedisKeys.WIDGET + widgetType, JSON.toJSONString(widgetList), RedisKeyExpire.WIDGET);
         return widgetList;
     }
 
@@ -77,7 +76,7 @@ public class WidgetServiceImpl implements WidgetService {
             update(widget);
         }
         //删除缓存
-        redisUtil.del(RedisKeys.WIDGET + widget.getWidgetType());
+        RedisUtil.del(RedisKeys.WIDGET + widget.getWidgetType());
         return widget;
     }
 
@@ -87,7 +86,7 @@ public class WidgetServiceImpl implements WidgetService {
         if(widget != null) {
             widgetMapper.deleteById(widget.getId());
             //删除缓存
-            redisUtil.del(RedisKeys.WIDGET + widget.getWidgetType());
+            RedisUtil.del(RedisKeys.WIDGET + widget.getWidgetType());
         }
     }
 }

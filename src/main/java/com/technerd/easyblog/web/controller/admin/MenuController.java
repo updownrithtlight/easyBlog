@@ -1,13 +1,18 @@
 package com.technerd.easyblog.web.controller.admin;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.technerd.easyblog.config.annotation.SystemLog;
+import com.technerd.easyblog.entity.Category;
 import com.technerd.easyblog.entity.Menu;
 import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.MenuTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
+import com.technerd.easyblog.model.vo.CommonEnum;
+import com.technerd.easyblog.model.vo.SearchVo;
 import com.technerd.easyblog.service.MenuService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
+import com.technerd.easyblog.utils.PageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +43,13 @@ public class MenuController {
     @Autowired
     LocaleMessageUtil localeMessageUtil;
 
-
+    @PostMapping(value = "/list")
+    @ApiOperation("查询所有分类")
+    public JsonResult<Page<Menu>> categories(@RequestBody SearchVo searchVo) {
+        Page page = PageUtil.initMpPage(searchVo);
+        Page<Menu> menuServiceAll = menuService.findAll( page);
+        return new JsonResult<Page<Menu>>(CommonEnum.SUCCESS.getCode(),menuServiceAll) ;
+    }
 
     /**
      * 新增/修改菜单

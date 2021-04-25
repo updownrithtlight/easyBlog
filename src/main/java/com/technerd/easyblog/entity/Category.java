@@ -3,6 +3,7 @@ package com.technerd.easyblog.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.technerd.easyblog.common.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -38,11 +39,13 @@ public class Category extends BaseEntity {
     /**
      * 分类层级
      */
+    @ApiModelProperty(readOnly = true)
     private Integer cateLevel = 1;
 
     /**
      * 关系路径
      */
+    @ApiModelProperty(readOnly = true)
     private String pathTrace;
 
     /**
@@ -59,6 +62,7 @@ public class Category extends BaseEntity {
      * 数量
      */
     @TableField(exist = false)
+    @ApiModelProperty(readOnly = true)
     private Integer count;
 
 }
