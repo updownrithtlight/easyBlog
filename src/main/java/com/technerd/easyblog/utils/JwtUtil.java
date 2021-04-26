@@ -1,4 +1,4 @@
-package com.technerd.easyblog.config;
+package com.technerd.easyblog.utils;
 
 import io.jsonwebtoken.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -84,11 +84,6 @@ public class SystemLogAspect {
             String description = getControllerMethodInfo(joinPoint).get("description").toString();
             Map<String, String[]> logParams = request.getParameterMap();
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//            Subject subject = SecurityUtils.getSubject();
-//            if (subject.isAuthenticated()) {
-//                User user = (User) subject.getPrincipal();
-//                username = user.getUserName();
-//            }
 
             Log log = new Log();
             //请求用户

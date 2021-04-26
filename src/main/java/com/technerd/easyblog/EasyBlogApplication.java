@@ -1,6 +1,6 @@
 package com.technerd.easyblog;
 
-import com.technerd.easyblog.config.JwtUtil;
+import com.technerd.easyblog.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

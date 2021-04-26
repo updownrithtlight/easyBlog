@@ -1,7 +1,7 @@
 package com.technerd.easyblog.web.controller.admin;
 
 import com.google.common.base.Strings;
-import com.technerd.easyblog.config.JwtUtil;
+import com.technerd.easyblog.utils.JwtUtil;
 import com.technerd.easyblog.config.annotation.SystemLog;
 import com.technerd.easyblog.entity.Role;
 import com.technerd.easyblog.entity.User;

@@ -1,6 +1,6 @@
 package com.technerd.easyblog.config.interceptor;
 
-import com.technerd.easyblog.config.JwtUtil;
+import com.technerd.easyblog.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
