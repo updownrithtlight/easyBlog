@@ -9,17 +9,19 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Parameter;
+import springfox.documentation.service.ApiKey;
+import springfox.documentation.service.AuthorizationScope;
+import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.ArrayList;
+
+
 
 /**
  * @program: tensquare61
@@ -34,37 +36,7 @@ public class JwtInterptorConfig extends WebMvcConfigurationSupport{
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor);
-    }
 
-    @Bean
-    public Docket productApi() {
-        //全局参数
-        Parameter token = new ParameterBuilder().name("token")
-                .description("用户登陆令牌")
-                .parameterType("header")
-                .modelRef(new ModelRef("String"))
-                //是否必须
-                .required(false)
-                .build();
-        ArrayList<Parameter> parameters = new ArrayList<>();
-        parameters.add(token);
-        return new Docket(DocumentationType.SWAGGER_2)
-                .globalOperationParameters(parameters)
-                .apiInfo(apiInfo())
-                .enable(true)
-                .groupName("api")
-                .select()
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                .paths(PathSelectors.any()).build();
-
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title("easyBlog")
-                .description("easyBlog管理接口文档")
-                .version("1.0")
-                .build();
     }
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -73,4 +45,6 @@ public class JwtInterptorConfig extends WebMvcConfigurationSupport{
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
+
+
 }
