@@ -10,6 +10,11 @@ server:
     session:
       timeout: 86400
 spring:
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
   transaction:
     rollback-on-commit-failure: true
   datasource:
@@ -76,9 +81,9 @@ logging:
     org:
       springframework:
         boot:
-          autoconfigure: error
-#        web:
-#          trace
+          autoconfigure: debug
+        web:
+          trace
 application:
   formatted-version: 1.0.0
 

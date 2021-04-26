@@ -79,7 +79,6 @@ public class LoginController extends BaseController {
             return new JsonResult(CommonEnum.PASSWORD_ERROR.getCode(),"");
         }
         //密码正确
-        long timeMillis = System.currentTimeMillis();
         String token = jwtUtil.createToken(dbUser.getId()+"", dbUser.getUserName(),"admin");
         dbUser.setUserPass(null);
         //token放入redis
@@ -121,8 +120,8 @@ public class LoginController extends BaseController {
         user.setLoginEnable(TrueFalseEnum.TRUE.getValue());
         user.setLoginError(0);
         //加密用户的密码
-        String password = encoder.encode(user.getUserPass());
-        user.setUserPass(password);
+        String password = encoder.encode(user.getUserPass().trim());
+        user.setUserPass(password.trim());
         user.setStatus(UserStatusEnum.NORMAL.getCode());
         userService.insert(user);
 
