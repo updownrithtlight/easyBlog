@@ -15,11 +15,11 @@ import com.technerd.easyblog.mapper.UserMapper;
 import com.technerd.easyblog.model.enums.RoleEnum;
 import com.technerd.easyblog.model.enums.TrueFalseEnum;
 import com.technerd.easyblog.service.*;
-import com.technerd.easyblog.utils.Md5Util;
 import com.technerd.easyblog.utils.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +56,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TagService tagService;
 
-
+    @Autowired
+    BCryptPasswordEncoder encoder;
 
     @Override
     public User findByUserName(String userName) {
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
     public void updatePassword(Long userId, String password) {
         User user = new User();
         user.setId(userId);
-        user.setUserPass(Md5Util.toMd5(password, "sens", 10));
+        user.setUserPass(encoder.encode(password));
         userMapper.updateById(user);
         RedisUtil.del(RedisKeys.USER + userId);
 
@@ -189,10 +190,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User insert(User user) {
         //1.验证表单数据是否合法
-        basicUserCheck(user);
+//        basicUserCheck(user);
         //2.验证用户名和邮箱是否存在
         checkUserNameAndUserName(user);
-        String userPass = Md5Util.toMd5(user.getUserPass(), "sens", 10);
+        String userPass = encoder.encode(user.getUserPass());
         user.setUserPass(userPass);
         userMapper.insert(user);
         return user;
@@ -201,12 +202,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User user) {
         //1.验证表单数据是否合法
-        basicUserCheck(user);
+//        basicUserCheck(user);
         //2.验证用户名和邮箱是否存在
         checkUserNameAndUserName(user);
 
         if(user.getUserPass() != null) {
-            String userPass = Md5Util.toMd5(user.getUserPass(), "sens", 10);
+            String userPass = encoder.encode(user.getUserPass());
             user.setUserPass(userPass);
         }
         userMapper.updateById(user);
@@ -290,10 +291,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(Long id) {
-        Object value = RedisUtil.get(RedisKeys.USER + id);
+        String value =(String) RedisUtil.get(RedisKeys.USER + id);
         // 先从缓存取，缓存没有从数据库取
-        if (StringUtils.isNotEmpty(value.toString())) {
-            return JSON.parseObject(value.toString(), User.class);
+        if (StringUtils.isNotEmpty(value)) {
+            return JSON.parseObject(value, User.class);
         }
         User user = userMapper.selectById(id);
         if(user != null) {

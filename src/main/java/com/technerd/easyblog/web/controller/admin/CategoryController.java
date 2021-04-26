@@ -50,7 +50,7 @@ public class CategoryController extends BaseController {
     @PostMapping(value = "/list")
     @ApiOperation("查询所有分类")
     public JsonResult<Page<Category>> categories(@RequestBody SearchVo searchVo) {
-        Long userId = getLoginUserId();
+        Long userId = 0L;
         Page page = PageUtil.initMpPage(searchVo);
         Page<Category> categoryPage = categoryService.findByUserIdWithCountAndLevel(userId, page);
         return new JsonResult<Page<Category>>(CommonEnum.SUCCESS.getCode(),categoryPage) ;
@@ -94,7 +94,7 @@ public class CategoryController extends BaseController {
     @ApiOperation(value = "删除分类")
     public JsonResult checkDelete(@RequestParam("id") Long cateId) {
         //1.判断这个分类是否属于该用户
-        Long userId = getLoginUserId();
+        Long userId = 0L;
         Category category = categoryService.get(cateId);
         if(!Objects.equals(category.getUserId(), userId)) {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));

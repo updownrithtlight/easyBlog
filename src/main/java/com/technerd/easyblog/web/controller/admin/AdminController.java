@@ -51,44 +51,6 @@ public class AdminController extends BaseController {
     @Autowired
     private PermissionService permissionService;
 
-    /**
-     * 请求后台页面
-     *
-     * @param model model
-     * @return 模板路径admin/admin_index
-     */
-    @GetMapping
-    public String index(Model model) {
-        Boolean isAdmin = loginUserIsAdmin();
-        User user = getLoginUser();
-
-        if (isAdmin) {
-            //用户总数、文章总数、评论总数、附件总数
-            model.addAttribute("userTotalCount", userService.getTotalCount());
-            model.addAttribute("postTotalCount", postService.getTotalCount());
-            model.addAttribute("commentTotalCount", commentService.getTotalCount());
-            model.addAttribute("attachmentTotalCount", attachmentService.getTotalCount());
-        } else {
-            //文章数、评论数、附件数、注册时间
-            model.addAttribute("userTotalCount", userService.getTotalCount());
-            model.addAttribute("postTotalCount", postService.countByUserId(user.getId()));
-            model.addAttribute("commentTotalCount", commentService.countByAcceptUser(user.getId()));
-            model.addAttribute("attachmentTotalCount", attachmentService.countByUserId(user.getId()));
-        }
-
-        model.addAttribute("createTime", user.getCreateTime());
-
-        //用户排行榜、最近注册用户，最新日志
-        model.addAttribute("userRanking", userService.getUserPostRanking(5));
-        model.addAttribute("newUsers", userService.getLatestRegisterUser(8));
-//        List<String> logTypes = new ArrayList<>();
-//        logTypes.add(LogTypeEnum.LOGIN.getValue());
-//        logTypes.add(LogTypeEnum.REGISTER.getValue());
-//        model.addAttribute("logs", logService.findLatestLogByLogTypes(logTypes, 10));
-        model.addAttribute("logs", logService.findLatestLogByUsername(user.getUserName(), 10));
-        return "admin/admin_index";
-    }
-
 
     /**
      * 查看所有日志
@@ -140,8 +102,7 @@ public class AdminController extends BaseController {
      */
     @GetMapping(value = "/currentMenus")
     public JsonResult<List<Permission>> getMenu() {
-        Long userId = getLoginUserId();
-        List<Permission> permissions = permissionService.findPermissionTreeByUserIdAndResourceType(userId, "menu");
+        List<Permission> permissions = permissionService.findPermissionTreeByUserIdAndResourceType(0L, "menu");
         return new JsonResult<List<Permission>>(ResultCodeEnum.SUCCESS.getCode(), "", permissions);
     }
 

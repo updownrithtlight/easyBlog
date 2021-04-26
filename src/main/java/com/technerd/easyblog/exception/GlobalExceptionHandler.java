@@ -3,11 +3,9 @@ package com.technerd.easyblog.exception;
 import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -187,7 +185,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public JsonResult processApiException(HttpServletResponse response,
                                           MyBlogException e) {
-        JsonResult result = new JsonResult(0, e.getMessage());
+        JsonResult result = new JsonResult(e.getCode(), e.getMessage());
         response.setStatus(200);
         response.setContentType("application/json;charset=UTF-8");
         log.error("业务异常，提示前端操作不合法", e.getMessage(), e);
@@ -207,22 +205,7 @@ public class GlobalExceptionHandler {
                                             Exception e) throws IOException {
         e.printStackTrace();
         JsonResult jsonResult = new JsonResult();
-        if (isAjax(request)) {
-            if (e instanceof UnauthorizedException) {
-                jsonResult.setMsg("没有权限");
-            } else {
-                jsonResult.setMsg(e.getMessage());
-            }
-            jsonResult.setCode(0);
-            return jsonResult;
-        }
 
-        if (e instanceof UnauthorizedException) {
-            //请登录
-            log.error("无权访问", e);
-            jsonResult.setCode(403);
-            jsonResult.setMsg("无权访问");
-        }
         //其他异常
         String message = e.getMessage();
         jsonResult.setCode(500);

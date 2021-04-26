@@ -1,6 +1,7 @@
 package com.technerd.easyblog.web.controller.admin;
 
 import com.google.common.base.Strings;
+import com.technerd.easyblog.config.JwtUtil;
 import com.technerd.easyblog.config.annotation.SystemLog;
 import com.technerd.easyblog.entity.Role;
 import com.technerd.easyblog.entity.User;
@@ -10,9 +11,7 @@ import com.technerd.easyblog.model.dto.SensConst;
 import com.technerd.easyblog.model.enums.*;
 import com.technerd.easyblog.model.vo.CommonEnum;
 import com.technerd.easyblog.service.*;
-import com.technerd.easyblog.utils.JwtUtil;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
-import com.technerd.easyblog.utils.RedisUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
 import com.technerd.easyblog.web.query.UserVo;
 import io.swagger.annotations.Api;
@@ -20,8 +19,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +52,10 @@ public class LoginController extends BaseController {
     @Autowired
     private MailService mailService;
 
-
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+    @Autowired
+    private JwtUtil jwtUtil;
     /**
      * 用户登录
      *
@@ -73,16 +75,14 @@ public class LoginController extends BaseController {
             return new JsonResult(CommonEnum.NO_SUCH_USER.getCode(),"");
         }
         //校验密码
-        password = new SimpleHash("MD5", password, dbUser.getSalt(), 32).toString();
-        if (!password.equals(dbUser.getUserPass())) {
+        if (!encoder.matches(password, dbUser.getUserPass())) {
             return new JsonResult(CommonEnum.PASSWORD_ERROR.getCode(),"");
         }
         //密码正确
         long timeMillis = System.currentTimeMillis();
-        String token = JwtUtil.sign(dbUser.getId(), timeMillis);
+        String token = jwtUtil.createToken(dbUser.getId()+"", dbUser.getUserName(),"admin");
         dbUser.setUserPass(null);
         //token放入redis
-        RedisUtil.set(dbUser.getId().toString(), timeMillis, JwtUtil.REFRESH_EXPIRE_TIME);
         response.setHeader("Authorization", token);
         response.setHeader("Access-Control-Expose-Headers", "Authorization");
         return new JsonResult(CommonEnum.SUCCESS.getCode(), "");
@@ -120,10 +120,8 @@ public class LoginController extends BaseController {
         user.setEmailEnable(TrueFalseEnum.FALSE.getValue());
         user.setLoginEnable(TrueFalseEnum.TRUE.getValue());
         user.setLoginError(0);
-        String salt = UUID.randomUUID().toString().substring(0, 6);
         //加密用户的密码
-        String password = new SimpleHash("MD5", user.getUserPass(), salt, 32).toString();
-        user.setSalt(salt);
+        String password = encoder.encode(user.getUserPass());
         user.setUserPass(password);
         user.setStatus(UserStatusEnum.NORMAL.getCode());
         userService.insert(user);
@@ -173,10 +171,9 @@ public class LoginController extends BaseController {
         if (user != null && Objects.equals(user.getUserEmail(), userVo.getUserEmail())) {
             //验证成功，将密码由邮件方法发送给对方
             //1.修改密码
-            String salt = UUID.randomUUID().toString().substring(0, 6);
             String password = RandomStringUtils.randomNumeric(8);
-            String md5 = new SimpleHash("MD5", user.getUserPass(), salt, 32).toString();
-            userService.updatePassword(user.getId(), md5);
+            String encode = encoder.encode(user.getUserPass());
+            userService.updatePassword(user.getId(), encode);
             //2.发送邮件
             if (StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.SMTP_EMAIL_ENABLE.getProp()), TrueFalseEnum.TRUE.getValue())) {
                 Map<String, Object> map = new HashMap<>(8);
@@ -205,8 +202,6 @@ public class LoginController extends BaseController {
         /*
          * 清除redis中的RefreshToken即可
          */
-        Long userId = JwtUtil.getUserId(request);
-        RedisUtil.del(Long.toString(userId));
         return new JsonResult<Boolean>(CommonEnum.SUCCESS.getCode(),"");
     }
 }

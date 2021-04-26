@@ -97,7 +97,7 @@ public class NoticeController extends BaseController {
 
         String msg = localeMessageUtil.getMessage("code.admin.common.save-success");
         //发表用户
-        User loginUser = getLoginUser();
+        User loginUser = new User();
         post.setUserId(loginUser.getId());
         post.setPostType(PostTypeEnum.POST_TYPE_NOTICE.getValue());
         if (null != post.getId()) {

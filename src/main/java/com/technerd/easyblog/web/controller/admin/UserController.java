@@ -13,18 +13,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.crypto.hash.SimpleHash;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * <pre>
@@ -48,7 +41,8 @@ public class UserController extends BaseController {
 
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
-
+    @Autowired
+    private BCryptPasswordEncoder encoder;
     /**
      * 删除用户
      *
@@ -77,7 +71,7 @@ public class UserController extends BaseController {
     @ApiOperation(value = "查询用户详情")
     public JsonResult<User> get(@RequestParam("id") Long userId) {
         User user = userService.get(userId);
-        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.delete-success"),user);
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.query-success"),user);
     }
 
     /**
@@ -133,7 +127,6 @@ public class UserController extends BaseController {
         userService.insertOrUpdate(user);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.edit-success"));
     }
-
     /**
      * 管理员给用户修改密码
      *
@@ -147,10 +140,9 @@ public class UserController extends BaseController {
         User user = userService.get(userVo.getUserId());
         String password=null;
         if (null != user) {
-            String salt = UUID.randomUUID().toString().substring(0, 24);
              password = RandomStringUtils.randomNumeric(8);
-            String md5 = new SimpleHash("MD5", password, salt, 32).toString();
-            userService.updatePassword(user.getId(), md5);
+            String encode = encoder.encode(password);
+            userService.updatePassword(user.getId(), encode);
         }
         JsonResult result = new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.user.update-password-success"));
         result.setResult(password);

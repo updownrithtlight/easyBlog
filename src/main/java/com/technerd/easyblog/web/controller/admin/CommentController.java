@@ -91,7 +91,7 @@ public class CommentController extends BaseController {
                            @RequestParam(value = "sort", defaultValue = "createTime") String sort,
                            @RequestParam(value = "order", defaultValue = "desc") String order) {
         Page page = PageUtil.initMpPage(pageNumber, pageSize, sort, order);
-        Long loginUserId = getLoginUserId();
+        Long loginUserId = 0L;
         Comment condition = new Comment();
         condition.setAcceptUserId(loginUserId);
         condition.setCommentStatus(status);
@@ -139,7 +139,7 @@ public class CommentController extends BaseController {
     @SystemLog(description = "回滚评论", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "回滚评论")
     public JsonResult moveToPublish(@RequestParam("id") Long commentId) {
-        User loginUser = getLoginUser();
+        User loginUser = new User();
         //评论
         Comment comment = commentService.get(commentId);
         //检查权限
@@ -192,7 +192,7 @@ public class CommentController extends BaseController {
                                    @RequestParam("userAgent") String userAgent,
                                    HttpServletRequest request) {
         //博主信息
-        User loginUser = getLoginUser();
+        User loginUser = new User();
         //被回复的评论
         Comment lastComment = commentService.get(commentId);
         if (lastComment == null) {
@@ -249,7 +249,7 @@ public class CommentController extends BaseController {
     @SystemLog(description = "批量删除评论", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "批量删除评论")
     public JsonResult batchDelete(@RequestParam("ids") List<Long> ids) {
-        Long loginUserId = getLoginUserId();
+        Long loginUserId = 0L;
         //批量操作
         //1、防止恶意操作
         if (ids == null || ids.size() == 0 || ids.size() >= 100) {
@@ -281,7 +281,7 @@ public class CommentController extends BaseController {
      * @param comment
      */
     private void basicCheck(Comment comment) {
-        Long loginUserId = getLoginUserId();
+        Long loginUserId = 0L ;
         if (comment == null) {
             throw new MyBlogException(localeMessageUtil.getMessage("code.admin.common.comment-not-exist"));
         }

@@ -35,7 +35,7 @@
             t.cate_level,
             t.path_trace,
             t.cate_desc,
-            ( SELECT count( id ) FROM post_category_ref r WHERE r.cate_id = t.id ) AS `count`,
+            ( SELECT count( r.id ) FROM post_category_ref r WHERE r.cate_id = t.id ) AS `count`,
             t.create_time
         FROM
             category t

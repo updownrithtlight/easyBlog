@@ -1,17 +1,12 @@
 package com.technerd.easyblog.web.controller.admin;
 
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.HtmlUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.common.base.Strings;
 import com.technerd.easyblog.config.annotation.SystemLog;
-import com.technerd.easyblog.entity.Category;
 import com.technerd.easyblog.entity.Post;
-import com.technerd.easyblog.entity.Tag;
 import com.technerd.easyblog.entity.User;
 import com.technerd.easyblog.exception.MyBlogException;
 import com.technerd.easyblog.model.dto.JsonResult;
-import com.technerd.easyblog.model.dto.QueryCondition;
 import com.technerd.easyblog.model.dto.SensConst;
 import com.technerd.easyblog.model.enums.*;
 import com.technerd.easyblog.model.vo.SearchVo;
@@ -28,8 +23,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -89,14 +82,14 @@ public class PostController extends BaseController {
     @ApiOperation(value = "添加/更新文章")
     public JsonResult pushPost(@RequestBody Post post) {
 //        checkCategoryAndTag(cateIds, tagList);
-        User user = getLoginUser();
-        Boolean isAdmin = loginUserIsAdmin();
+        User user = new User();
+        Boolean isAdmin = true;
         //1、如果开启了文章审核，非管理员文章默认状态为审核
         Boolean isOpenCheck = StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.OPEN_POST_CHECK.getProp()), TrueFalseEnum.TRUE.getValue());
         if (isOpenCheck && !isAdmin) {
             post.setPostStatus(PostStatusEnum.CHECKING.getCode());
         }
-        post.setUserId(getLoginUserId());
+        post.setUserId(0L);
 
         //2、非管理员只能修改自己的文章，管理员都可以修改
         Post originPost = null;
@@ -250,7 +243,7 @@ public class PostController extends BaseController {
     @SystemLog(description = "批量删除文章", type = LogTypeEnum.OPERATION)
     @ApiOperation("批量删除文章")
     public JsonResult batchDelete(@RequestParam("ids") List<Long> ids) {
-        Long userId = getLoginUserId();
+
         //批量操作
         //1、防止恶意操作
         if (ids == null || ids.size() == 0 || ids.size() >= 100) {
@@ -260,7 +253,7 @@ public class PostController extends BaseController {
         //文章作者才可以删除
         List<Post> postList = postService.findByBatchIds(ids);
         for (Post post : postList) {
-            if (!Objects.equals(post.getUserId(), userId)) {
+            if (!Objects.equals(post.getUserId(), 0L)) {
                 return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
             }
         }
@@ -287,9 +280,9 @@ public class PostController extends BaseController {
             throw new MyBlogException(localeMessageUtil.getMessage("code.admin.common.post-not-exist"));
         }
         //只有创建者有权删除
-        User user = getLoginUser();
+        User user = new User();
         //管理员和文章作者可以删除
-        Boolean isAdmin = loginUserIsAdmin();
+        Boolean isAdmin = true;
         if (!Objects.equals(post.getUserId(), user.getId()) && !isAdmin) {
             throw new MyBlogException(localeMessageUtil.getMessage("code.admin.common.permission-denied"));
         }

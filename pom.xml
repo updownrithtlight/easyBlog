@@ -35,7 +35,7 @@
         <qiniu-java-sdk.version>7.2.14</qiniu-java-sdk.version>
         <thumbnailator.version>0.4.8</thumbnailator.version>
         <jaxb-api.version>2.3.0</jaxb-api.version>
-        <shiro.version>1.6.0</shiro.version>
+<!--        <shiro.version>1.6.0</shiro.version>-->
         <swagger.version>2.9.2</swagger.version>
         <jwt.version>3.9.0</jwt.version>
         <mybatis-plus.version>3.1.2</mybatis-plus.version>
@@ -103,8 +103,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
-
-
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
 
         <!-- 邮件 -->
         <dependency>
@@ -206,11 +213,11 @@
         </dependency>
 
         <!--Shiro-->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring</artifactId>
-            <version>${shiro.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.shiro</groupId>-->
+<!--            <artifactId>shiro-spring</artifactId>-->
+<!--            <version>${shiro.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.auth0</groupId>

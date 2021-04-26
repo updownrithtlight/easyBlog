@@ -170,4 +170,14 @@ public interface CommonConstant {
      * 部门负责人类型 副负责人
      */
     Integer HEADER_TYPE_VICE = 1;
+
+    /**
+     * 表单防重复提交token前缀
+     */
+     String NO_REPEAT_PRE = "no_repeat_";
+
+    /**
+     * JWT token前缀
+     */
+     String JWT_TOKEN = "token_jwt_";
 }

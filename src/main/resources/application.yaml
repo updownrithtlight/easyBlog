@@ -76,9 +76,9 @@ logging:
     org:
       springframework:
         boot:
-          autoconfigure: debug
-        web:
-          trace
+          autoconfigure: error
+#        web:
+#          trace
 application:
   formatted-version: 1.0.0
 
@@ -92,12 +92,10 @@ ignored:
     - /admin/forget
     - /admin/getForget
 swagger:
-  enabled: true
-
+    enabled: true
+    username: yourusername
+    password: yourpassword
 jwt:
-  #  AccessToken 过期时间单位分钟
-  EXPIRE_TIME: 5
-  # RefreshToken 过期时间单位分钟
-  REFRESH_EXPIRE_TIME: 30
-  # 密钥盐
-  TOKEN_SECRET: 50eFa4d9W8ba4d*bb276f^11
+  config:
+    ttl: 3600000
+    secretKey: easyBlog

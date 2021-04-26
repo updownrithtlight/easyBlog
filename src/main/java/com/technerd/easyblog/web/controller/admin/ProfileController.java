@@ -11,15 +11,12 @@ import com.technerd.easyblog.service.RoleService;
 import com.technerd.easyblog.service.ThirdAppBindService;
 import com.technerd.easyblog.service.UserService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
-import com.technerd.easyblog.utils.Md5Util;
 import com.technerd.easyblog.web.controller.common.BaseController;
 import com.technerd.easyblog.web.query.PassChange;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,7 +57,7 @@ public class ProfileController extends BaseController {
     @ApiOperation("获取用户详细信息")
     public JsonResult profile(@RequestParam("id") Long bindId) {
         //1.用户信息
-        User user = getLoginUser();
+        User user = new User();
 
         //2.第三方信息
         List<ThirdAppBind> thirdAppBinds = thirdAppBindService.findByUserId(user.getId());
@@ -80,7 +77,7 @@ public class ProfileController extends BaseController {
     @SystemLog(description = "修改个人资料", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "修改个人资料")
     public JsonResult saveProfile(@RequestBody User user) {
-        User loginUser = getLoginUser();
+        User loginUser = new User();
 
         User saveUser = userService.get(loginUser.getId());
         saveUser.setUserPass(null);
@@ -106,13 +103,12 @@ public class ProfileController extends BaseController {
     @SystemLog(description = "修改密码", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "修改密码")
     public JsonResult changePass(@RequestBody PassChange passChange) {
-        User loginUser = getLoginUser();
-        User user = userService.get(loginUser.getId());
-        if (user != null && Objects.equals(user.getUserPass(), Md5Util.toMd5(passChange.getBeforePass(), "sens", 10))) {
-            userService.updatePassword(user.getId(), passChange.getNewPass());
-        } else {
-            return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.user.old-password-error"));
-        }
+//        User user = userService.get(loginUser.getId());
+//        if (user != null && Objects.equals(user.getUserPass(), Md5Util.toMd5(passChange.getBeforePass(), "sens", 10))) {
+//            userService.updatePassword(user.getId(), passChange.getNewPass());
+//        } else {
+//            return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.user.old-password-error"));
+//        }
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.user.update-password-success"));
     }
 
@@ -132,7 +128,7 @@ public class ProfileController extends BaseController {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.bind-not-exist"));
         }
         //2.判断是不是本人
-        User user = getLoginUser();
+        User user = new User();
         if (!Objects.equals(thirdAppBind.getUserId(), user.getId())) {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
         }

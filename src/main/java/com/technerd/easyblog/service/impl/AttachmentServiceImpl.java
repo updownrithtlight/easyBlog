@@ -24,7 +24,6 @@ import com.technerd.easyblog.model.dto.QiNiuPutSet;
 import com.technerd.easyblog.model.dto.SensConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.service.AttachmentService;
-import com.technerd.easyblog.utils.Md5Util;
 import com.technerd.easyblog.utils.SensUtils;
 import com.upyun.UpException;
 import net.coobird.thumbnailator.Thumbnails;
@@ -218,7 +217,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         try {
             //华东zone0 华北 zone1 华南zone2 北美zoneNa0
             final Configuration cfg = new Configuration(Zone.zone0());
-            String key = "uploads/" + DateUtil.thisYear() + "/" + (DateUtil.thisMonth() + 1) + "/" + Md5Util.getMD5Checksum(file);
+            String key = "uploads/" + DateUtil.thisYear() + "/" + (DateUtil.thisMonth() + 1);
             final String accessKey = SensConst.OPTIONS.get("qiniu_access_key");
             final String secretKey = SensConst.OPTIONS.get("qiniu_secret_key");
             final String domain = SensConst.OPTIONS.get("qiniu_domain");
@@ -277,7 +276,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     public Map<String, String> attachUpYunUpload(MultipartFile file, HttpServletRequest request) {
         final Map<String, String> resultMap = new HashMap<>(6);
         try {
-            String key = "uploads/" + DateUtil.thisYear() + "/" + (DateUtil.thisMonth() + 1) + "/" + Md5Util.getMD5Checksum(file);
+            String key = "uploads/" + DateUtil.thisYear() + "/" + (DateUtil.thisMonth() + 1) + "/" ;
             final String ossSrc = SensConst.OPTIONS.get("upyun_oss_src");
             final String ossPwd = SensConst.OPTIONS.get("upyun_oss_pwd");
             final String bucket = SensConst.OPTIONS.get("upyun_oss_bucket");

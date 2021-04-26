@@ -12,7 +12,7 @@ import java.util.List;
  * @author liuyanzhao
  */
 @Data
-@TableName("rbac_role")
+@TableName("role")
 public class Role  extends BaseEntity {
 
     /**

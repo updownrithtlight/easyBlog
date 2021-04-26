@@ -121,6 +121,7 @@ public class RedisKeys {
      * 某个用户的权限URL列表
      */
     public static final String USER_PERMISSION_URLS = BASE_PREFIX + "USER_PERMISSION_URLS:";
-
+    //redis存放用户验证码时给的前缀
+    public static final String REDIS_LOGIN_CODE="LOGIN_CODE:";
 
 }

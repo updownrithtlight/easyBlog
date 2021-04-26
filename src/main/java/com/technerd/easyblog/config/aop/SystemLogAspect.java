@@ -9,8 +9,6 @@ import com.technerd.easyblog.utils.IpInfoUtil;
 import com.technerd.easyblog.utils.ObjectUtil;
 import com.technerd.easyblog.utils.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;

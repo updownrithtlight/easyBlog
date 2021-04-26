@@ -57,7 +57,7 @@ public class TagController extends BaseController {
     @SystemLog(description = "保存标签", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "保存标签")
     public JsonResult saveTag(@RequestBody Tag tag) {
-        Long userId = getLoginUserId();
+        Long userId = 0L;
         //1.判断该标签是否为当前用户
         if (tag.getId() != null) {
             Tag checkId = tagService.get(tag.getId());
