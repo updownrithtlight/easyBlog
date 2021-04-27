@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50732
 File Encoding         : 65001
 
-Date: 2021-04-20 22:50:36
+Date: 2021-04-27 12:58:47
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,7 +20,7 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `article`;
 CREATE TABLE `article` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -38,7 +38,7 @@ CREATE TABLE `article` (
 -- ----------------------------
 DROP TABLE IF EXISTS `attachment`;
 CREATE TABLE `attachment` (
-  `id` int(16) NOT NULL COMMENT 'ID',
+  `id` int(16) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -62,10 +62,10 @@ CREATE TABLE `attachment` (
 -- ----------------------------
 DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
-  `id` int(16) NOT NULL COMMENT 'ID',
+  `id` int(100) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
-  `create_by` int(16) NOT NULL COMMENT '创建人用户名',
-  `update_by` int(16) NOT NULL COMMENT '更新人',
+  `create_by` varchar(16) DEFAULT NULL COMMENT '创建人用户名',
+  `update_by` varchar(16) DEFAULT NULL COMMENT '更新人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `cate_name` varchar(100) DEFAULT NULL COMMENT '分类名称不能为空',
@@ -76,14 +76,14 @@ CREATE TABLE `category` (
   `cate_desc` varchar(255) DEFAULT NULL COMMENT '关系路径',
   `user_id` int(16) DEFAULT NULL COMMENT '所属用户ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for comment
 -- ----------------------------
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -113,7 +113,7 @@ CREATE TABLE `comment` (
 -- ----------------------------
 DROP TABLE IF EXISTS `link`;
 CREATE TABLE `link` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -131,13 +131,13 @@ CREATE TABLE `link` (
 -- ----------------------------
 DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
-  `create_by` int(16) NOT NULL COMMENT '创建人用户名',
-  `update_by` int(16) NOT NULL COMMENT '更新人',
+  `create_by` int(16) DEFAULT NULL COMMENT '创建人用户名',
+  `update_by` int(16) DEFAULT NULL COMMENT '更新人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `link_name` varchar(255) DEFAULT NULL COMMENT '友情链接名称',
+  `name` varchar(255) DEFAULT NULL COMMENT '友情链接名称',
   `log_type` varchar(255) DEFAULT NULL COMMENT '日志类型',
   `request_url` varchar(255) DEFAULT NULL COMMENT '请求路径',
   `request_type` varchar(255) DEFAULT NULL COMMENT '请求类型',
@@ -147,14 +147,14 @@ CREATE TABLE `log` (
   `ip_info` varchar(255) DEFAULT NULL COMMENT 'ip信息',
   `cost_time` varchar(255) DEFAULT NULL COMMENT '花费时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for log_info
 -- ----------------------------
 DROP TABLE IF EXISTS `log_info`;
 CREATE TABLE `log_info` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -177,7 +177,7 @@ CREATE TABLE `log_info` (
 -- ----------------------------
 DROP TABLE IF EXISTS `login_info`;
 CREATE TABLE `login_info` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -186,7 +186,8 @@ CREATE TABLE `login_info` (
   `user_id` int(16) DEFAULT NULL,
   `last_login_time` datetime DEFAULT NULL,
   `last_login_region` varchar(16) DEFAULT NULL,
-  `ipaddress` varchar(16) DEFAULT NULL
+  `ipaddress` varchar(16) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -194,7 +195,7 @@ CREATE TABLE `login_info` (
 -- ----------------------------
 DROP TABLE IF EXISTS `mail_retrieve`;
 CREATE TABLE `mail_retrieve` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -212,29 +213,28 @@ CREATE TABLE `mail_retrieve` (
 -- ----------------------------
 DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
-  `create_by` int(16) NOT NULL COMMENT '创建人用户名',
-  `update_by` int(16) NOT NULL COMMENT '更新人',
+  `create_by` int(16) DEFAULT NULL COMMENT '创建人用户名',
+  `update_by` int(16) DEFAULT NULL COMMENT '更新人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `menuName` varchar(20) DEFAULT NULL COMMENT '菜单名称',
+  `menu_name` varchar(20) DEFAULT NULL COMMENT '菜单名称',
   `menu_url` varchar(20) DEFAULT NULL COMMENT '菜单路径',
   `menu_icon` varchar(20) DEFAULT NULL COMMENT '图标，可选，部分主题可显示',
   `menu_target` varchar(20) DEFAULT NULL COMMENT '打开方式',
   `menu_sort` int(10) DEFAULT NULL COMMENT '排序编号',
   `menu_pid` int(16) DEFAULT NULL COMMENT '菜单Pid',
   `menu_type` tinyint(1) DEFAULT NULL COMMENT '菜单类型(0前台主要菜单，1前台顶部菜单)',
-  `level` tinyint(1) NOT NULL COMMENT '菜单层级',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for options
 -- ----------------------------
 DROP TABLE IF EXISTS `options`;
 CREATE TABLE `options` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -251,7 +251,7 @@ CREATE TABLE `options` (
 -- ----------------------------
 DROP TABLE IF EXISTS `permission`;
 CREATE TABLE `permission` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -273,7 +273,7 @@ CREATE TABLE `permission` (
 -- ----------------------------
 DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -300,7 +300,7 @@ CREATE TABLE `post` (
 -- ----------------------------
 DROP TABLE IF EXISTS `post_category_ref`;
 CREATE TABLE `post_category_ref` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -316,7 +316,7 @@ CREATE TABLE `post_category_ref` (
 -- ----------------------------
 DROP TABLE IF EXISTS `post_tag_ref`;
 CREATE TABLE `post_tag_ref` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -332,7 +332,7 @@ CREATE TABLE `post_tag_ref` (
 -- ----------------------------
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -349,7 +349,7 @@ CREATE TABLE `role` (
 -- ----------------------------
 DROP TABLE IF EXISTS `role_permission_ref`;
 CREATE TABLE `role_permission_ref` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -361,11 +361,28 @@ CREATE TABLE `role_permission_ref` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Table structure for tag
+-- ----------------------------
+DROP TABLE IF EXISTS `tag`;
+CREATE TABLE `tag` (
+  `id` int(16) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
+  `create_by` int(16) NOT NULL COMMENT '创建人用户名',
+  `update_by` int(16) NOT NULL COMMENT '更新人',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `tag_name` varchar(100) DEFAULT NULL COMMENT '附件名',
+  `user_id` int(16) DEFAULT NULL,
+  `count` int(16) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for topic
 -- ----------------------------
 DROP TABLE IF EXISTS `topic`;
 CREATE TABLE `topic` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -387,33 +404,36 @@ CREATE TABLE `topic` (
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
-  `create_by` int(16) NOT NULL COMMENT '创建人用户名',
-  `update_by` int(16) NOT NULL COMMENT '更新人',
+  `create_by` int(16) DEFAULT NULL COMMENT '创建人用户名',
+  `update_by` int(16) DEFAULT NULL COMMENT '更新人',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `name` varchar(20) DEFAULT NULL,
-  `nick_name` varchar(30) DEFAULT NULL,
-  `password` varchar(32) DEFAULT NULL,
-  `email` varchar(16) DEFAULT NULL,
-  `gender` tinyint(1) DEFAULT '2' COMMENT '0女,1男,2不愿透露',
-  `vip_level` tinyint(1) DEFAULT '0' COMMENT '0，1，2，3，4，5，6，7',
-  `register_time` datetime DEFAULT NULL COMMENT '注册时间',
+  `user_name` varchar(20) NOT NULL,
+  `user_display_name` varchar(30) DEFAULT NULL,
+  `user_pass` varchar(100)  DEFAULT NULL,
+  `user_email` varchar(32)  DEFAULT NULL,
+  `gender` char(10) DEFAULT '2' COMMENT '0女,1男,2不愿透露',
+  `email_enable` varchar(10) DEFAULT NULL,
   `is_admin` char(8) DEFAULT NULL,
-  `email_enable` tinyint(1) DEFAULT NULL,
+  `user_avatar` varchar(20) DEFAULT NULL COMMENT '头像',
   `status` tinyint(1) DEFAULT '0' COMMENT '0 正常,1 禁用,2 已删除',
   `user_desc` varchar(100) DEFAULT NULL,
-  `user_avatar` varchar(20) DEFAULT NULL COMMENT '头像',
+  `salt` varchar(100) DEFAULT NULL,
+  `user_site` varchar(100) DEFAULT NULL,
+  `login_enable` char(10) DEFAULT NULL,
+  `login_last` datetime DEFAULT NULL,
+  `login_error` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for user_role_ref
 -- ----------------------------
 DROP TABLE IF EXISTS `user_role_ref`;
 CREATE TABLE `user_role_ref` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
@@ -429,7 +449,7 @@ CREATE TABLE `user_role_ref` (
 -- ----------------------------
 DROP TABLE IF EXISTS `widget`;
 CREATE TABLE `widget` (
-  `id` int(16) NOT NULL,
+  `id` int(16) NOT NULL AUTO_INCREMENT,
   `del_flag` tinyint(1) NOT NULL COMMENT '删除状态：1删除，0未删除',
   `create_by` int(16) NOT NULL COMMENT '创建人用户名',
   `update_by` int(16) NOT NULL COMMENT '更新人',
