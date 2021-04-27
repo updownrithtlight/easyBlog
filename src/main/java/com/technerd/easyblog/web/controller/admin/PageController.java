@@ -15,6 +15,7 @@ import com.technerd.easyblog.service.LogService;
 import com.technerd.easyblog.service.PostService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -53,79 +54,26 @@ public class PageController extends BaseController {
 
     @Autowired
     LocaleMessageUtil localeMessageUtil;
+    @Autowired
+    private HttpServletRequest request;
 
-    /**
-     * 页面管理页面
-     *
-     * @param model model
-     * @return 模板路径admin/admin_page
-     */
-    @GetMapping
-    public String pages(Model model) {
-        List<Post> posts = postService.findAllPosts(PostTypeEnum.POST_TYPE_PAGE.getValue());
-        model.addAttribute("pages", posts);
-        return "admin/admin_page";
+    public long getUserId(){
+        Claims claims = getClaims();
+        return Long.parseLong(claims.getId());
     }
 
-    /**
-     * 获取友情链接列表并渲染页面
-     *
-     * @return 模板路径admin/admin_page_link
-     */
-    @GetMapping(value = "/links")
-    public String links() {
-        return "admin/admin_page_link";
+    private Claims getClaims() {
+        Claims claims = null;
+        claims = (Claims)request.getAttribute("admin_claims");
+        if(claims==null){
+            claims= (Claims)request.getAttribute("user_claims");
+        }
+        return claims;
     }
 
-    /**
-     * 跳转到修改页面
-     *
-     * @param model  model
-     * @param linkId linkId 友情链接编号
-     * @return String 模板路径admin/admin_page_link
-     */
-    @GetMapping(value = "/links/edit")
-    public String toEditLink(Model model, @RequestParam("id") Long linkId) {
-        Link link = linkService.get(linkId);
-        model.addAttribute("updateLink", link);
-        return "admin/admin_page_link";
-    }
+    public boolean isAdmin(){
+        return "admin".equals(getClaims().get("role").toString());
 
-    /**
-     * 处理添加/修改友链的请求并渲染页面
-     *
-     * @param link Link实体
-     * @return 重定向到/admin/page/links
-     */
-    @PostMapping(value = "/links/save")
-    @SystemLog(description = "保存友情链接", type = LogTypeEnum.OPERATION)
-    public String saveLink(@ModelAttribute Link link) {
-        linkService.insert(link);
-        return "redirect:/admin/page/links";
-    }
-
-    /**
-     * 处理删除友情链接的请求并重定向
-     *
-     * @param linkId 友情链接编号
-     * @return 重定向到/admin/page/links
-     */
-    @GetMapping(value = "/links/delete")
-    public String removeLink(@RequestParam("id") Long linkId) {
-        linkService.delete(linkId);
-        return "redirect:/admin/page/links";
-    }
-
-
-
-    /**
-     * 跳转到新建页面
-     *
-     * @return 模板路径admin/admin_page_editor
-     */
-    @GetMapping(value = "/new")
-    public String newPage() {
-        return "admin/admin_page_editor";
     }
 
     /**
@@ -136,11 +84,11 @@ public class PageController extends BaseController {
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存页面")
     public JsonResult pushPage(@RequestBody Post post) {
-        String msg = localeMessageUtil.getMessage("code.admin.common.save-success");
+        post.setUserId(getUserId());
         //发表用户
         post.setPostType(PostTypeEnum.POST_TYPE_PAGE.getValue());
         postService.insertOrUpdate(post);
-        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), msg);
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"));
     }
 
 

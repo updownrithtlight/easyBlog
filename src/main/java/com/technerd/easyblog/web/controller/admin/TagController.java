@@ -3,6 +3,7 @@ package com.technerd.easyblog.web.controller.admin;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.technerd.easyblog.config.annotation.SystemLog;
 import com.technerd.easyblog.entity.Tag;
+import com.technerd.easyblog.exception.MyBlogException;
 import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
@@ -11,6 +12,7 @@ import com.technerd.easyblog.service.TagService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <pre>
@@ -39,6 +43,28 @@ public class TagController extends BaseController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
+    @Autowired
+    private HttpServletRequest request;
+
+    public long getUserId(){
+        Claims claims = getClaims();
+        return Long.parseLong(claims.getId());
+    }
+
+    private Claims getClaims() {
+        Claims claims = null;
+        claims = (Claims)request.getAttribute("admin_claims");
+        if(claims==null){
+            claims= (Claims)request.getAttribute("user_claims");
+        }
+        return claims;
+    }
+
+    public boolean isAdmin(){
+        return "admin".equals(getClaims().get("role").toString());
+
+    }
+
 
     @PostMapping("/list")
     @ApiOperation(value = "标签列表")
@@ -57,7 +83,7 @@ public class TagController extends BaseController {
     @SystemLog(description = "保存标签", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "保存标签")
     public JsonResult saveTag(@RequestBody Tag tag) {
-        Long userId = 0L;
+        Long userId = getUserId();
         //1.判断该标签是否为当前用户
         if (tag.getId() != null) {
             Tag checkId = tagService.get(tag.getId());

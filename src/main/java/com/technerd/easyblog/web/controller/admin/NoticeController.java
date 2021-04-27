@@ -2,14 +2,14 @@ package com.technerd.easyblog.web.controller.admin;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.technerd.easyblog.config.annotation.SystemLog;
+import com.technerd.easyblog.entity.Category;
 import com.technerd.easyblog.entity.Post;
-import com.technerd.easyblog.entity.User;
 import com.technerd.easyblog.model.dto.JsonResult;
-import com.technerd.easyblog.model.dto.QueryCondition;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.PostStatusEnum;
 import com.technerd.easyblog.model.enums.PostTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
+import com.technerd.easyblog.model.vo.CommonEnum;
 import com.technerd.easyblog.model.vo.SearchVo;
 import com.technerd.easyblog.service.PostService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
@@ -19,9 +19,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <pre>
@@ -44,61 +44,36 @@ public class NoticeController extends BaseController {
     @Autowired
     LocaleMessageUtil localeMessageUtil;
 
+    @Autowired
+    private HttpServletRequest request;
     /**
-     * 处理后台获取公告列表的请求
      *
-     * @param model model
-     * @return 模板路径admin/admin_post
+     * @param searchVo
+     * @return
      */
-    @GetMapping
-    public String posts(Model model,
-                        @RequestParam(value = "page", defaultValue = "1") Integer pageNumber,
-                        @RequestParam(value = "size", defaultValue = "10") Integer pageSize,
-                        @RequestParam(value = "sort", defaultValue = "createTime") String sort,
-                        @RequestParam(value = "order", defaultValue = "desc") String order,
-                        @RequestParam(value = "status", defaultValue = "0") Integer status,
-                        @ModelAttribute SearchVo searchVo) {
-        Post condition = new Post();
-        condition.setPostStatus(status);
-        condition.setPostType(PostTypeEnum.POST_TYPE_NOTICE.getValue());
-        Page page = PageUtil.initMpPage(pageNumber, pageSize, sort, order);
-        Page<Post> postPage = postService.findAll(
-                page,
-                new QueryCondition<>(condition, searchVo)
-        );
-        model.addAttribute("posts", postPage.getRecords());
-        model.addAttribute("pageInfo", PageUtil.convertPageVo(page));
-        model.addAttribute("publishCount", postService.countByPostTypeAndStatus(PostTypeEnum.POST_TYPE_NOTICE.getValue(), PostStatusEnum.PUBLISHED.getCode()));
-        model.addAttribute("draftCount", postService.countByPostTypeAndStatus(PostTypeEnum.POST_TYPE_NOTICE.getValue(), PostStatusEnum.DRAFT.getCode()));
-        model.addAttribute("trashCount", postService.countByPostTypeAndStatus(PostTypeEnum.POST_TYPE_NOTICE.getValue(), PostStatusEnum.RECYCLE.getCode()));
-        model.addAttribute("status", status);
-        return "admin/admin_notice";
+    @PostMapping(value = "/list")
+    @ApiOperation("查询所有公告")
+    public JsonResult<Page<Post>> categories(@RequestBody SearchVo searchVo) {
+        Page page = PageUtil.initMpPage(searchVo);
+        Page<Post> categoryPage = postService.findAll( page);
+        return new JsonResult<Page<Post>>(CommonEnum.SUCCESS.getCode(),categoryPage) ;
     }
-
     /**
-     * 跳转到新建公告
-     *
-     * @return 模板路径admin/admin_notice_editor
-     */
-    @GetMapping(value = "/new")
-    public String newPage() {
-        return "admin/admin_notice_editor";
-    }
-
-    /**
-     * 发表公告
+     * 保存公告
      *
      * @param post post
      */
     @PostMapping(value = "/save")
-    @ResponseBody
     @SystemLog(description = "保存公告", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "保存公告")
     public JsonResult pushPage(@ModelAttribute Post post) {
-
         String msg = localeMessageUtil.getMessage("code.admin.common.save-success");
         //发表用户
-        User loginUser = new User();
-        post.setUserId(loginUser.getId());
+        Object admin_id = request.getAttribute("admin_id");
+        long id = Long.parseLong(admin_id.toString());
+        Long userId = id;
+        post.setUserId(userId);
+        post.setCreateBy(userId+"");
         post.setPostType(PostTypeEnum.POST_TYPE_NOTICE.getValue());
         if (null != post.getId()) {
             post.setPostViews(postService.get(post.getId()).getPostViews());
@@ -112,14 +87,13 @@ public class NoticeController extends BaseController {
      * 跳转到修改公告
      *
      * @param postId 公告编号
-     * @param model  model
      * @return admin/admin_page_editor
      */
-    @GetMapping(value = "/edit")
-    public String editPage(@RequestParam("id") Long postId, Model model) {
+    @GetMapping(value = "/get")
+    @ApiOperation(value = "查询详情")
+    public JsonResult<Post> editPage(@RequestParam("id") Long postId) {
         Post post = postService.get(postId);
-        model.addAttribute("post", post);
-        return "admin/admin_notice_editor";
+        return new JsonResult<Post>(ResultCodeEnum.SUCCESS.getCode(), post);
     }
 
     /**
@@ -129,8 +103,8 @@ public class NoticeController extends BaseController {
      * @return 重定向到/admin/post
      */
     @PostMapping(value = "/throw")
-    @ResponseBody
     @SystemLog(description = "将公告移到回收站", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "发布公告")
     public JsonResult moveToTrash(@RequestParam("id") Long postId) {
         try {
             Post post = postService.get(postId);
@@ -152,8 +126,8 @@ public class NoticeController extends BaseController {
      * @return 重定向到/admin/post
      */
     @PostMapping(value = "/revert")
-    @ResponseBody
     @SystemLog(description = "将公告改为发布的状态", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "发布公告")
     public JsonResult moveToPublish(@RequestParam("id") Long postId) {
         try {
             Post post = postService.get(postId);

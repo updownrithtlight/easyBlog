@@ -1,4 +1,4 @@
-package com.technerd.easyblog.web.query;
+package com.technerd.easyblog.web.reqVo;
 
 import lombok.Data;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +16,5 @@ public class UserVo {
 
         boolean f = bcryptPasswordEncoder.matches(pass,hashPass);
         System.out.println(f);
-
     }
 }

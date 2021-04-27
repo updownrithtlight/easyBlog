@@ -20,6 +20,7 @@ import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.OwoUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,27 @@ public class CommentController extends BaseController {
 
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
+    @Autowired
+    private HttpServletRequest request;
+
+    public long getUserId(){
+        Claims claims = getClaims();
+        return Long.parseLong(claims.getId());
+    }
+
+    private Claims getClaims() {
+        Claims claims = null;
+        claims = (Claims)request.getAttribute("admin_claims");
+        if(claims==null){
+            claims= (Claims)request.getAttribute("user_claims");
+        }
+        return claims;
+    }
+
+    public boolean isAdmin(){
+        return "admin".equals(getClaims().get("role").toString());
+
+    }
 
     /**
      * 评论人相关信息

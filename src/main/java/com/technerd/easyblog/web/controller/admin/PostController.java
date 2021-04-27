@@ -18,6 +18,7 @@ import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.utils.SensUtils;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,16 +60,33 @@ public class PostController extends BaseController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
-    public static final String TITLE = "title";
+    @Autowired
+    private HttpServletRequest request;
 
-    public static final String CONTENT = "content";
+    public long getUserId(){
+        Claims claims = getClaims();
+        return Long.parseLong(claims.getId());
+    }
 
+    private Claims getClaims() {
+        Claims claims = null;
+        claims = (Claims)request.getAttribute("admin_claims");
+        if(claims==null){
+            claims= (Claims)request.getAttribute("user_claims");
+        }
+        return claims;
+    }
+
+    public boolean isAdmin(){
+        return "admin".equals(getClaims().get("role").toString());
+
+    }
 
     @GetMapping
     @ApiOperation(value = "文章列表")
     public JsonResult<Page<Post>> posts(@RequestBody  SearchVo searchVo ) {
         Page page = PageUtil.initMpPage(searchVo);
-        Page<Post> posts = postService.findAll(page );
+        Page<Post> posts = postService.findAll(page);
         return new JsonResult<Page<Post>>(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"),posts);
     }
 
@@ -81,21 +100,19 @@ public class PostController extends BaseController {
     @SystemLog(description = "保存文章", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "添加/更新文章")
     public JsonResult pushPost(@RequestBody Post post) {
-//        checkCategoryAndTag(cateIds, tagList);
-        User user = new User();
-        Boolean isAdmin = true;
+
         //1、如果开启了文章审核，非管理员文章默认状态为审核
         Boolean isOpenCheck = StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.OPEN_POST_CHECK.getProp()), TrueFalseEnum.TRUE.getValue());
-        if (isOpenCheck && !isAdmin) {
+        if (isOpenCheck && !isAdmin()) {
             post.setPostStatus(PostStatusEnum.CHECKING.getCode());
         }
-        post.setUserId(0L);
+        post.setUserId(getUserId());
 
         //2、非管理员只能修改自己的文章，管理员都可以修改
         Post originPost = null;
         if (post.getId() != null) {
             originPost = postService.get(post.getId());
-            if (!Objects.equals(originPost.getUserId(), user.getId()) && !isAdmin) {
+            if (!Objects.equals(originPost.getUserId(), getUserId()) && !isAdmin()) {
                 return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
             }
             //以下属性不能修改
@@ -138,7 +155,7 @@ public class PostController extends BaseController {
 //        }
         post.setPostType(PostTypeEnum.POST_TYPE_POST.getValue());
         postService.insertOrUpdate(post);
-        if (isOpenCheck && !isAdmin) {
+        if (isOpenCheck && !isAdmin()) {
             return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), "文章已提交审核");
         }
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.operation-success"));

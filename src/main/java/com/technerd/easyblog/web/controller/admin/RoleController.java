@@ -1,18 +1,25 @@
 package com.technerd.easyblog.web.controller.admin;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.technerd.easyblog.config.annotation.SystemLog;
 import com.technerd.easyblog.entity.Role;
+import com.technerd.easyblog.entity.Tag;
 import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
+import com.technerd.easyblog.model.vo.SearchVo;
 import com.technerd.easyblog.service.PermissionService;
 import com.technerd.easyblog.service.RoleService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
+import com.technerd.easyblog.utils.PageUtil;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <pre>
@@ -37,8 +44,34 @@ public class RoleController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
+    @Autowired
+    private HttpServletRequest request;
 
+    public long getUserId(){
+        Claims claims = getClaims();
+        return Long.parseLong(claims.getId());
+    }
 
+    private Claims getClaims() {
+        Claims claims = null;
+        claims = (Claims)request.getAttribute("admin_claims");
+        if(claims==null){
+            claims= (Claims)request.getAttribute("user_claims");
+        }
+        return claims;
+    }
+
+    public boolean isAdmin(){
+        return "admin".equals(getClaims().get("role").toString());
+
+    }
+    @PostMapping("/list")
+    @ApiOperation(value = "角色列表")
+    public JsonResult<Page<Role>> tags(@RequestBody SearchVo searchVo) {
+        Page page = PageUtil.initMpPage(searchVo);
+        Page<Role> tagPage = roleService.findAll( page);
+        return new JsonResult<Page<Role>>(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"),tagPage);
+    }
     /**
      * 新增/修改角色
      *
@@ -49,6 +82,8 @@ public class RoleController {
     @SystemLog(description = "保存角色", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "保存角色")
     public JsonResult saveRole(@RequestBody Role role) {
+        long id = getUserId();
+        role.setUpdateBy(id+"");
         roleService.insertOrUpdate(role);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage(""));
     }

@@ -1,4 +1,4 @@
-package com.technerd.easyblog.web.query;
+package com.technerd.easyblog.web.reqVo;
 
 import lombok.Data;
 

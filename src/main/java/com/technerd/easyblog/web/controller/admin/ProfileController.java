@@ -12,13 +12,15 @@ import com.technerd.easyblog.service.ThirdAppBindService;
 import com.technerd.easyblog.service.UserService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
-import com.technerd.easyblog.web.query.PassChange;
+import com.technerd.easyblog.web.reqVo.PassChange;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,6 +50,27 @@ public class ProfileController extends BaseController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
+    @Autowired
+    private HttpServletRequest request;
+
+    public long getUserId(){
+        Claims claims = getClaims();
+        return Long.parseLong(claims.getId());
+    }
+
+    private Claims getClaims() {
+        Claims claims = null;
+        claims = (Claims)request.getAttribute("admin_claims");
+        if(claims==null){
+            claims= (Claims)request.getAttribute("user_claims");
+        }
+        return claims;
+    }
+
+    public boolean isAdmin(){
+        return "admin".equals(getClaims().get("role").toString());
+
+    }
     /**
      *
      * @param bindId

@@ -13,6 +13,7 @@ import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.utils.RedisUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
+import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 /**
@@ -41,6 +43,27 @@ public class CategoryController extends BaseController {
 
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
+    @Autowired
+    private HttpServletRequest request;
+
+    public long getUserId(){
+        Claims claims = getClaims();
+        return Long.parseLong(claims.getId());
+    }
+
+    private Claims getClaims() {
+        Claims claims = null;
+        claims = (Claims)request.getAttribute("admin_claims");
+        if(claims==null){
+            claims= (Claims)request.getAttribute("user_claims");
+        }
+        return claims;
+    }
+
+    public boolean isAdmin(){
+        return "admin".equals(getClaims().get("role").toString());
+
+    }
 
     /**
      *
@@ -50,7 +73,7 @@ public class CategoryController extends BaseController {
     @PostMapping(value = "/list")
     @ApiOperation("查询所有分类")
     public JsonResult<Page<Category>> categories(@RequestBody SearchVo searchVo) {
-        Long userId = 0L;
+        Long userId = getUserId();
         Page page = PageUtil.initMpPage(searchVo);
         Page<Category> categoryPage = categoryService.findByUserIdWithCountAndLevel(userId, page);
         return new JsonResult<Page<Category>>(CommonEnum.SUCCESS.getCode(),categoryPage) ;
@@ -65,19 +88,9 @@ public class CategoryController extends BaseController {
     @SystemLog(description = "新增/修改分类目录", type = LogTypeEnum.OPERATION)
     @ApiOperation("新增/修改分类目录")
     public JsonResult saveCategory(@RequestBody Category category) {
-//        if(category.getId() != null) {
-//            //1.判断id是否为当前用户
-//            Category checkId = categoryService.get(category.getId());
-//            if (checkId != null && !Objects.equals(checkId.getUserId(), userId)) {
-//                return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
-//            }
-//
-//            //2.判断pid是否为该用户
-//            Category checkPid = categoryService.get(category.getCatePid());
-//            if (checkPid != null && !Objects.equals(checkPid.getUserId(), userId)) {
-//                return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
-//            }
-//        }
+        Long id = getUserId();
+        category.setUserId(id);
+        category.setCreateBy(id+"");
         //3.do
         categoryService.insertOrUpdate(category);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"));
@@ -94,7 +107,7 @@ public class CategoryController extends BaseController {
     @ApiOperation(value = "删除分类")
     public JsonResult checkDelete(@RequestParam("id") Long cateId) {
         //1.判断这个分类是否属于该用户
-        Long userId = 0L;
+        Long userId = getUserId();;
         Category category = categoryService.get(cateId);
         if(!Objects.equals(category.getUserId(), userId)) {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));

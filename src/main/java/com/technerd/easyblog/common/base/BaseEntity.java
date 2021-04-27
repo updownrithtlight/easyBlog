@@ -50,7 +50,7 @@ public class BaseEntity implements Serializable {
     @ApiModelProperty(readOnly = true)
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date createTime;
+    private Date createTime=new Date();
 
     /**
      * 更新人
@@ -64,7 +64,7 @@ public class BaseEntity implements Serializable {
     @ApiModelProperty(readOnly = true)
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date updateTime;
+    private Date updateTime=new Date();
 
 
 }

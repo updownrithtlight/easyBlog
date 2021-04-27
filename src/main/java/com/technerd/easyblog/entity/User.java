@@ -62,12 +62,14 @@ public class User  extends BaseEntity {
     /**
      * 是否是管理员 1是，0否
      */
+    @ApiModelProperty(readOnly = true)
     private Integer isAdmin;
 
     /**
      * 是否禁用登录
      */
 //    @JsonIgnore
+    @ApiModelProperty(readOnly = true)
     private String loginEnable = "true";
 
     /**
@@ -79,11 +81,13 @@ public class User  extends BaseEntity {
     /**
      * 登录错误次数记录
      */
+    @ApiModelProperty(readOnly = true)
     private Integer loginError = 0;
 
     /**
      * 是否验证邮箱
      */
+    @ApiModelProperty(readOnly = true)
     private String emailEnable = "false";
 
     /**
@@ -91,6 +95,7 @@ public class User  extends BaseEntity {
      * 1 禁用
      * 2 已删除
      */
+    @ApiModelProperty(readOnly = true)
     private Integer status = 0;
 
     /**

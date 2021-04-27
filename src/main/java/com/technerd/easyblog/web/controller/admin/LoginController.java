@@ -12,8 +12,10 @@ import com.technerd.easyblog.model.enums.*;
 import com.technerd.easyblog.model.vo.CommonEnum;
 import com.technerd.easyblog.service.*;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
+import com.technerd.easyblog.utils.RedisUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
-import com.technerd.easyblog.web.query.UserVo;
+import com.technerd.easyblog.web.reqVo.LoginUserVo;
+import com.technerd.easyblog.web.reqVo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +65,7 @@ public class LoginController extends BaseController {
      */
     @PostMapping(value = "/login")
     @ApiOperation(value = "用户登录")
-    public JsonResult  login(@RequestBody User user, HttpServletResponse response) {
+    public JsonResult  login(@RequestBody LoginUserVo user, HttpServletResponse response) {
         String userName = user.getUserName();
         String password = user.getUserPass();
         if (org.springframework.util.StringUtils.isEmpty(userName) || org.springframework.util.StringUtils.isEmpty(password)) {
@@ -75,7 +77,8 @@ public class LoginController extends BaseController {
             return new JsonResult(CommonEnum.NO_SUCH_USER.getCode(),"");
         }
         //校验密码
-        if (!encoder.matches(password, dbUser.getUserPass())) {
+        String o = (String)RedisUtil.get(userName);
+        if (!encoder.matches(password, o)) {
             return new JsonResult(CommonEnum.PASSWORD_ERROR.getCode(),"");
         }
         //密码正确
@@ -121,10 +124,11 @@ public class LoginController extends BaseController {
         user.setLoginError(0);
         //加密用户的密码
         String password = encoder.encode(user.getUserPass().trim());
+        RedisUtil.set(user.getUserName(),password);
+        System.out.println(password);
         user.setUserPass(password.trim());
         user.setStatus(UserStatusEnum.NORMAL.getCode());
         userService.insert(user);
-
         //4.关联角色
         String defaultRole = SensConst.OPTIONS.get(BlogPropertiesEnum.DEFAULT_REGISTER_ROLE.getProp());
         Role role = null;
@@ -137,7 +141,6 @@ public class LoginController extends BaseController {
         if (role != null) {
             userRoleRefService.insert(new UserRoleRef(user.getId(), role.getId()));
         }
-
         //4.发送激活验证码
 //        if (StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.SMTP_EMAIL_ENABLE.getProp()), TrueFalseEnum.TRUE.getValue())) {
 //            Map<String, Object> map = new HashMap<>(8);

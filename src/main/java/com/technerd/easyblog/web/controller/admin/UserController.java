@@ -8,7 +8,7 @@ import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.service.*;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
-import com.technerd.easyblog.web.query.UserVo;
+import com.technerd.easyblog.web.reqVo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
