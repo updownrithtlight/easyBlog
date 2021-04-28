@@ -42,21 +42,25 @@ public class Comment  extends BaseEntity {
     /**
      * 评论人的主页
      */
+    @ApiModelProperty(readOnly = true)
     private String commentAuthorUrl;
 
     /**
      * 评论人的ip
      */
+    @ApiModelProperty(readOnly = true)
     private String commentAuthorIp;
 
     /**
      * Email的md5，用于gavatar
      */
+    @ApiModelProperty(readOnly = true)
     private String commentAuthorEmailMd5;
 
     /**
      * 评论人头像
      */
+    @ApiModelProperty(readOnly = true)
     private String commentAuthorAvatar;
 
 
@@ -69,21 +73,25 @@ public class Comment  extends BaseEntity {
     /**
      * 评论者ua信息
      */
+    @ApiModelProperty(readOnly = true)
     private String commentAgent;
 
     /**
      * 上一级
      */
+    @ApiModelProperty(readOnly = true)
     private Long commentParent = 0L;
 
     /**
      * 评论状态，0：正常，1：待审核，2：回收站
      */
+    @ApiModelProperty(readOnly = true)
     private Integer commentStatus = 1;
 
     /**
      * 是否是博主的评论 0:不是 1:是
      */
+    @ApiModelProperty(readOnly = true)
     private Integer isAdmin;
 
     /**

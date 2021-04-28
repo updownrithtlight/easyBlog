@@ -25,8 +25,8 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping(value = "/portal/tag")
-@Api(value = "后台标签管理控制器")
-public class TagController extends BaseController {
+@Api(value = "前台标签管理控制器")
+public class TagPortalController extends BaseController {
 
     @Autowired
     private TagService tagService;
