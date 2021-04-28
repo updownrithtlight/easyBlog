@@ -7,7 +7,7 @@ import com.technerd.easyblog.entity.Post;
 import com.technerd.easyblog.entity.User;
 import com.technerd.easyblog.exception.MyBlogException;
 import com.technerd.easyblog.model.dto.JsonResult;
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.*;
 import com.technerd.easyblog.model.vo.SearchVo;
 import com.technerd.easyblog.service.CategoryService;
@@ -16,9 +16,8 @@ import com.technerd.easyblog.service.TagService;
 import com.technerd.easyblog.service.UserService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
-import com.technerd.easyblog.utils.SensUtils;
+import com.technerd.easyblog.utils.EasyUtils;
 import com.technerd.easyblog.web.controller.common.BaseController;
-import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,7 +79,7 @@ public class PostController extends BaseController {
     public JsonResult pushPost(@RequestBody Post post) {
         super.save(post);
         //1、如果开启了文章审核，非管理员文章默认状态为审核
-        Boolean isOpenCheck = StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.OPEN_POST_CHECK.getProp()), TrueFalseEnum.TRUE.getValue());
+        Boolean isOpenCheck = StringUtils.equals(EasyConst.OPTIONS.get(BlogPropertiesEnum.OPEN_POST_CHECK.getProp()), TrueFalseEnum.TRUE.getValue());
         if (isOpenCheck && !isAdmin()) {
             post.setPostStatus(PostStatusEnum.CHECKING.getCode());
         }
@@ -104,8 +102,8 @@ public class PostController extends BaseController {
         }
         //3、提取摘要
         int postSummary = 100;
-        if (StringUtils.isNotEmpty(SensConst.OPTIONS.get(BlogPropertiesEnum.POST_SUMMARY.getProp()))) {
-            postSummary = Integer.parseInt(SensConst.OPTIONS.get(BlogPropertiesEnum.POST_SUMMARY.getProp()));
+        if (StringUtils.isNotEmpty(EasyConst.OPTIONS.get(BlogPropertiesEnum.POST_SUMMARY.getProp()))) {
+            postSummary = Integer.parseInt(EasyConst.OPTIONS.get(BlogPropertiesEnum.POST_SUMMARY.getProp()));
         }
         //文章摘要
         String summaryText = HtmlUtil.cleanHtmlTag(post.getPostContent());
@@ -342,7 +340,7 @@ public class PostController extends BaseController {
         if (StringUtils.isEmpty(baiduToken)) {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.post.no-baidu-token"));
         }
-        String blogUrl = SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp());
+        String blogUrl = EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp());
         List<Post> posts = postService.findAllPosts(PostTypeEnum.POST_TYPE_POST.getValue());
         StringBuilder urls = new StringBuilder();
         for (Post post : posts) {
@@ -351,7 +349,7 @@ public class PostController extends BaseController {
             urls.append(post.getPostUrl());
             urls.append("\n");
         }
-        SensUtils.baiduPost(blogUrl, baiduToken, urls.toString());
+        EasyUtils.baiduPost(blogUrl, baiduToken, urls.toString());
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.post.push-to-baidu-success"));
     }
 

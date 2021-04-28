@@ -11,7 +11,7 @@ import com.technerd.easyblog.entity.User;
 import com.technerd.easyblog.exception.MyBlogException;
 import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.dto.QueryCondition;
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.*;
 import com.technerd.easyblog.service.CommentService;
 import com.technerd.easyblog.service.MailService;
@@ -25,7 +25,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -215,7 +214,7 @@ public class CommentController extends BaseController {
         comment.setPostId(lastComment.getPostId());
         comment.setCommentAuthor(loginUser.getUserDisplayName());
         comment.setCommentAuthorEmail(loginUser.getUserEmail());
-        comment.setCommentAuthorUrl(SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()));
+        comment.setCommentAuthorUrl(EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()));
         comment.setCommentAuthorIp(ServletUtil.getClientIP(request));
         comment.setCommentAuthorAvatar(loginUser.getUserAvatar());
         String lastContent = "<a href='#comment-id-" + lastComment.getId() + "'>@" + lastComment.getCommentAuthor() + "</a> ";
@@ -317,25 +316,25 @@ public class CommentController extends BaseController {
 
         @Override
         public void run() {
-            if (StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.SMTP_EMAIL_ENABLE.getProp()), TrueFalseEnum.TRUE.getValue()) && StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.COMMENT_REPLY_NOTICE.getProp()), TrueFalseEnum.TRUE.getValue())) {
+            if (StringUtils.equals(EasyConst.OPTIONS.get(BlogPropertiesEnum.SMTP_EMAIL_ENABLE.getProp()), TrueFalseEnum.TRUE.getValue()) && StringUtils.equals(EasyConst.OPTIONS.get(BlogPropertiesEnum.COMMENT_REPLY_NOTICE.getProp()), TrueFalseEnum.TRUE.getValue())) {
                 if (Validator.isEmail(lastComment.getCommentAuthorEmail())) {
                     Map<String, Object> map = new HashMap<>(8);
-                    map.put("blogTitle", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()));
+                    map.put("blogTitle", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()));
                     map.put("commentAuthor", lastComment.getCommentAuthor());
                     map.put("pageName", post.getPostTitle());
                     if (StringUtils.equals(post.getPostType(), PostTypeEnum.POST_TYPE_POST.getValue())) {
-                        map.put("pageUrl", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/article/" + post.getId() + "#comment-id-" + comment.getId());
+                        map.put("pageUrl", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/article/" + post.getId() + "#comment-id-" + comment.getId());
                     } else if (StringUtils.equals(post.getPostType(), PostTypeEnum.POST_TYPE_NOTICE.getValue())) {
-                        map.put("pageUrl", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/notice/" + post.getId() + "#comment-id-" + comment.getId());
+                        map.put("pageUrl", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/notice/" + post.getId() + "#comment-id-" + comment.getId());
                     } else {
-                        map.put("pageUrl", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/p/" + post.getPostUrl() + "#comment-id-" + comment.getId());
+                        map.put("pageUrl", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/p/" + post.getPostUrl() + "#comment-id-" + comment.getId());
                     }
                     map.put("commentContent", lastComment.getCommentContent());
                     map.put("replyAuthor", user.getUserDisplayName());
                     map.put("replyContent", commentContent);
-                    map.put("blogUrl", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()));
+                    map.put("blogUrl", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()));
                     mailService.sendTemplateMail(
-                            lastComment.getCommentAuthorEmail(), "您在" + SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()) + "的评论有了新回复", map, "common/mail_template/mail_reply.ftl");
+                            lastComment.getCommentAuthorEmail(), "您在" + EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()) + "的评论有了新回复", map, "common/mail_template/mail_reply.ftl");
                 }
             }
         }
@@ -360,26 +359,26 @@ public class CommentController extends BaseController {
 
         @Override
         public void run() {
-            if (StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.SMTP_EMAIL_ENABLE.getProp()), TrueFalseEnum.TRUE.getValue()) && StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.COMMENT_REPLY_NOTICE.getProp()), TrueFalseEnum.TRUE.getValue())) {
+            if (StringUtils.equals(EasyConst.OPTIONS.get(BlogPropertiesEnum.SMTP_EMAIL_ENABLE.getProp()), TrueFalseEnum.TRUE.getValue()) && StringUtils.equals(EasyConst.OPTIONS.get(BlogPropertiesEnum.COMMENT_REPLY_NOTICE.getProp()), TrueFalseEnum.TRUE.getValue())) {
                 try {
                     //待审核的评论变成已通过，发邮件
                     if (status == 1 && Validator.isEmail(comment.getCommentAuthorEmail())) {
                         Map<String, Object> map = new HashMap<>(6);
                         if (StringUtils.equals(post.getPostType(), PostTypeEnum.POST_TYPE_POST.getValue())) {
-                            map.put("pageUrl", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/article/" + post.getId() + "#comment-id-" + comment.getId());
+                            map.put("pageUrl", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/article/" + post.getId() + "#comment-id-" + comment.getId());
                         } else if (StringUtils.equals(post.getPostType(), PostTypeEnum.POST_TYPE_NOTICE.getValue())) {
-                            map.put("pageUrl", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/notice/" + post.getId() + "#comment-id-" + comment.getId());
+                            map.put("pageUrl", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/notice/" + post.getId() + "#comment-id-" + comment.getId());
                         } else {
-                            map.put("pageUrl", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/p/" + post.getPostUrl() + "#comment-id-" + comment.getId());
+                            map.put("pageUrl", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/p/" + post.getPostUrl() + "#comment-id-" + comment.getId());
                         }
                         map.put("pageName", post.getPostTitle());
                         map.put("commentContent", comment.getCommentContent());
-                        map.put("blogUrl", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()));
-                        map.put("blogTitle", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()));
+                        map.put("blogUrl", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()));
+                        map.put("blogTitle", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()));
                         map.put("author", user.getUserDisplayName());
                         mailService.sendTemplateMail(
                                 comment.getCommentAuthorEmail(),
-                                "您在" + SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()) + "的评论已审核通过！", map, "common/mail_template/mail_passed.ftl");
+                                "您在" + EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()) + "的评论已审核通过！", map, "common/mail_template/mail_passed.ftl");
                     }
                 } catch (Exception e) {
                     log.error("邮件服务器未配置：{}", e.getMessage());

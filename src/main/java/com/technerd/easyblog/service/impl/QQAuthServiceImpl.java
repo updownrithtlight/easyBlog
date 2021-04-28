@@ -2,7 +2,7 @@ package com.technerd.easyblog.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.technerd.easyblog.model.dto.BindUserDTO;
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.service.QQAuthService;
 import com.technerd.easyblog.utils.Response;
@@ -41,17 +41,17 @@ public class QQAuthServiceImpl extends DefaultAuthServiceImpl implements QQAuthS
 
     @Override
     public Response<String> getAuthorizationUrl() {
-        String APP_ID = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_app_id.getProp());
-        String CALLBACK_URL = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_callback.getProp());
+        String APP_ID = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_app_id.getProp());
+        String CALLBACK_URL = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_callback.getProp());
         String url = String.format(AUTHORIZATION_URL, APP_ID, CALLBACK_URL, SCOPE);
         return Response.yes(url);
     }
 
     @Override
     public Response<String> getAccessToken(String code) {
-        String APP_ID = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_app_id.getProp());
-        String APP_SECRET = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_app_secret.getProp());
-        String CALLBACK_URL = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_callback.getProp());
+        String APP_ID = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_app_id.getProp());
+        String APP_SECRET = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_app_secret.getProp());
+        String CALLBACK_URL = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_callback.getProp());
         String url = String.format(ACCESS_TOKEN_URL, APP_ID, APP_SECRET, code, CALLBACK_URL);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
         URI uri = builder.build().encode().toUri();
@@ -103,7 +103,7 @@ public class QQAuthServiceImpl extends DefaultAuthServiceImpl implements QQAuthS
 
     @Override
     public Response<BindUserDTO> getUserInfo(String accessToken, String openId) {
-        String APP_ID = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_app_id.getProp());
+        String APP_ID = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_qq_app_id.getProp());
         String url = String.format(USER_INFO_URL, accessToken, APP_ID, openId);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
         URI uri = builder.build().encode().toUri();

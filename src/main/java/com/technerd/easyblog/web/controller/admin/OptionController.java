@@ -1,23 +1,17 @@
 package com.technerd.easyblog.web.controller.admin;
 
 import com.technerd.easyblog.entity.Options;
-import com.technerd.easyblog.entity.Role;
 import com.technerd.easyblog.model.dto.JsonResult;
-import com.technerd.easyblog.model.dto.SensConst;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.service.OptionsService;
-import com.technerd.easyblog.service.RoleService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**

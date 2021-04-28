@@ -4,12 +4,11 @@ package com.technerd.easyblog.common.constant;
  * 缓存key名
  *
  * @author 言曌
- * @date 2019-10-10 16:37
  */
 
 public class RedisKeys {
 
-    public static final String BASE_PREFIX = "SENS_BLOG:";
+    public static final String BASE_PREFIX = "EASY_BLOG:";
 
     /**
      * 排名相关

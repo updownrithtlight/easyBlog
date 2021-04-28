@@ -1,14 +1,11 @@
 package com.technerd.easyblog.service.impl;
 
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.service.MailService;
-import com.technerd.easyblog.utils.SensUtils;
+import com.technerd.easyblog.utils.EasyUtils;
 import io.github.biezhi.ome.OhMyEmail;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import java.io.File;
 import java.util.Map;
@@ -34,13 +31,13 @@ public class MailServiceImpl implements MailService {
     @Override
     public void sendMail(String to, String subject, String content) {
         //配置邮件服务器
-        SensUtils.configMail(
-                SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_HOST.getProp()),
-                SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_USERNAME.getProp()),
-                SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_PASSWORD.getProp()));
+        EasyUtils.configMail(
+                EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_HOST.getProp()),
+                EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_USERNAME.getProp()),
+                EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_PASSWORD.getProp()));
         try {
             OhMyEmail.subject(subject)
-                    .from(SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_FROM_NAME.getProp()))
+                    .from(EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_FROM_NAME.getProp()))
                     .to(to)
                     .text(content)
                     .send();
@@ -60,14 +57,14 @@ public class MailServiceImpl implements MailService {
     @Override
     public void sendTemplateMail(String to, String subject, Map<String, Object> content, String templateName) {
         //配置邮件服务器
-        SensUtils.configMail(
-                SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_HOST.getProp()),
-                SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_USERNAME.getProp()),
-                SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_PASSWORD.getProp()));
+        EasyUtils.configMail(
+                EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_HOST.getProp()),
+                EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_USERNAME.getProp()),
+                EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_PASSWORD.getProp()));
         String text = "";
         try {
             OhMyEmail.subject(subject)
-                    .from(SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_FROM_NAME.getProp()))
+                    .from(EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_FROM_NAME.getProp()))
                     .to(to)
                     .html(text)
                     .send();
@@ -88,15 +85,15 @@ public class MailServiceImpl implements MailService {
     @Override
     public void sendAttachMail(String to, String subject, Map<String, Object> content, String templateName, String attachSrc) {
         //配置邮件服务器
-        SensUtils.configMail(
-                SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_HOST.getProp()),
-                SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_USERNAME.getProp()),
-                SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_PASSWORD.getProp()));
+        EasyUtils.configMail(
+                EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_HOST.getProp()),
+                EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_USERNAME.getProp()),
+                EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_SMTP_PASSWORD.getProp()));
         File file = new File(attachSrc);
         String text = "";
         try {
             OhMyEmail.subject(subject)
-                    .from(SensConst.OPTIONS.get(BlogPropertiesEnum.MAIL_FROM_NAME.getProp()))
+                    .from(EasyConst.OPTIONS.get(BlogPropertiesEnum.MAIL_FROM_NAME.getProp()))
                     .to(to)
                     .html(text)
                     .attach(file, file.getName())

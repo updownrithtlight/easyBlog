@@ -1,11 +1,8 @@
 package com.technerd.easyblog.config.listener;
 
-import com.technerd.easyblog.model.dto.SensConst;
-import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.service.OptionsService;
-import com.technerd.easyblog.web.controller.common.BaseController;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
@@ -64,7 +61,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     private void loadOptions() {
         Map<String, String> options = optionsService.findAllOptions();
         if (options != null && !options.isEmpty()) {
-            SensConst.OPTIONS = options;
+            EasyConst.OPTIONS = options;
         }
     }
 
@@ -209,6 +206,6 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         map.put("@(高兴)", "<img src='/static/plugins/OwO/alu/高兴.png' alt='高兴.png' style='vertical-align: middle;'>");
         map.put("@(黑线)", "<img src='/static/plugins/OwO/alu/黑线.png' alt='黑线.png' style='vertical-align: middle;'>");
         map.put("@(鼓掌)", "<img src='/static/plugins/OwO/alu/鼓掌.png' alt='鼓掌.png' style='vertical-align: middle;'>");
-        SensConst.OWO = map;
+        EasyConst.OWO = map;
     }
 }

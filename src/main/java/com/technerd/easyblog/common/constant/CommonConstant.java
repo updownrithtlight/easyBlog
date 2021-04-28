@@ -59,7 +59,7 @@ public interface CommonConstant {
     /**
      * 限流标识
      */
-    String LIMIT_ALL = "SENS_LIMIT_ALL";
+    String LIMIT_ALL = "EASY_LIMIT_ALL";
 
     /**
      * 顶部菜单类型权限
@@ -134,32 +134,18 @@ public interface CommonConstant {
     /**
      * 短信验证码key前缀
      */
-    String PRE_SMS = "SENS_PRE_SMS:";
+    String PRE_SMS = "EASY_PRE_SMS:";
 
     /**
      * 邮件验证码key前缀
      */
-    String PRE_EMAIL = "SENS_PRE_EMAIL:";
+    String PRE_EMAIL = "EASY_PRE_EMAIL:";
 
     /**
      * 本地文件存储
      */
     Integer OSS_LOCAL = 0;
 
-    /**
-     * 七牛云OSS存储
-     */
-    Integer OSS_QINIU = 1;
-
-    /**
-     * 阿里云OSS存储
-     */
-    Integer OSS_ALI = 2;
-
-    /**
-     * 腾讯云COS存储
-     */
-    Integer OSS_TENCENT = 3;
 
     /**
      * 部门负责人类型 主负责人

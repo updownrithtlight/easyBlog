@@ -2,7 +2,7 @@ package com.technerd.easyblog.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.technerd.easyblog.model.dto.BindUserDTO;
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.service.GithubAuthService;
 import com.technerd.easyblog.utils.Response;
@@ -47,9 +47,9 @@ public class GithubAuthServiceImpl extends DefaultAuthServiceImpl implements Git
 
     @Override
     public Response<String> getAccessToken(String code) {
-        String APP_ID = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_github_app_id.getProp());
-        String APP_SECRET = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_github_app_secret.getProp());
-        String CALLBACK_URL = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_github_callback.getProp());
+        String APP_ID = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_github_app_id.getProp());
+        String APP_SECRET = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_github_app_secret.getProp());
+        String CALLBACK_URL = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_github_callback.getProp());
         String url = String.format(ACCESS_TOKEN_URL, APP_ID, APP_SECRET, code, CALLBACK_URL, GITHUB_STATE);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
         URI uri = builder.build().encode().toUri();
@@ -97,8 +97,8 @@ public class GithubAuthServiceImpl extends DefaultAuthServiceImpl implements Git
 
     @Override
     public Response<String> getAuthorizationUrl() {
-        String APP_ID = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_github_app_id.getProp());
-        String CALLBACK_URL = SensConst.OPTIONS.get(BlogPropertiesEnum.bind_github_callback.getProp());
+        String APP_ID = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_github_app_id.getProp());
+        String CALLBACK_URL = EasyConst.OPTIONS.get(BlogPropertiesEnum.bind_github_callback.getProp());
 
         String url = String.format(AUTHORIZE_URL, APP_ID, CALLBACK_URL, GITHUB_STATE);
         return Response.yes(url);

@@ -9,7 +9,7 @@ import com.technerd.easyblog.entity.Comment;
 import com.technerd.easyblog.mapper.CommentMapper;
 import com.technerd.easyblog.model.dto.CommentPageDTO;
 import com.technerd.easyblog.model.dto.ListPage;
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.model.enums.CommentStatusEnum;
 import com.technerd.easyblog.service.CommentService;
@@ -160,8 +160,8 @@ public class CommentServiceImpl implements CommentService {
         //默认显示10条
         Integer size = 10;
         //获取每页评论条数
-        if (!StringUtils.isBlank(SensConst.OPTIONS.get(BlogPropertiesEnum.INDEX_COMMENTS.getProp()))) {
-            size = Integer.parseInt(SensConst.OPTIONS.get(BlogPropertiesEnum.INDEX_COMMENTS.getProp()));
+        if (!StringUtils.isBlank(EasyConst.OPTIONS.get(BlogPropertiesEnum.INDEX_COMMENTS.getProp()))) {
+            size = Integer.parseInt(EasyConst.OPTIONS.get(BlogPropertiesEnum.INDEX_COMMENTS.getProp()));
         }
         //评论分页
         ListPage<Comment> commentsPage = new ListPage<Comment>(CommentUtil.getComments(comments), pageNumber, size);

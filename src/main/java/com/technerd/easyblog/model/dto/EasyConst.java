@@ -11,7 +11,7 @@ import java.util.Map;
  * @author : saysky
  * @date : 2017/12/29
  */
-public class SensConst {
+public class EasyConst {
 
     /**
      * 所有设置选项（key,value）

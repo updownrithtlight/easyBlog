@@ -7,7 +7,7 @@ import com.technerd.easyblog.entity.Role;
 import com.technerd.easyblog.entity.User;
 import com.technerd.easyblog.entity.UserRoleRef;
 import com.technerd.easyblog.model.dto.JsonResult;
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.*;
 import com.technerd.easyblog.model.vo.CommonEnum;
 import com.technerd.easyblog.service.*;
@@ -15,7 +15,6 @@ import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.RedisUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
 import com.technerd.easyblog.web.reqVo.LoginUserVo;
-import com.technerd.easyblog.web.reqVo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -101,7 +100,7 @@ public class LoginController extends BaseController {
     @SystemLog(description = "用户注册", type = LogTypeEnum.REGISTER)
     @ApiOperation(value = "用户注册")
     public JsonResult getRegister(@RequestBody User user) {
-        if (StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.OPEN_REGISTER.getProp()), TrueFalseEnum.FALSE.getValue())) {
+        if (StringUtils.equals(EasyConst.OPTIONS.get(BlogPropertiesEnum.OPEN_REGISTER.getProp()), TrueFalseEnum.FALSE.getValue())) {
             return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.register.close"));
         }
         //1.检查用户名
@@ -126,7 +125,7 @@ public class LoginController extends BaseController {
         user.setStatus(UserStatusEnum.NORMAL.getCode());
         userService.insert(user);
         //4.关联角色
-        String defaultRole = SensConst.OPTIONS.get(BlogPropertiesEnum.DEFAULT_REGISTER_ROLE.getProp());
+        String defaultRole = EasyConst.OPTIONS.get(BlogPropertiesEnum.DEFAULT_REGISTER_ROLE.getProp());
         Role role = null;
         if (!Strings.isNullOrEmpty(defaultRole)) {
             role = roleService.findByRoleName(defaultRole);
@@ -173,13 +172,13 @@ public class LoginController extends BaseController {
             String encode = encoder.encode(user.getUserPass());
             userService.updatePassword(user.getId(), encode);
             //2.发送邮件
-            if (StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.SMTP_EMAIL_ENABLE.getProp()), TrueFalseEnum.TRUE.getValue())) {
+            if (StringUtils.equals(EasyConst.OPTIONS.get(BlogPropertiesEnum.SMTP_EMAIL_ENABLE.getProp()), TrueFalseEnum.TRUE.getValue())) {
                 Map<String, Object> map = new HashMap<>(8);
-                map.put("blogTitle", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()));
-                map.put("blogUrl", SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()));
+                map.put("blogTitle", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()));
+                map.put("blogUrl", EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()));
                 map.put("password", password);
                 mailService.sendTemplateMail(
-                        userVo.getUserEmail(), SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()) + "账户 - 找回密码", map, "common/mail_template/mail_forget.ftl");
+                        userVo.getUserEmail(), EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()) + "账户 - 找回密码", map, "common/mail_template/mail_forget.ftl");
             } else {
                 return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.smtp-not-enable"));
             }

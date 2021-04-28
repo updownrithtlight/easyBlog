@@ -1,6 +1,6 @@
 package com.technerd.easyblog.utils;
 
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -21,8 +21,8 @@ public class OwoUtil {
      * @return 表情图片地址
      */
     public static String markToImg(String mark) {
-        for (String key : SensConst.OWO.keySet()) {
-            mark = mark.replace(key, SensConst.OWO.get(key));
+        for (String key : EasyConst.OWO.keySet()) {
+            mark = mark.replace(key, EasyConst.OWO.get(key));
         }
         return mark;
     }

@@ -1,6 +1,6 @@
 package com.technerd.easyblog.web.interceptor;
 
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.model.enums.TrueFalseEnum;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +24,7 @@ public class ApiInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (StringUtils.equals(TrueFalseEnum.TRUE.getValue(), SensConst.OPTIONS.get(BlogPropertiesEnum.API_STATUS.getProp()))) {
+        if (StringUtils.equals(TrueFalseEnum.TRUE.getValue(), EasyConst.OPTIONS.get(BlogPropertiesEnum.API_STATUS.getProp()))) {
             return true;
         }
 //        response.sendRedirect("/404");

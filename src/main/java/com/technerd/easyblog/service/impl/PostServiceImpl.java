@@ -19,7 +19,7 @@ import com.technerd.easyblog.model.enums.PostTypeEnum;
 import com.technerd.easyblog.service.CategoryService;
 import com.technerd.easyblog.service.PostService;
 import com.technerd.easyblog.utils.RedisUtil;
-import com.technerd.easyblog.utils.SensUtils;
+import com.technerd.easyblog.utils.EasyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
@@ -361,7 +361,7 @@ public class PostServiceImpl implements PostService {
     public String buildRss(List<Post> posts) {
         String rss = "";
         try {
-            rss = SensUtils.getRss(posts);
+            rss = EasyUtils.getRss(posts);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -374,7 +374,7 @@ public class PostServiceImpl implements PostService {
         map.put("post_type", PostTypeEnum.POST_TYPE_POST.getValue());
         map.put("post_status", PostStatusEnum.PUBLISHED.getCode());
         List<Post> posts = postMapper.selectByMap(map);
-        return SensUtils.getSiteMap(posts);
+        return EasyUtils.getSiteMap(posts);
     }
 
     @Override

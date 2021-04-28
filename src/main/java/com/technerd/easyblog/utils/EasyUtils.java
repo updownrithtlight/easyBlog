@@ -8,7 +8,7 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedOutput;
 import com.technerd.easyblog.entity.Post;
 import com.technerd.easyblog.model.dto.BackupDto;
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.model.enums.CommonParamsEnum;
 import io.github.biezhi.ome.OhMyEmail;
@@ -43,7 +43,7 @@ import java.util.*;
  * @date : 2017/12/22
  */
 @Slf4j
-public class SensUtils {
+public class EasyUtils {
 
     /**
      * 获取备份文件信息
@@ -52,7 +52,7 @@ public class SensUtils {
      * @return List
      */
     public static List<BackupDto> getBackUps(String dir) {
-        String srcPathStr = System.getProperties().getProperty("user.home") + "/sens/backup/" + dir;
+        String srcPathStr = System.getProperties().getProperty("user.home") + "/easy/backup/" + dir;
         File srcPath = new File(srcPathStr);
         File[] files = srcPath.listFiles();
         List<BackupDto> backupDtos = new ArrayList<>();
@@ -198,20 +198,20 @@ public class SensUtils {
      */
     public static String getRss(List<Post> posts) throws FeedException {
         Channel channel = new Channel("rss_2.0");
-        if (null == SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp())) {
+        if (null == EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp())) {
             channel.setTitle("");
         } else {
-            channel.setTitle(SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()));
+            channel.setTitle(EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_TITLE.getProp()));
         }
-        if (null == SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp())) {
+        if (null == EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp())) {
             channel.setLink("");
         } else {
-            channel.setLink(SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()));
+            channel.setLink(EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()));
         }
-        if (null == SensConst.OPTIONS.get(BlogPropertiesEnum.SEO_DESC.getProp())) {
+        if (null == EasyConst.OPTIONS.get(BlogPropertiesEnum.SEO_DESC.getProp())) {
             channel.setDescription("");
         } else {
-            channel.setDescription(SensConst.OPTIONS.get(BlogPropertiesEnum.SEO_DESC.getProp()));
+            channel.setDescription(EasyConst.OPTIONS.get(BlogPropertiesEnum.SEO_DESC.getProp()));
         }
         channel.setLanguage("zh-CN");
         List<Item> items = new ArrayList<>();
@@ -231,7 +231,7 @@ public class SensUtils {
             value = new String(xmlChar);
             content.setValue(value);
             item.setContent(content);
-            item.setLink(SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/article/" + post.getId());
+            item.setLink(EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/article/" + post.getId());
             item.setPubDate(post.getCreateTime());
             items.add(item);
         }
@@ -250,7 +250,7 @@ public class SensUtils {
         String head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">";
         String urlBody = "";
         String urlItem;
-        String urlPath = SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/article/";
+        String urlPath = EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_URL.getProp()) + "/article/";
         for (Post post : posts) {
             urlItem = "<url><loc>" + urlPath + post.getId() + "</loc><lastmod>" + getStringDate(post.getCreateTime(), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX") + "</lastmod>" + "</url>";
             urlBody += urlItem;

@@ -1,6 +1,6 @@
 package com.technerd.easyblog.web.interceptor;
 
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.model.enums.LocaleEnum;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +23,7 @@ public class LocaleInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (StringUtils.equals(LocaleEnum.EN_US.getValue(), SensConst.OPTIONS.get(BlogPropertiesEnum.BLOG_LOCALE.getProp()))) {
+        if (StringUtils.equals(LocaleEnum.EN_US.getValue(), EasyConst.OPTIONS.get(BlogPropertiesEnum.BLOG_LOCALE.getProp()))) {
             request.getSession().setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale("en", "US"));
         } else {
             request.getSession().setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale("zh", "CN"));

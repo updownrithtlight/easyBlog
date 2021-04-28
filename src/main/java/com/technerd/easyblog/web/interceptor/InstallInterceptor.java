@@ -1,6 +1,6 @@
 package com.technerd.easyblog.web.interceptor;
 
-import com.technerd.easyblog.model.dto.SensConst;
+import com.technerd.easyblog.model.dto.EasyConst;
 import com.technerd.easyblog.model.enums.BlogPropertiesEnum;
 import com.technerd.easyblog.model.enums.TrueFalseEnum;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +24,7 @@ public class InstallInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
-        if (StringUtils.equals(TrueFalseEnum.TRUE.getValue(), SensConst.OPTIONS.get(BlogPropertiesEnum.IS_INSTALL.getProp()))) {
+        if (StringUtils.equals(TrueFalseEnum.TRUE.getValue(), EasyConst.OPTIONS.get(BlogPropertiesEnum.IS_INSTALL.getProp()))) {
             return true;
         }
         response.sendRedirect("/install");
