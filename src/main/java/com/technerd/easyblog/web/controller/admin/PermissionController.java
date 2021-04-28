@@ -11,6 +11,7 @@ import com.technerd.easyblog.model.vo.SearchVo;
 import com.technerd.easyblog.service.PermissionService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
+import com.technerd.easyblog.web.controller.common.BaseController;
 import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +34,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/admin/permission")
 @Api(value = "后台权限管理控制器")
-public class PermissionController {
+public class PermissionController extends BaseController {
 
     @Autowired
     private PermissionService permissionService;
@@ -41,27 +42,7 @@ public class PermissionController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
-    @Autowired
-    private HttpServletRequest request;
 
-    public long getUserId(){
-        Claims claims = getClaims();
-        return Long.parseLong(claims.getId());
-    }
-
-    private Claims getClaims() {
-        Claims claims = null;
-        claims = (Claims)request.getAttribute("admin_claims");
-        if(claims==null){
-            claims= (Claims)request.getAttribute("user_claims");
-        }
-        return claims;
-    }
-
-    public boolean isAdmin(){
-        return "admin".equals(getClaims().get("role").toString());
-
-    }
     /**
      *
      * @return
@@ -85,8 +66,7 @@ public class PermissionController {
     @SystemLog(description = "保存权限", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "新增/修改权限")
     public JsonResult savePermission(@RequestBody Permission permission) {
-        Long userId = getUserId();
-        permission.setUpdateBy(userId+"");
+        super.save(permission);
         permissionService.insertOrUpdate(permission);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"));
     }

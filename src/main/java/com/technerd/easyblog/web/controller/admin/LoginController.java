@@ -91,17 +91,13 @@ public class LoginController extends BaseController {
     }
 
 
-
-
-
-
     /**
      * 验证注册信息
      *
      * @param user  用户
      * @return JsonResult JsonResult
      */
-    @PostMapping(value = "/getRegister")
+    @PostMapping(value = "/register")
     @SystemLog(description = "用户注册", type = LogTypeEnum.REGISTER)
     @ApiOperation(value = "用户注册")
     public JsonResult getRegister(@RequestBody User user) {
@@ -167,7 +163,7 @@ public class LoginController extends BaseController {
     @ResponseBody
     @SystemLog(description = "忘记密码", type = LogTypeEnum.FORGET)
     @ApiOperation("处理忘记密码")
-    public JsonResult forget(@RequestBody UserVo userVo) {
+    public JsonResult forget(@RequestBody LoginUserVo userVo) {
 
        User  user = userService.findByUserName(userVo.getUserName());
         if (user != null && Objects.equals(user.getUserEmail(), userVo.getUserEmail())) {
@@ -204,6 +200,7 @@ public class LoginController extends BaseController {
         /*
          * 清除redis中的RefreshToken即可
          */
+        // TODO: 2021/4/28
         return new JsonResult<Boolean>(CommonEnum.SUCCESS.getCode(),"");
     }
 }

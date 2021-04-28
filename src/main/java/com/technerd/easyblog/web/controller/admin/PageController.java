@@ -54,27 +54,6 @@ public class PageController extends BaseController {
 
     @Autowired
     LocaleMessageUtil localeMessageUtil;
-    @Autowired
-    private HttpServletRequest request;
-
-    public long getUserId(){
-        Claims claims = getClaims();
-        return Long.parseLong(claims.getId());
-    }
-
-    private Claims getClaims() {
-        Claims claims = null;
-        claims = (Claims)request.getAttribute("admin_claims");
-        if(claims==null){
-            claims= (Claims)request.getAttribute("user_claims");
-        }
-        return claims;
-    }
-
-    public boolean isAdmin(){
-        return "admin".equals(getClaims().get("role").toString());
-
-    }
 
     /**
      * 保存页面
@@ -84,7 +63,7 @@ public class PageController extends BaseController {
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存页面")
     public JsonResult pushPage(@RequestBody Post post) {
-        post.setUserId(getUserId());
+        super.save(post);
         //发表用户
         post.setPostType(PostTypeEnum.POST_TYPE_PAGE.getValue());
         postService.insertOrUpdate(post);

@@ -7,6 +7,7 @@ import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.model.enums.SlideTypeEnum;
 import com.technerd.easyblog.service.SlideService;
+import com.technerd.easyblog.web.controller.common.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/admin/slide")
 @Api(value = "后台幻灯片管理控制器")
-public class SlideController {
+public class SlideController extends BaseController {
 
     @Autowired
     private SlideService slideService;
@@ -56,6 +57,7 @@ public class SlideController {
     @SystemLog(description = "保存幻灯片", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "保存幻灯片")
     public JsonResult saveSlide(@RequestBody Slide slide) {
+        super.save(slide);
         slideService.insertOrUpdate(slide);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), "删除成功");
     }

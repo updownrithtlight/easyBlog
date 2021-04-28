@@ -44,8 +44,6 @@ public class NoticeController extends BaseController {
     @Autowired
     LocaleMessageUtil localeMessageUtil;
 
-    @Autowired
-    private HttpServletRequest request;
     /**
      *
      * @param searchVo
@@ -68,12 +66,7 @@ public class NoticeController extends BaseController {
     @ApiOperation(value = "保存公告")
     public JsonResult pushPage(@ModelAttribute Post post) {
         String msg = localeMessageUtil.getMessage("code.admin.common.save-success");
-        //发表用户
-        Object admin_id = request.getAttribute("admin_id");
-        long id = Long.parseLong(admin_id.toString());
-        Long userId = id;
-        post.setUserId(userId);
-        post.setCreateBy(userId+"");
+        super.save(post);
         post.setPostType(PostTypeEnum.POST_TYPE_NOTICE.getValue());
         if (null != post.getId()) {
             post.setPostViews(postService.get(post.getId()).getPostViews());

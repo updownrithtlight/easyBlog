@@ -60,29 +60,8 @@ public class PostController extends BaseController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
-    @Autowired
-    private HttpServletRequest request;
 
-    public long getUserId(){
-        Claims claims = getClaims();
-        return Long.parseLong(claims.getId());
-    }
-
-    private Claims getClaims() {
-        Claims claims = null;
-        claims = (Claims)request.getAttribute("admin_claims");
-        if(claims==null){
-            claims= (Claims)request.getAttribute("user_claims");
-        }
-        return claims;
-    }
-
-    public boolean isAdmin(){
-        return "admin".equals(getClaims().get("role").toString());
-
-    }
-
-    @GetMapping
+    @PostMapping
     @ApiOperation(value = "文章列表")
     public JsonResult<Page<Post>> posts(@RequestBody  SearchVo searchVo ) {
         Page page = PageUtil.initMpPage(searchVo);
@@ -100,7 +79,7 @@ public class PostController extends BaseController {
     @SystemLog(description = "保存文章", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "添加/更新文章")
     public JsonResult pushPost(@RequestBody Post post) {
-
+        super.save(post);
         //1、如果开启了文章审核，非管理员文章默认状态为审核
         Boolean isOpenCheck = StringUtils.equals(SensConst.OPTIONS.get(BlogPropertiesEnum.OPEN_POST_CHECK.getProp()), TrueFalseEnum.TRUE.getValue());
         if (isOpenCheck && !isAdmin()) {

@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author liuyanzhao
  */
 @Data
-public class PageVo implements Serializable {
+public class PageVo {
 
     private static final long serialVersionUID = 1L;
 

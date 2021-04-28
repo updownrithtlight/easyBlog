@@ -50,27 +50,7 @@ public class ProfileController extends BaseController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
-    @Autowired
-    private HttpServletRequest request;
 
-    public long getUserId(){
-        Claims claims = getClaims();
-        return Long.parseLong(claims.getId());
-    }
-
-    private Claims getClaims() {
-        Claims claims = null;
-        claims = (Claims)request.getAttribute("admin_claims");
-        if(claims==null){
-            claims= (Claims)request.getAttribute("user_claims");
-        }
-        return claims;
-    }
-
-    public boolean isAdmin(){
-        return "admin".equals(getClaims().get("role").toString());
-
-    }
     /**
      *
      * @param bindId

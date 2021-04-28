@@ -12,7 +12,6 @@ import java.util.Date;
 @ConfigurationProperties("jwt.config")
 public class JwtUtil {
 
-    //TODO 从配置文件中获取
     private long ttl;
 
     private String secretKey;

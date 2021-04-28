@@ -13,6 +13,7 @@ import com.technerd.easyblog.model.vo.SearchVo;
 import com.technerd.easyblog.service.MenuService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
+import com.technerd.easyblog.web.controller.common.BaseController;
 import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,7 +38,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/admin/menu")
 @Api(value = "后台菜单管理控制器")
-public class MenuController {
+public class MenuController extends BaseController {
 
     @Autowired
     private MenuService menuService;
@@ -45,30 +46,10 @@ public class MenuController {
     @Autowired
     LocaleMessageUtil localeMessageUtil;
 
-    @Autowired
-    private HttpServletRequest request;
 
-    public long getUserId(){
-        Claims claims = getClaims();
-        return Long.parseLong(claims.getId());
-    }
-
-    private Claims getClaims() {
-        Claims claims = null;
-        claims = (Claims)request.getAttribute("admin_claims");
-        if(claims==null){
-            claims= (Claims)request.getAttribute("user_claims");
-        }
-        return claims;
-    }
-
-    public boolean isAdmin(){
-        return "admin".equals(getClaims().get("role").toString());
-
-    }
 
     @PostMapping(value = "/list")
-    @ApiOperation("查询所有分类")
+    @ApiOperation("查询所有菜单")
     public JsonResult<Page<Menu>> categories(@RequestBody SearchVo searchVo) {
         Page page = PageUtil.initMpPage(searchVo);
         Page<Menu> menuServiceAll = menuService.findAll( page);
@@ -85,8 +66,7 @@ public class MenuController {
     @SystemLog(description = "保存菜单", type = LogTypeEnum.OPERATION)
     @ApiOperation("新增/修改菜单")
     public JsonResult saveMenu(@RequestBody Menu menu) {
-        Long userId = getUserId();
-        menu.setCreateBy(userId+"");
+        super.save(menu);
         menuService.insertOrUpdate(menu);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.reply-success"));
     }

@@ -105,6 +105,7 @@ public class UserController extends BaseController {
     @SystemLog(description = "保存用户", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "新增/修改用户")
     public JsonResult saveUser(@RequestBody User user) {
+        super.save(user);
         //1.添加用户
         userService.insertOrUpdate(user);
        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"));
@@ -124,6 +125,7 @@ public class UserController extends BaseController {
     @SystemLog(description = "管理员修改其他用户信息", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "管理员修改用户资料")
     public JsonResult adminSaveProfile(@RequestBody User user) {
+        super.save(user);
         userService.insertOrUpdate(user);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.edit-success"));
     }

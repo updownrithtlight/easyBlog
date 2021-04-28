@@ -43,27 +43,6 @@ public class CategoryController extends BaseController {
 
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
-    @Autowired
-    private HttpServletRequest request;
-
-    public long getUserId(){
-        Claims claims = getClaims();
-        return Long.parseLong(claims.getId());
-    }
-
-    private Claims getClaims() {
-        Claims claims = null;
-        claims = (Claims)request.getAttribute("admin_claims");
-        if(claims==null){
-            claims= (Claims)request.getAttribute("user_claims");
-        }
-        return claims;
-    }
-
-    public boolean isAdmin(){
-        return "admin".equals(getClaims().get("role").toString());
-
-    }
 
     /**
      *
@@ -88,10 +67,7 @@ public class CategoryController extends BaseController {
     @SystemLog(description = "新增/修改分类目录", type = LogTypeEnum.OPERATION)
     @ApiOperation("新增/修改分类目录")
     public JsonResult saveCategory(@RequestBody Category category) {
-        Long id = getUserId();
-        category.setUserId(id);
-        category.setCreateBy(id+"");
-        //3.do
+        super.save(category);
         categoryService.insertOrUpdate(category);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"));
     }

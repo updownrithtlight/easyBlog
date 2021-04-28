@@ -3,7 +3,6 @@ package com.technerd.easyblog.web.controller.admin;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.technerd.easyblog.entity.Log;
 import com.technerd.easyblog.entity.Permission;
-import com.technerd.easyblog.entity.User;
 import com.technerd.easyblog.model.dto.JsonResult;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.service.*;
@@ -12,7 +11,6 @@ import com.technerd.easyblog.web.controller.common.BaseController;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,8 +40,6 @@ public class AdminController extends BaseController {
     @Autowired
     private LogService logService;
 
-    @Autowired
-    private AttachmentService attachmentService;
 
     @Autowired
     private CommentService commentService;

@@ -8,6 +8,7 @@ import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.service.OptionsService;
 import com.technerd.easyblog.service.RoleService;
 import com.technerd.easyblog.utils.LocaleMessageUtil;
+import com.technerd.easyblog.web.controller.common.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin/option")
 @Api(value = "后台设置选项控制器")
-public class OptionController {
+public class OptionController extends BaseController {
 
     @Autowired
     private OptionsService optionsService;

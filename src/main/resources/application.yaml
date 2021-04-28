@@ -2,7 +2,7 @@ server:
   port: 8080
 #  forward-headers-strategy: true
   undertow:
-    io-threads: 2
+    io-threads: 10
     worker-threads: 36
     buffer-size: 1024
     directBuffers: true
@@ -81,7 +81,7 @@ logging:
     org:
       springframework:
         boot:
-          autoconfigure: debug
+          autoconfigure: error
         web:
           trace
 application:

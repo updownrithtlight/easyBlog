@@ -1,27 +1,53 @@
 package com.technerd.easyblog.web.controller.common;
 
+import com.technerd.easyblog.common.base.BaseEntity;
 import com.technerd.easyblog.entity.User;
+import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * <pre>
  *     Controller抽象类
  * </pre>
  *
- * @author : saysky
- * @date : 2017/12/15
+ * @author : technerd
  */
-public abstract class BaseController {
+public abstract class BaseController<T extends BaseEntity> {
 
-    /**
-     * 定义默认主题
-     */
-    public static String THEME = "begin";
+    @Autowired
+    private HttpServletRequest request;
 
-    /**
-     * 管理员
-     */
-    public static Integer IS_ADMIN = 1;
+    public long getUserId(){
+        Claims claims = getClaims();
+        return Long.parseLong(claims.getId());
+    }
 
+    private Claims getClaims() {
+        Claims claims = null;
+        claims = (Claims)request.getAttribute("admin_claims");
+        if(claims==null){
+            claims= (Claims)request.getAttribute("user_claims");
+        }
+        return claims;
+    }
 
+    public boolean isAdmin(){
+        return "admin".equals(getClaims().get("role").toString());
+
+    }
+
+    public void save(T t){
+        Date date = new Date();
+        if(t.getId()==null){
+            t.setCreateTime(date);
+            t.setCreateBy(getUserId()+"");
+        }else {
+            t.setUpdateTime(date);
+            t.setUpdateBy(getUserId()+"");
+        }
+    }
 
 }

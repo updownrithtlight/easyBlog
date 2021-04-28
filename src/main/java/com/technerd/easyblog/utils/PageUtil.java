@@ -22,11 +22,9 @@ public class PageUtil {
     public static final int MAX_PAGE_SIZE = 100;
     public static Page initMpPage(SearchVo searchVo){
         PageVo pageVo = searchVo.getPageVo();
-        long page = pageVo.getPage();
         long current = pageVo.getCurrent();
         String sort = pageVo.getSort();
         long size = pageVo.getSize();
-        long pages = pageVo.getPages();
         String order = pageVo.getOrder();
         return initMpPage(current,size,sort,order);
     }

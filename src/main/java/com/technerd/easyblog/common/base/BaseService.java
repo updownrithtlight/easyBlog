@@ -82,26 +82,7 @@ public interface BaseService<E, ID extends Serializable> {
      * @return
      */
     default E insertOrUpdate(E entity) {
-        try {
-            Object id = entity.getClass().getMethod("getId").invoke(entity);
-            Date date = new Date();
-            if (id != null) {
-                entity.getClass().getMethod("setUpdateTime",Date.class).invoke(entity,date);
-                update(entity);
-            } else {
-
-                entity.getClass().getMethod("setId",Long.class).invoke(entity);
-                entity.getClass().getMethod("setCreateTime",Date.class).invoke(entity,date);
-                insert(entity);
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return entity;
+       return entity;
     }
 
     /**

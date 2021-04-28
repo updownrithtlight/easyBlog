@@ -43,27 +43,6 @@ public class TagController extends BaseController {
     @Autowired
     private LocaleMessageUtil localeMessageUtil;
 
-    @Autowired
-    private HttpServletRequest request;
-
-    public long getUserId(){
-        Claims claims = getClaims();
-        return Long.parseLong(claims.getId());
-    }
-
-    private Claims getClaims() {
-        Claims claims = null;
-        claims = (Claims)request.getAttribute("admin_claims");
-        if(claims==null){
-            claims= (Claims)request.getAttribute("user_claims");
-        }
-        return claims;
-    }
-
-    public boolean isAdmin(){
-        return "admin".equals(getClaims().get("role").toString());
-
-    }
 
 
     @PostMapping("/list")
@@ -83,16 +62,15 @@ public class TagController extends BaseController {
     @SystemLog(description = "保存标签", type = LogTypeEnum.OPERATION)
     @ApiOperation(value = "保存标签")
     public JsonResult saveTag(@RequestBody Tag tag) {
-        Long userId = getUserId();
+        super.save(tag);
         //1.判断该标签是否为当前用户
         if (tag.getId() != null) {
             Tag checkId = tagService.get(tag.getId());
-            if (checkId != null && !checkId.getUserId().equals(userId)) {
+            if (checkId != null && !checkId.getUserId().equals(getUserId())) {
                 return new JsonResult(ResultCodeEnum.FAIL.getCode(), localeMessageUtil.getMessage("code.admin.common.permission-denied"));
             }
         }
         //2.添加或者保存
-        tag.setUserId(userId);
         tagService.insertOrUpdate(tag);
         return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"));
 
