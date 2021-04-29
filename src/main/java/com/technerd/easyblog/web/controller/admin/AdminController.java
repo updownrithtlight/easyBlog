@@ -1,14 +1,20 @@
 package com.technerd.easyblog.web.controller.admin;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.technerd.easyblog.config.annotation.SystemLog;
 import com.technerd.easyblog.entity.Log;
 import com.technerd.easyblog.entity.Permission;
+import com.technerd.easyblog.entity.RolePermissionRef;
+import com.technerd.easyblog.entity.UserRoleRef;
 import com.technerd.easyblog.model.dto.JsonResult;
+import com.technerd.easyblog.model.enums.LogTypeEnum;
 import com.technerd.easyblog.model.enums.ResultCodeEnum;
 import com.technerd.easyblog.service.*;
+import com.technerd.easyblog.utils.LocaleMessageUtil;
 import com.technerd.easyblog.utils.PageUtil;
 import com.technerd.easyblog.web.controller.common.BaseController;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -40,66 +46,44 @@ public class AdminController extends BaseController {
     @Autowired
     private LogService logService;
 
-
     @Autowired
     private CommentService commentService;
 
     @Autowired
     private PermissionService permissionService;
-
-
-    /**
-     * 查看所有日志
-     *
-     * @param model      model model
-     * @param pageNumber page 当前页码
-     * @param pageSize   size 每页条数
-     * @return 模板路径admin/widget/_logs-all
-     */
-    @GetMapping(value = "/logs")
-    public String logs(Model model,
-                       @RequestParam(value = "page", defaultValue = "1") Integer pageNumber,
-                       @RequestParam(value = "size", defaultValue = "20") Integer pageSize,
-                       @RequestParam(value = "sort", defaultValue = "createTime") String sort,
-                       @RequestParam(value = "order", defaultValue = "desc") String order) {
-        Page page = PageUtil.initMpPage(pageNumber, pageSize, sort, order);
-        Page<Log> logs = logService.findAll(page);
-        model.addAttribute("logs", logs.getRecords());
-        model.addAttribute("pageInfo", PageUtil.convertPageVo(page));
-        return "admin/widget/_logs-all";
-    }
+    @Autowired
+    private UserRoleRefService userRoleRefService;
+    @Autowired
+    private RolePermissionRefService rolePermissionRefService;
+    @Autowired
+    private LocaleMessageUtil localeMessageUtil;
 
     /**
-     * 清除所有日志
      *
-     * @return 重定向到/admin
-     */
-    @GetMapping(value = "/logs/clear")
-    public String logsClear() {
-        logService.removeAllLog();
-        return "redirect:/admin";
-    }
-
-    /**
-     * 不可描述的页面
-     *
-     * @return 模板路径admin/admin_sens
-     */
-    @GetMapping(value = "/sens")
-    public String sens() {
-        return "admin/admin_sens";
-    }
-
-
-    /**
-     * 获得当前用户的菜单
-     *
+     * @param permission
      * @return
      */
-    @GetMapping(value = "/currentMenus")
-    public JsonResult<List<Permission>> getMenu() {
-        List<Permission> permissions = permissionService.findPermissionTreeByUserIdAndResourceType(0L, "menu");
-        return new JsonResult<List<Permission>>(ResultCodeEnum.SUCCESS.getCode(), "", permissions);
+    @PostMapping(value = "/permissionOf")
+    @SystemLog(description = "保存权限与角色关联", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "新增/修改权限")
+    public JsonResult savePermission(@RequestBody RolePermissionRef permission) {
+        super.save(permission);
+        rolePermissionRefService.saveByRolePermissionRef(permission);
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"));
+    }
+
+    /**
+     *
+     * @param roleRef
+     * @return
+     */
+    @PostMapping(value = "/roleOf")
+    @SystemLog(description = "保存用户角色关联", type = LogTypeEnum.OPERATION)
+    @ApiOperation(value = "新增/修改用户角色关联")
+    public JsonResult saveUseroleRef(@RequestBody UserRoleRef roleRef) {
+        super.save(roleRef);
+        userRoleRefService.insert(roleRef);
+        return new JsonResult(ResultCodeEnum.SUCCESS.getCode(), localeMessageUtil.getMessage("code.admin.common.save-success"));
     }
 
     /**
