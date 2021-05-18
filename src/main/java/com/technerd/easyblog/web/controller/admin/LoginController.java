@@ -86,7 +86,7 @@ public class LoginController extends BaseController {
         //token放入redis
         response.setHeader("Authorization", token);
         response.setHeader("Access-Control-Expose-Headers", "Authorization");
-        return new JsonResult(CommonEnum.SUCCESS.getCode(), "");
+        return new JsonResult(CommonEnum.SUCCESS.getCode(), token);
     }
 
 
